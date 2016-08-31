@@ -1,4 +1,4 @@
-package quadtree
+package bmp
 
 import (
 	"fmt"
@@ -19,28 +19,43 @@ func check(t *testing.T, err error) {
 	}
 }
 
-func TestBitmapFromImage(t *testing.T) {
-	f, err := os.Open(testdata + "/gopher.png")
-	check(t, err)
-	defer f.Close()
+func newBitmapFromStrings(ss []string) *Bitmap {
+	w, h := len(ss[0]), len(ss)
+	for i := range ss {
+		if len(ss[i]) != w {
+			panic("all strings should have the same length")
+		}
+	}
 
-	var (
-		img image.Image
-		bmp *Bitmap
-		s   string
-	)
-	img, err = png.Decode(f)
-	check(t, err)
+	bmp := Bitmap{
+		Width:  w,
+		Height: h,
+		Bits:   make([]Color, w*h),
+	}
 
-	bmp = NewBitmapFromImage(img)
+	for y := range ss {
+		for x := range ss[y] {
+			if ss[y][x] == '1' {
+				bmp.Bits[x+w*y] = 1
+			}
+		}
+	}
+	return &bmp
+}
 
+func (bmp Bitmap) String() string {
+	var s string
 	for y := 0; y < bmp.Height; y++ {
 		for x := 0; x < bmp.Width; x++ {
 			s += fmt.Sprintf("%d", bmp.Bits[x+bmp.Width*y])
 		}
+		s += "\n"
 	}
+	return s
+}
 
-	expected := []string{
+func TestBitmapFromImage(t *testing.T) {
+	gopher := []string{
 		"1111111111111000000000000001111111111111",
 		"1111111111100000011111111000011111011111",
 		"1111001100011111111111110001100000000111",
@@ -96,7 +111,50 @@ func TestBitmapFromImage(t *testing.T) {
 		"1111100100100000000000000000111101011111",
 		"1111101011111111000000011111111100011111"}
 
-	if s != strings.Join(expected, "") {
-		t.Errorf("NewBitmapFromImage() expected gopher, didn't have one")
+	f, err := os.Open(testdata + "/gopher.png")
+	check(t, err)
+	defer f.Close()
+
+	var (
+		img image.Image
+		bmp *Bitmap
+		exp string
+	)
+	img, err = png.Decode(f)
+	check(t, err)
+
+	bmp = NewFromImage(img)
+	exp = strings.Join(gopher, "\n") + "\n"
+	if bmp.String() != exp {
+		t.Errorf("NewFromImage() expected gopher, didn't have one")
+	}
+}
+
+func TestAllZeroes(t *testing.T) {
+	ss := []string{
+		"000",
+		"100",
+		"011",
+	}
+
+	var zeroesTests = []struct {
+		minx, miny, maxx, maxy int
+		expected               bool
+	}{
+		{0, 0, 2, 2, false},
+		{1, 1, 2, 2, false},
+		{0, 1, 0, 1, false},
+		{0, 0, 0, 0, true},
+		{1, 0, 1, 0, true},
+		{1, 0, 2, 1, true},
+	}
+
+	bmp := newBitmapFromStrings(ss)
+
+	for _, tt := range zeroesTests {
+		actual := bmp.allZeroes(image.Point{tt.minx, tt.miny}, image.Point{tt.maxx, tt.maxy})
+		if actual != tt.expected {
+			t.Errorf("Bitmap.allZeroes() (%d,%d|%d,%d): expected %v, actual %v", tt.minx, tt.miny, tt.maxx, tt.maxy, tt.expected, actual)
+		}
 	}
 }
