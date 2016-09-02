@@ -1,7 +1,6 @@
 package bmp
 
 import (
-	"fmt"
 	"image"
 	"image/png"
 	"os"
@@ -17,41 +16,6 @@ func check(t *testing.T, err error) {
 	if err != nil {
 		t.Fatal(err)
 	}
-}
-
-func newBitmapFromStrings(ss []string) *Bitmap {
-	w, h := len(ss[0]), len(ss)
-	for i := range ss {
-		if len(ss[i]) != w {
-			panic("all strings should have the same length")
-		}
-	}
-
-	bmp := Bitmap{
-		Width:  w,
-		Height: h,
-		Bits:   make([]Color, w*h),
-	}
-
-	for y := range ss {
-		for x := range ss[y] {
-			if ss[y][x] == '1' {
-				bmp.Bits[x+w*y] = 1
-			}
-		}
-	}
-	return &bmp
-}
-
-func (bmp Bitmap) String() string {
-	var s string
-	for y := 0; y < bmp.Height; y++ {
-		for x := 0; x < bmp.Width; x++ {
-			s += fmt.Sprintf("%d", bmp.Bits[x+bmp.Width*y])
-		}
-		s += "\n"
-	}
-	return s
 }
 
 func TestBitmapFromImage(t *testing.T) {
@@ -130,31 +94,26 @@ func TestBitmapFromImage(t *testing.T) {
 	}
 }
 
-func TestAllZeroes(t *testing.T) {
-	ss := []string{
-		"000",
-		"100",
-		"011",
-	}
-
-	var zeroesTests = []struct {
+func TestBlackImage(t *testing.T) {
+	var testTbl = []struct {
+		w, h                   int
 		minx, miny, maxx, maxy int
-		expected               bool
 	}{
-		{0, 0, 2, 2, false},
-		{1, 1, 2, 2, false},
-		{0, 1, 0, 1, false},
-		{0, 0, 0, 0, true},
-		{1, 0, 1, 0, true},
-		{1, 0, 2, 1, true},
+		{2, 2, 0, 0, 1, 1},
+		{1, 2, 0, 0, 0, 1},
+		{2, 1, 0, 0, 1, 0},
+		{4, 2, 0, 0, 3, 1},
+		{4, 2, 2, 2, 3, 1},
+		{2, 4, 0, 0, 1, 3},
+		{2, 4, 2, 2, 1, 3},
 	}
 
-	bmp := newBitmapFromStrings(ss)
+	var scanner NaiveScanner
 
-	for _, tt := range zeroesTests {
-		actual := bmp.allZeroes(image.Point{tt.minx, tt.miny}, image.Point{tt.maxx, tt.maxy})
-		if actual != tt.expected {
-			t.Errorf("Bitmap.allZeroes() (%d,%d|%d,%d): expected %v, actual %v", tt.minx, tt.miny, tt.maxx, tt.maxy, tt.expected, actual)
+	for _, tt := range testTbl {
+		bmp := New(tt.w, tt.h)
+		if !scanner.IsBlack(bmp, image.Point{tt.minx, tt.miny}, image.Point{tt.maxx, tt.maxy}) {
+			t.Errorf("TestBlackImage (dim:%dx%d)(%d,%d|%d,%d): expected true, got false", tt.w, tt.h, tt.minx, tt.miny, tt.maxx, tt.maxy)
 		}
 	}
 }
