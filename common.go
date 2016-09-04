@@ -39,11 +39,18 @@ func Init() {
 		/* S */ {southWest, southEast, northWest, northEast},
 		/* W */ {northEast, northWest, southEast, southWest},
 	}
+
+	// initialize the opposite sides array
+	arrOpposite = [4]side{
+		/* N     E      S     W  */
+		south, west, north, east,
+	}
 }
 
 var (
 	arrAdjacent [4][4]bool
 	arrReflect  [4][4]quadrant
+	arrOpposite [4]side
 )
 
 // adjacent checks if a quadrant is adjacent to a given side of this node.
@@ -54,4 +61,9 @@ func adjacent(s side, q quadrant) bool {
 // reflect obtains the mirror image of a quadrant on a given side.
 func reflect(s side, q quadrant) quadrant {
 	return arrReflect[s][q]
+}
+
+// opposite returns, given a side, its opposite
+func opposite(s side) side {
+	return arrOpposite[s]
 }
