@@ -6,26 +6,6 @@ import (
 	"github.com/RookieGameDevs/quadtree/bmp"
 )
 
-//go:generate stringer -type=quadrant
-type quadrant int
-
-const (
-	northWest quadrant = iota
-	northEast
-	southWest
-	southEast
-)
-
-//go:generate stringer -type=side
-type side int
-
-const (
-	north side = iota
-	east
-	south
-	west
-)
-
 type quadnode struct {
 	northWest *quadnode // pointer to the northwest child
 	southWest *quadnode // pointer to the southwest child

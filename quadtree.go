@@ -18,7 +18,11 @@
 //      | SW | SE |
 //      '----'----'
 //         South
-
+//
+//
+// Usage:
+// The Init function must be called before using the package.
+//
 package quadtree
 
 import (
