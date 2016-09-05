@@ -25,10 +25,10 @@ func testIsWhite(t *testing.T, scanner Scanner) {
 		{1, 2, 2, 2, true},
 	}
 
-	bmp := NewBitmapFromStrings(ss)
+	scanner.SetBmp(NewBitmapFromStrings(ss))
 
 	for _, tt := range testTbl {
-		actual := scanner.IsWhite(bmp, image.Point{tt.minx, tt.miny}, image.Point{tt.maxx, tt.maxy})
+		actual := scanner.IsWhite(image.Point{tt.minx, tt.miny}, image.Point{tt.maxx, tt.maxy})
 		if actual != tt.expected {
 			t.Errorf("testIsWhite (%d,%d|%d,%d): expected %v, actual %v", tt.minx, tt.miny, tt.maxx, tt.maxy, tt.expected, actual)
 		}
@@ -56,10 +56,10 @@ func testIsBlack(t *testing.T, scanner Scanner) {
 		{2, 2, 2, 2, true},
 	}
 
-	bmp := NewBitmapFromStrings(ss)
+	scanner.SetBmp(NewBitmapFromStrings(ss))
 
 	for _, tt := range testTbl {
-		actual := scanner.IsBlack(bmp, image.Point{tt.minx, tt.miny}, image.Point{tt.maxx, tt.maxy})
+		actual := scanner.IsBlack(image.Point{tt.minx, tt.miny}, image.Point{tt.maxx, tt.maxy})
 		if actual != tt.expected {
 			t.Errorf("testIsBlack (%d,%d|%d,%d): expected %v, actual %v", tt.minx, tt.miny, tt.maxx, tt.maxy, tt.expected, actual)
 		}
@@ -84,10 +84,10 @@ func testIsFilled(t *testing.T, scanner Scanner) {
 		{1, 0, 2, 1, White},
 	}
 
-	bmp := NewBitmapFromStrings(ss)
+	scanner.SetBmp(NewBitmapFromStrings(ss))
 
 	for _, tt := range testTbl {
-		actual := scanner.IsFilled(bmp, image.Point{tt.minx, tt.miny}, image.Point{tt.maxx, tt.maxy})
+		actual := scanner.IsFilled(image.Point{tt.minx, tt.miny}, image.Point{tt.maxx, tt.maxy})
 		if actual != tt.expected {
 			t.Errorf("testIsFilled (%d,%d|%d,%d): expected %v, actual %v", tt.minx, tt.miny, tt.maxx, tt.maxy, tt.expected, actual)
 		}
@@ -95,13 +95,13 @@ func testIsFilled(t *testing.T, scanner Scanner) {
 }
 
 func TestNaiveScannerIsWhite(t *testing.T) {
-	testIsWhite(t, NaiveScanner{})
+	testIsWhite(t, &NaiveScanner{})
 }
 
 func TestNaiveScannerIsBlack(t *testing.T) {
-	testIsBlack(t, NaiveScanner{})
+	testIsBlack(t, &NaiveScanner{})
 }
 
 func TestNaiveScannerIsFilled(t *testing.T) {
-	testIsFilled(t, NaiveScanner{})
+	testIsFilled(t, &NaiveScanner{})
 }

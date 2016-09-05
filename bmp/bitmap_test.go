@@ -108,11 +108,10 @@ func TestBlackImage(t *testing.T) {
 		{2, 4, 2, 2, 1, 3},
 	}
 
-	var scanner NaiveScanner
-
 	for _, tt := range testTbl {
-		bmp := New(tt.w, tt.h)
-		if !scanner.IsBlack(bmp, image.Point{tt.minx, tt.miny}, image.Point{tt.maxx, tt.maxy}) {
+		scanner := NewNaiveScanner(New(tt.w, tt.h))
+
+		if !scanner.IsBlack(image.Point{tt.minx, tt.miny}, image.Point{tt.maxx, tt.maxy}) {
 			t.Errorf("TestBlackImage (dim:%dx%d)(%d,%d|%d,%d): expected true, got false", tt.w, tt.h, tt.minx, tt.miny, tt.maxx, tt.maxy)
 		}
 	}
