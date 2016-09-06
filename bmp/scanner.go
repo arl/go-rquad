@@ -19,22 +19,17 @@ type Scanner interface {
 	SetBmp(bm *Bitmap)
 }
 
-// NaiveScanner is the naive implementation of a bitmap scanner, it checks
+// bruteForceScanner is the naive implementation of a bitmap scanner, it checks
 // every pixel consecutively.
-type NaiveScanner struct {
+type bruteForceScanner struct {
 	b *Bitmap
 }
 
-// NewNaiveScanner creates a new scanner, naively scanning the given bitmap
-func NewNaiveScanner(b *Bitmap) *NaiveScanner {
-	return &NaiveScanner{b}
-}
-
-func (s *NaiveScanner) SetBmp(bm *Bitmap) {
+func (s *bruteForceScanner) SetBmp(bm *Bitmap) {
 	s.b = bm
 }
 
-func (s NaiveScanner) IsWhite(topLeft, bottomRight image.Point) bool {
+func (s bruteForceScanner) IsWhite(topLeft, bottomRight image.Point) bool {
 	var yidx int
 
 	for y := topLeft.Y; y <= bottomRight.Y; y++ {
@@ -49,7 +44,7 @@ func (s NaiveScanner) IsWhite(topLeft, bottomRight image.Point) bool {
 	return true
 }
 
-func (s NaiveScanner) IsBlack(topLeft, bottomRight image.Point) bool {
+func (s bruteForceScanner) IsBlack(topLeft, bottomRight image.Point) bool {
 	var yidx int
 
 	for y := topLeft.Y; y <= bottomRight.Y; y++ {
@@ -64,7 +59,7 @@ func (s NaiveScanner) IsBlack(topLeft, bottomRight image.Point) bool {
 	return true
 }
 
-func (s NaiveScanner) IsFilled(topLeft, bottomRight image.Point) Color {
+func (s bruteForceScanner) IsFilled(topLeft, bottomRight image.Point) Color {
 	// naive implementation: check every pixel consecutively
 	var yidx int
 

@@ -94,14 +94,14 @@ func testIsFilled(t *testing.T, scanner Scanner) {
 	}
 }
 
-func TestNaiveScannerIsWhite(t *testing.T) {
-	testIsWhite(t, &NaiveScanner{})
+func TestBruteForceScannerIsWhite(t *testing.T) {
+	testIsWhite(t, &bruteForceScanner{})
 }
 
-func TestNaiveScannerIsBlack(t *testing.T) {
-	testIsBlack(t, &NaiveScanner{})
+func TestbruteForceScannerIsBlack(t *testing.T) {
+	testIsBlack(t, &bruteForceScanner{})
 }
 
-func TestNaiveScannerIsFilled(t *testing.T) {
-	testIsFilled(t, &NaiveScanner{})
+func TestbruteForceScannerIsFilled(t *testing.T) {
+	testIsFilled(t, &bruteForceScanner{})
 }

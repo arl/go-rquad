@@ -26,14 +26,14 @@ type Bitmap struct {
 
 // New creates a new Bitmap having given dimensions, filled with Black color.
 func New(w, h int) *Bitmap {
-	bmp := Bitmap{
+	bm := Bitmap{
 		Width:  w,
 		Height: h,
 		Bits:   make([]Color, w*h),
 	}
 	// set the default scanner
-	bmp.Scanner = &NaiveScanner{}
-	bmp.Scanner.SetBmp(&bmp)
+	bm.Scanner = &bruteForceScanner{}
+	bm.Scanner.SetBmp(&bm)
 	return &bm
 }
 
