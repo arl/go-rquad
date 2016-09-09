@@ -25,7 +25,7 @@ func TestQuadtreeLogicalErrors(t *testing.T) {
 	for _, tt := range testTbl {
 		bm := bmp.New(tt.w, tt.h)
 
-		_, err := NewQuadtreeFromBitmap(bm, tt.res)
+		_, err := NewQuadtreeFromBitmap(bm, tt.res, nil)
 		actual := err == nil
 		if actual != tt.expected {
 			t.Errorf("TestQuadtreeLogicalErrors (%d,%d,%d): expected %v, actual %v, err:'%v'", tt.w, tt.h, tt.res, tt.expected, actual, err)

@@ -31,11 +31,16 @@ import (
 	"github.com/RookieGameDevs/quadtree/bmp"
 )
 
+type PostNodeCreationFunc func(n *quadnode)
+
+func noop(n *quadnode) {
+}
+
 type Quadtree struct {
 	root *quadnode // the root node
 }
 
-func NewQuadtreeFromBitmap(bm *bmp.Bitmap, resolution int) (*Quadtree, error) {
+func NewQuadtreeFromBitmap(bm *bmp.Bitmap, resolution int, fn PostNodeCreationFunc) (*Quadtree, error) {
 	// To ensure a consistent behavior and eliminate corner cases, the
 	// Quadtree's root node need to have children, i.e. it can't
 	// be a leaf node. Thus, the first instantiated Quadnode need to
@@ -52,7 +57,11 @@ func NewQuadtreeFromBitmap(bm *bmp.Bitmap, resolution int) (*Quadtree, error) {
 		return nil, errors.New("the bitmap smaller dimension must be greater or equal to twice the resolution")
 	}
 
+	if fn == nil {
+		fn = noop
+	}
+
 	quad := &Quadtree{}
-	quad.root = newRootQuadNode(bm, resolution)
+	quad.root = newRootQuadNode(bm, resolution, fn)
 	return quad, nil
 }
