@@ -32,9 +32,9 @@ func (s *bruteForceScanner) SetBmp(bm *Bitmap) {
 func (s bruteForceScanner) IsWhite(topLeft, bottomRight image.Point) bool {
 	var yidx int
 
-	for y := topLeft.Y; y <= bottomRight.Y; y++ {
+	for y := topLeft.Y; y < bottomRight.Y; y++ {
 		yidx = s.b.Width * y
-		for x := topLeft.X; x <= bottomRight.X; x++ {
+		for x := topLeft.X; x < bottomRight.X; x++ {
 			if s.b.Bits[x+yidx] != White {
 				// immediately returns at the first 1 found
 				return false
@@ -47,9 +47,9 @@ func (s bruteForceScanner) IsWhite(topLeft, bottomRight image.Point) bool {
 func (s bruteForceScanner) IsBlack(topLeft, bottomRight image.Point) bool {
 	var yidx int
 
-	for y := topLeft.Y; y <= bottomRight.Y; y++ {
+	for y := topLeft.Y; y < bottomRight.Y; y++ {
 		yidx = s.b.Width * y
-		for x := topLeft.X; x <= bottomRight.X; x++ {
+		for x := topLeft.X; x < bottomRight.X; x++ {
 			if s.b.Bits[x+yidx] != Black {
 				// immediately returns at the first 1 found
 				return false
@@ -65,9 +65,9 @@ func (s bruteForceScanner) IsFilled(topLeft, bottomRight image.Point) Color {
 
 	// get first pixel color
 	col := s.b.Bits[s.b.Width*topLeft.Y+topLeft.X]
-	for y := topLeft.Y; y <= bottomRight.Y; y++ {
+	for y := topLeft.Y; y < bottomRight.Y; y++ {
 		yidx = s.b.Width * y
-		for x := topLeft.X; x <= bottomRight.X; x++ {
+		for x := topLeft.X; x < bottomRight.X; x++ {
 			if s.b.Bits[x+yidx] != col {
 				// immediately returns if color is different
 				return Gray
