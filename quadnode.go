@@ -37,7 +37,7 @@ func newRootQuadNode(bm *bmp.Bitmap, resolution int, fn PostNodeCreationFunc) *q
 	n := &quadnode{
 		color:       bmp.Gray,
 		topLeft:     image.Point{0, 0},
-		bottomRight: image.Point{bm.Width - 1, bm.Height - 1},
+		bottomRight: image.Point{bm.Width, bm.Height},
 	}
 	fn(n)
 	n.subdivide(bm, resolution, fn)
