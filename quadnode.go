@@ -53,20 +53,18 @@ func newInnerQuadNode(bm *bmp.Bitmap, topLeft, bottomRight image.Point, resoluti
 		parent:      parent,
 	}
 
-	color := bm.IsFilled(topLeft, bottomRight)
+	n.color = bm.IsFilled(topLeft, bottomRight)
+	fn(n)
+
 	switch {
 	case n.width() <= resolution || n.height() <= resolution:
-		fallthrough
-	case color == bmp.Black:
-		// quadrant is totally obstructed or we reached the maximal division,
-		// no need to go further
-		n.color = bmp.Black
-	case color == bmp.White:
-		// quadrant is totally empty, no need to go further
-		n.color = bmp.White
-	case color == bmp.Gray:
-		fn(n)
+		// reached the maximal resolution
+		break
+	case n.color == bmp.Gray:
 		n.subdivide(bm, resolution, fn)
+	default:
+		// quadrant is monocolor, don't need any further subdivisions
+		break
 	}
 	return n
 }
@@ -77,9 +75,7 @@ func newInnerQuadNode(bm *bmp.Bitmap, topLeft, bottomRight image.Point, resoluti
 // the current node intersect with an obstacle and its
 // width and height are both greater than the resolution.
 func (n *quadnode) subdivide(bm *bmp.Bitmap, resolution int, fn PostNodeCreationFunc) {
-	// the default is gray
-	n.color = bmp.Gray
-
+	//     x0   x1     x2
 	//  y0 .----.-------.
 	//     |    |       |
 	//     | NW |  NE   |
@@ -87,7 +83,7 @@ func (n *quadnode) subdivide(bm *bmp.Bitmap, resolution int, fn PostNodeCreation
 	//  y1 '----'-------'
 	//     | SW |  SE   |
 	//  y2 '----'-------'
-	//     x0   x1     x2
+
 	x0 := n.topLeft.X
 	x1 := n.topLeft.X + n.width()/2
 	x2 := n.bottomRight.X
