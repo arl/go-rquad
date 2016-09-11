@@ -28,7 +28,7 @@ func TestQuadtreeLogicalErrors(t *testing.T) {
 	for _, tt := range testTbl {
 		bm := bmp.New(tt.w, tt.h)
 
-		_, err := NewQuadtreeFromBitmap(bm, tt.res, nil)
+		_, err := NewBUQuadtree(bm, tt.res)
 		actual := err == nil
 		if actual != tt.expected {
 			t.Errorf("TestQuadtreeLogicalErrors (%d,%d,%d): expected %v, actual %v, err:'%v'", tt.w, tt.h, tt.res, tt.expected, actual, err)
@@ -42,12 +42,25 @@ func check(t *testing.T, err error) {
 	}
 }
 
-func TestQuadtreeSubdivisions(t *testing.T) {
-	nodes := []*quadnode{}
-	saveNode := func(n *quadnode) {
-		nodes = append(nodes, n)
+func listNodes(n Quadnode) []Quadnode {
+	var _listNodes func(n Quadnode, nodes *[]Quadnode)
+	_listNodes = func(n Quadnode, nodes *[]Quadnode) {
+		switch n.Color() {
+		case bmp.Gray:
+			_listNodes(n.NorthWest(), nodes)
+			_listNodes(n.NorthEast(), nodes)
+			_listNodes(n.SouthWest(), nodes)
+			_listNodes(n.SouthEast(), nodes)
+		case bmp.White:
+			*nodes = append(*nodes, n)
+		}
 	}
+	nodes := []Quadnode{}
+	_listNodes(n, &nodes)
+	return nodes
+}
 
+func TestQuadtreeSubdivisions(t *testing.T) {
 	// this is a simple 32x32 image, white background with 3 black squares the
 	// biggest of which is 8x8 pixels, meaning that no nodes can ever be
 	// smaller than 8x8, that's why every resolutions lower or equal than 8
@@ -65,13 +78,13 @@ func TestQuadtreeSubdivisions(t *testing.T) {
 
 	bm = bmp.NewFromImage(img)
 
-	for _, res := range []int{1, 2, 3, 4, 5, 6, 7, 8} {
-		_, err := NewQuadtreeFromBitmap(bm, res, saveNode)
+	for _, res := range []int{1, 2, 3, 4, 5, 6, 7, 8, 15} {
+		q, err := NewBUQuadtree(bm, res)
 		check(t, err)
-		if len(nodes) != 13 {
-			t.Errorf("TestQuadtreeSubdivisions (res:%d): expected 13 nodes, got %d", res, len(nodes))
+
+		nodes := listNodes(q.root)
+		if len(nodes) != 7 {
+			t.Errorf("TestQuadtreeSubdivisions: resolution:%d, expected 7 nodes, got %d", res, len(nodes))
 		}
-		// clear the list of nodes before re-using it
-		nodes = nil
 	}
 }
