@@ -25,86 +25,44 @@ type quadnode struct {
 	color bmp.Color
 }
 
+func (n *quadnode) TopLeft() image.Point {
+	return n.topLeft
+}
+
+func (n *quadnode) BottomRight() image.Point {
+	return n.bottomRight
+}
+
+func (n *quadnode) Color() bmp.Color {
+	return n.color
+}
+
+func (n *quadnode) NorthWest() Quadnode {
+	return n.northWest
+}
+
+func (n *quadnode) NorthEast() Quadnode {
+	return n.northEast
+}
+
+func (n *quadnode) SouthWest() Quadnode {
+	return n.southWest
+}
+
+func (n *quadnode) SouthEast() Quadnode {
+	return n.southEast
+}
+
+func (n *quadnode) Parent() Quadnode {
+	return n.parent
+}
+
 func (n *quadnode) width() int {
 	return n.bottomRight.X - n.topLeft.X
 }
 
 func (n *quadnode) height() int {
 	return n.bottomRight.Y - n.topLeft.Y
-}
-
-func newRootQuadNode(bm *bmp.Bitmap, resolution int, fn PostNodeCreationFunc) *quadnode {
-	n := &quadnode{
-		color:       bmp.Gray,
-		topLeft:     image.Point{0, 0},
-		bottomRight: image.Point{bm.Width, bm.Height},
-	}
-	fn(n)
-	n.subdivide(bm, resolution, fn)
-	return n
-}
-
-// newInnerQuadNode construct a child node.
-func newInnerQuadNode(bm *bmp.Bitmap, topLeft, bottomRight image.Point, resolution int, parent *quadnode, fn PostNodeCreationFunc) *quadnode {
-	n := &quadnode{
-		color:       bmp.Gray,
-		topLeft:     topLeft,
-		bottomRight: bottomRight,
-		parent:      parent,
-	}
-
-	n.color = bm.IsFilled(topLeft, bottomRight)
-	fn(n)
-
-	switch {
-	case n.width() <= resolution || n.height() <= resolution:
-		// reached the maximal resolution
-		break
-	case n.color == bmp.Gray:
-		n.subdivide(bm, resolution, fn)
-	default:
-		// quadrant is monocolor, don't need any further subdivisions
-		break
-	}
-	return n
-}
-
-// subdivide subdivides the current node into four children.
-//
-// This methode should be called once by the constructor if
-// the current node intersect with an obstacle and its
-// width and height are both greater than the resolution.
-func (n *quadnode) subdivide(bm *bmp.Bitmap, resolution int, fn PostNodeCreationFunc) {
-	//     x0   x1     x2
-	//  y0 .----.-------.
-	//     |    |       |
-	//     | NW |  NE   |
-	//     |    |       |
-	//  y1 '----'-------'
-	//     | SW |  SE   |
-	//  y2 '----'-------'
-
-	x0 := n.topLeft.X
-	x1 := n.topLeft.X + n.width()/2
-	x2 := n.bottomRight.X
-
-	y0 := n.topLeft.Y
-	y1 := n.topLeft.Y + n.height()/2
-	y2 := n.bottomRight.Y
-
-	// create the 4 children nodes, one per quadrant
-	n.northWest = newInnerQuadNode(bm,
-		image.Point{x0, y0},
-		image.Point{x1, y1}, resolution, n, fn)
-	n.southWest = newInnerQuadNode(bm,
-		image.Point{x0, y1},
-		image.Point{x1, y2}, resolution, n, fn)
-	n.northEast = newInnerQuadNode(bm,
-		image.Point{x1, y0},
-		image.Point{x2, y1}, resolution, n, fn)
-	n.southEast = newInnerQuadNode(bm,
-		image.Point{x1, y1},
-		image.Point{x2, y2}, resolution, n, fn)
 }
 
 // quadrant obtain this node's quadrant relative to its parent.
