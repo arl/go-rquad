@@ -1,9 +1,6 @@
 package quadtree
 
 import (
-	"image"
-	"image/png"
-	"os"
 	"testing"
 
 	"github.com/aurelien-rainone/go-quadtrees/bmp"
@@ -36,47 +33,13 @@ func TestQuadtreeLogicalErrors(t *testing.T) {
 	}
 }
 
-func check(t *testing.T, err error) {
-	if err != nil {
-		t.Fatal(err)
-	}
-}
-
-func listNodes(n Quadnode) []Quadnode {
-	var _listNodes func(n Quadnode, nodes *[]Quadnode)
-	_listNodes = func(n Quadnode, nodes *[]Quadnode) {
-		switch n.Color() {
-		case bmp.Gray:
-			_listNodes(n.NorthWest(), nodes)
-			_listNodes(n.NorthEast(), nodes)
-			_listNodes(n.SouthWest(), nodes)
-			_listNodes(n.SouthEast(), nodes)
-		case bmp.White:
-			*nodes = append(*nodes, n)
-		}
-	}
-	nodes := []Quadnode{}
-	_listNodes(n, &nodes)
-	return nodes
-}
-
 func TestQuadtreeSubdivisions(t *testing.T) {
 	// this is a simple 32x32 image, white background with 3 black squares the
 	// biggest of which is 8x8 pixels, meaning that no nodes can ever be
 	// smaller than 8x8, that's why every resolutions lower or equal than 8
 	// should produce the same number of nodes.
-	f, err := os.Open("./testdata/labyrinth.32x32.png")
+	bm, err := loadPNG("./testdata/labyrinth.32x32.png")
 	check(t, err)
-	defer f.Close()
-
-	var (
-		img image.Image
-		bm  *bmp.Bitmap
-	)
-	img, err = png.Decode(f)
-	check(t, err)
-
-	bm = bmp.NewFromImage(img)
 
 	for _, res := range []int{1, 2, 3, 4, 5, 6, 7, 8, 15} {
 		q, err := NewBUQuadtree(bm, res)
