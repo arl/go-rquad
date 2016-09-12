@@ -34,10 +34,11 @@ func TestQuadtreeLogicalErrors(t *testing.T) {
 }
 
 func TestQuadtreeSubdivisions(t *testing.T) {
-	// this is a simple 32x32 image, white background with 3 black squares the
-	// biggest of which is 8x8 pixels, meaning that no nodes can ever be
-	// smaller than 8x8, that's why every resolutions lower or equal than 8
-	// should produce the same number of nodes.
+	// this is a simple 32x32 image, white background with 3 black squares,
+	// located so that they fill a quadrant the biggest of which is 8x8 pixels,
+	// meaning that no nodes can ever be smaller than 8x8, that's why every
+	// resolutions lower or equal than 8 should produce the same number of
+	// nodes.
 	bm, err := loadPNG("./testdata/labyrinth.32x32.png")
 	check(t, err)
 
