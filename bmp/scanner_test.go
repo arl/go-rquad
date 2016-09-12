@@ -16,13 +16,13 @@ func testIsWhite(t *testing.T, scanner Scanner) {
 		minx, miny, maxx, maxy int
 		expected               bool
 	}{
-		{0, 0, 2, 2, false},
-		{1, 1, 2, 2, false},
-		{0, 1, 0, 1, true},
-		{0, 0, 0, 0, false},
-		{1, 0, 1, 0, false},
+		{0, 0, 3, 3, false},
+		{1, 1, 3, 3, false},
+		{0, 1, 1, 2, true},
+		{0, 0, 1, 1, false},
 		{1, 0, 2, 1, false},
-		{1, 2, 2, 2, true},
+		{1, 0, 3, 2, false},
+		{1, 2, 3, 3, true},
 	}
 
 	scanner.SetBmp(NewBitmapFromStrings(ss))
@@ -46,14 +46,14 @@ func testIsBlack(t *testing.T, scanner Scanner) {
 		minx, miny, maxx, maxy int
 		expected               bool
 	}{
-		{0, 0, 2, 2, false},
-		{1, 1, 2, 2, false},
-		{0, 1, 0, 1, true},
-		{0, 0, 0, 0, false},
-		{1, 0, 1, 0, false},
+		{0, 0, 3, 3, false},
+		{1, 1, 3, 3, false},
+		{0, 1, 1, 2, true},
+		{0, 0, 1, 1, false},
 		{1, 0, 2, 1, false},
-		{1, 2, 2, 2, true},
-		{2, 2, 2, 2, true},
+		{1, 0, 3, 2, false},
+		{1, 2, 3, 3, true},
+		{2, 2, 3, 3, true},
 	}
 
 	scanner.SetBmp(NewBitmapFromStrings(ss))
@@ -76,12 +76,12 @@ func testIsFilled(t *testing.T, scanner Scanner) {
 		minx, miny, maxx, maxy int
 		expected               Color
 	}{
-		{0, 0, 2, 2, Gray},
-		{1, 1, 2, 2, Gray},
-		{0, 1, 0, 1, Black},
-		{0, 0, 0, 0, White},
-		{1, 0, 1, 0, White},
+		{0, 0, 3, 3, Gray},
+		{1, 1, 3, 3, Gray},
+		{0, 1, 1, 2, Black},
+		{0, 0, 1, 1, White},
 		{1, 0, 2, 1, White},
+		{1, 0, 3, 2, White},
 	}
 
 	scanner.SetBmp(NewBitmapFromStrings(ss))
