@@ -135,7 +135,7 @@ func (n *quadnode) children(dir side, nodes *[]*quadnode) {
 		s2 = n.southWest
 		break
 	case west:
-		s1 = n.northEast
+		s1 = n.southEast
 		s2 = n.southWest
 	}
 
