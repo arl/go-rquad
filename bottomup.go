@@ -2,7 +2,6 @@ package quadtree
 
 import (
 	"errors"
-	"fmt"
 	"image"
 
 	"github.com/RookieGameDevs/quadtree/bmp"
@@ -50,7 +49,6 @@ func (q *BUQuadtree) CreateRootNode() Quadnode {
 		bottomRight: image.Point{q.bm.Width, q.bm.Height},
 	}
 	q.Subdivide(n)
-	fmt.Println("CreateRootNode: ", *q)
 	return n
 }
 
