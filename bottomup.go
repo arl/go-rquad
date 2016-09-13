@@ -38,11 +38,11 @@ func NewBUQuadtree(bm *bmp.Bitmap, resolution int) (*BUQuadtree, error) {
 		resolution: resolution,
 		bm:         bm,
 	}
-	q.root = q.CreateRootNode().(*BUQuadnode)
+	q.root = q.createRootNode().(*BUQuadnode)
 	return q, nil
 }
 
-func (q *BUQuadtree) CreateRootNode() Quadnode {
+func (q *BUQuadtree) createRootNode() Quadnode {
 	n := &BUQuadnode{
 		quadnode: quadnode{
 			color:       bmp.Gray,
@@ -50,11 +50,11 @@ func (q *BUQuadtree) CreateRootNode() Quadnode {
 			bottomRight: image.Point{q.bm.Width, q.bm.Height},
 		},
 	}
-	q.Subdivide(n)
+	q.subdivide(n)
 	return n
 }
 
-func (q *BUQuadtree) CreateInnerNode(topleft, bottomright image.Point, parent Quadnode) Quadnode {
+func (q *BUQuadtree) createInnerNode(topleft, bottomright image.Point, parent Quadnode) Quadnode {
 	n := &BUQuadnode{
 		quadnode: quadnode{
 			color:       bmp.Gray,
@@ -71,7 +71,7 @@ func (q *BUQuadtree) CreateInnerNode(topleft, bottomright image.Point, parent Qu
 		// reached the maximal resolution
 		break
 	case n.color == bmp.Gray:
-		q.Subdivide(n)
+		q.subdivide(n)
 	default:
 		// quadrant is monocolor, don't need any further subdivisions
 		break
@@ -79,7 +79,7 @@ func (q *BUQuadtree) CreateInnerNode(topleft, bottomright image.Point, parent Qu
 	return n
 }
 
-func (q *BUQuadtree) Subdivide(n Quadnode) {
+func (q *BUQuadtree) subdivide(n Quadnode) {
 	//     x0   x1     x2
 	//  y0 .----.-------.
 	//     |    |       |
@@ -100,20 +100,27 @@ func (q *BUQuadtree) Subdivide(n Quadnode) {
 	y2 := node.bottomRight.Y
 
 	// create the 4 children nodes, one per quadrant
-	node.northWest = q.CreateInnerNode(
+	node.northWest = q.createInnerNode(
 		image.Point{x0, y0},
 		image.Point{x1, y1},
 		n).(*BUQuadnode)
-	node.southWest = q.CreateInnerNode(
+	node.southWest = q.createInnerNode(
 		image.Point{x0, y1},
 		image.Point{x1, y2},
 		n).(*BUQuadnode)
-	node.northEast = q.CreateInnerNode(
+	node.northEast = q.createInnerNode(
 		image.Point{x1, y0},
 		image.Point{x2, y1},
 		n).(*BUQuadnode)
-	node.southEast = q.CreateInnerNode(
+	node.southEast = q.createInnerNode(
 		image.Point{x1, y1},
 		image.Point{x2, y2},
 		n).(*BUQuadnode)
+}
+
+// PointQuery returns the Quadnode containing the point at given coordinates.
+//
+// If such node doesn't exist, exists is false
+func (q *BUQuadtree) PointQuery(pt image.Point) (n Quadnode, exists bool) {
+	return q.root.pointQuery(pt)
 }

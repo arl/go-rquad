@@ -98,3 +98,10 @@ func (n *quadnode) quadrant() quadrant {
 		return southEast
 	}
 }
+
+// inbound checks if a given point is inside the region represented by this
+// node.
+func (n *quadnode) inbound(pt image.Point) bool {
+	return (n.topLeft.X <= pt.X && pt.X <= n.bottomRight.X) &&
+		(n.topLeft.Y <= pt.Y && pt.Y <= n.bottomRight.Y)
+}

@@ -148,10 +148,6 @@ func (n *BUQuadnode) neighbours() []*BUQuadnode {
 	return nodes
 }
 
-func (n *quadnode) origin() image.Point {
-	return n.topLeft
-}
-
 // squaredDistance returns the squared straight-line distance between this node and another.
 func (n *quadnode) squaredDistance(other *quadnode) float64 {
 	//         a    (x1,y1)
@@ -174,9 +170,26 @@ func (n *quadnode) squaredDistance(other *quadnode) float64 {
 	return a*a + b*b
 }
 
-// inbound checks if a given point is inside the region represented by this
-// node.
-func (n *quadnode) inbound(pt image.Point) bool {
-	return (n.topLeft.X <= pt.X && pt.X <= n.bottomRight.X) &&
-		(n.topLeft.Y <= pt.Y && pt.Y <= n.bottomRight.Y)
+func (n *BUQuadnode) pointQuery(pt image.Point) (Quadnode, bool) {
+	if !n.inbound(pt) {
+		return nil, false
+	}
+	if n.color != bmp.Gray {
+		return n, true
+	}
+	nw := n.northWest.(*BUQuadnode)
+	ne := n.northEast.(*BUQuadnode)
+	sw := n.southWest.(*BUQuadnode)
+	se := n.southEast.(*BUQuadnode)
+
+	if nw.inbound(pt) {
+		return nw.pointQuery(pt)
+	} else if ne.inbound(pt) {
+		return ne.pointQuery(pt)
+	} else if sw.inbound(pt) {
+		return sw.pointQuery(pt)
+	} else if se.inbound(pt) {
+		return se.pointQuery(pt)
+	}
+	panic("should never be here")
 }
