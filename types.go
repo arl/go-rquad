@@ -19,13 +19,3 @@ type Quadnode interface {
 
 	Color() bmp.Color
 }
-
-type Subdivider interface {
-	Subdivide(Quadnode)
-}
-
-type QuadtreeCreator interface {
-	CreateRootNode() Quadnode
-	CreateInnerNode(topleft, bottomright image.Point, parent Quadnode) Quadnode
-	Subdivider
-}
