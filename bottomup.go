@@ -10,11 +10,11 @@ import (
 // BUQuadtree is a standard quadtree implementation with bottom-up neighbor
 // finding technique.
 //
-// It uses the standard Quadnode implementation: 'quadnode'
+// It internally uses the BUQuadnode implementation of Quadnode.
 type BUQuadtree struct {
 	resolution int
 	bm         *bmp.Bitmap
-	root       Quadnode
+	root       *BUQuadnode
 }
 
 func NewBUQuadtree(bm *bmp.Bitmap, resolution int) (*BUQuadtree, error) {
@@ -38,26 +38,30 @@ func NewBUQuadtree(bm *bmp.Bitmap, resolution int) (*BUQuadtree, error) {
 		resolution: resolution,
 		bm:         bm,
 	}
-	q.root = q.CreateRootNode()
+	q.root = q.CreateRootNode().(*BUQuadnode)
 	return q, nil
 }
 
 func (q *BUQuadtree) CreateRootNode() Quadnode {
-	n := &quadnode{
-		color:       bmp.Gray,
-		topLeft:     image.Point{0, 0},
-		bottomRight: image.Point{q.bm.Width, q.bm.Height},
+	n := &BUQuadnode{
+		quadnode: quadnode{
+			color:       bmp.Gray,
+			topLeft:     image.Point{0, 0},
+			bottomRight: image.Point{q.bm.Width, q.bm.Height},
+		},
 	}
 	q.Subdivide(n)
 	return n
 }
 
 func (q *BUQuadtree) CreateInnerNode(topleft, bottomright image.Point, parent Quadnode) Quadnode {
-	n := &quadnode{
-		color:       bmp.Gray,
-		topLeft:     topleft,
-		bottomRight: bottomright,
-		parent:      parent.(*quadnode),
+	n := &BUQuadnode{
+		quadnode: quadnode{
+			color:       bmp.Gray,
+			topLeft:     topleft,
+			bottomRight: bottomright,
+			parent:      parent.(*BUQuadnode),
+		},
 	}
 
 	n.color = q.bm.IsFilled(topleft, bottomright)
@@ -85,7 +89,7 @@ func (q *BUQuadtree) Subdivide(n Quadnode) {
 	//     | SW |  SE   |
 	//  y2 '----'-------'
 
-	node := n.(*quadnode)
+	node := n.(*BUQuadnode)
 
 	x0 := node.topLeft.X
 	x1 := node.topLeft.X + node.width()/2
@@ -99,17 +103,17 @@ func (q *BUQuadtree) Subdivide(n Quadnode) {
 	node.northWest = q.CreateInnerNode(
 		image.Point{x0, y0},
 		image.Point{x1, y1},
-		n).(*quadnode)
+		n).(*BUQuadnode)
 	node.southWest = q.CreateInnerNode(
 		image.Point{x0, y1},
 		image.Point{x1, y2},
-		n).(*quadnode)
+		n).(*BUQuadnode)
 	node.northEast = q.CreateInnerNode(
 		image.Point{x1, y0},
 		image.Point{x2, y1},
-		n).(*quadnode)
+		n).(*BUQuadnode)
 	node.southEast = q.CreateInnerNode(
 		image.Point{x1, y1},
 		image.Point{x2, y2},
-		n).(*quadnode)
+		n).(*BUQuadnode)
 }
