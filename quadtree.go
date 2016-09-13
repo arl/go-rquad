@@ -28,7 +28,7 @@ package quadtree
 import (
 	"errors"
 
-	"github.com/RookieGameDevs/quadtree/bmp"
+	"github.com/aurelien-rainone/go-quadtrees/bmp"
 )
 
 type PostNodeCreationFunc func(n *quadnode)
