@@ -11,8 +11,8 @@ type quadnode struct {
 	parent Quadnode // pointer to the parent node
 
 	northWest Quadnode // pointer to the northwest child
-	southWest Quadnode // pointer to the southwest child
 	northEast Quadnode // pointer to the northeast child
+	southWest Quadnode // pointer to the southwest child
 	southEast Quadnode // pointer to the southeast child
 
 	// node top-left corner coordinates, the origin
