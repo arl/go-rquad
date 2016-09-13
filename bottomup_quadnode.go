@@ -2,7 +2,6 @@ package quadtree
 
 import (
 	"image"
-	"math"
 
 	"github.com/aurelien-rainone/go-quadtrees/bmp"
 )
@@ -146,28 +145,6 @@ func (n *BUQuadnode) neighbours() []*BUQuadnode {
 	n._neighbours(east, &nodes)
 	n._neighbours(west, &nodes)
 	return nodes
-}
-
-// squaredDistance returns the squared straight-line distance between this node and another.
-func (n *quadnode) squaredDistance(other *quadnode) float64 {
-	//         a    (x1,y1)
-	//    .-----------.
-	//    |        .-'
-	//  b |     .-'
-	//    |  .-'
-	//    '-'
-	// (x2, y2)
-
-	x1 := float64(n.topLeft.X) + float64(n.width())/2
-	y1 := float64(n.topLeft.Y) + float64(n.height())/2
-
-	x2 := float64(other.topLeft.X) + float64(other.width())/2
-	y2 := float64(other.topLeft.Y) + float64(other.height())/2
-
-	a := math.Abs(x1 - x2)
-	b := math.Abs(y1 - y2)
-
-	return a*a + b*b
 }
 
 func (n *BUQuadnode) pointQuery(pt image.Point) (Quadnode, bool) {
