@@ -3,7 +3,7 @@ package quadtree
 import (
 	"image"
 
-	"github.com/RookieGameDevs/quadtree/bmp"
+	"github.com/aurelien-rainone/go-quadtrees/bmp"
 )
 
 type Quadnode interface {

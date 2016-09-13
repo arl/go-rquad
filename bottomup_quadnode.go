@@ -4,7 +4,7 @@ import (
 	"image"
 	"math"
 
-	"github.com/RookieGameDevs/quadtree/bmp"
+	"github.com/aurelien-rainone/go-quadtrees/bmp"
 )
 
 // BUQuadnode is a node of a BUQuadtree.

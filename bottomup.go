@@ -4,7 +4,7 @@ import (
 	"errors"
 	"image"
 
-	"github.com/RookieGameDevs/quadtree/bmp"
+	"github.com/aurelien-rainone/go-quadtrees/bmp"
 )
 
 // BUQuadtree is a standard quadtree implementation with bottom-up neighbor

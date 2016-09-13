@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/RookieGameDevs/quadtree/bmp"
+	"github.com/aurelien-rainone/go-quadtrees/bmp"
 )
 
 func check(t *testing.T, err error) {
