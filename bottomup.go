@@ -17,6 +17,8 @@ type BUQuadtree struct {
 	root       *BUQuadnode
 }
 
+// NewBUQuadtree creates a BUQuadtree and populates it with BUQuadnode,
+// following the given bitmap.
 func NewBUQuadtree(bm *bmp.Bitmap, resolution int) (*BUQuadtree, error) {
 	// initialize package level variables
 	initPackage()

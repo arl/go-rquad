@@ -2,6 +2,7 @@ package quadtree
 
 import "image"
 
+// Quadtree defines the interface for a quadtree type.
 type Quadtree interface {
 	// PointQuery returns the Quadnode containing the point at given coordinates.
 	//

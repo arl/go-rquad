@@ -1,6 +1,7 @@
 package quadtree
 
 import (
+	"fmt"
 	"image"
 
 	"github.com/aurelien-rainone/go-quadtrees/bmp"
@@ -76,8 +77,9 @@ func (n *quadnode) child(q quadrant) Quadnode {
 		return n.northEast
 	case southEast:
 		return n.southEast
+	default:
+		panic(fmt.Sprintf("undefined quadrant: %v", q))
 	}
-	panic("undefined quadrant")
 }
 
 // quadrant obtains this node's quadrant relative to its parent.
@@ -94,9 +96,8 @@ func (n *quadnode) quadrant() quadrant {
 		return southWest
 	} else if n.parent.NorthEast() == n {
 		return northEast
-	} else {
-		return southEast
 	}
+	return southEast
 }
 
 // inbound checks if a given point is inside the region represented by this

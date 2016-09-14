@@ -6,6 +6,7 @@ import (
 	"github.com/aurelien-rainone/go-quadtrees/bmp"
 )
 
+// Quadnode defines the interface for a quadtree node.
 type Quadnode interface {
 	Parent() Quadnode
 

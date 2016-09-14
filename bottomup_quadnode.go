@@ -88,9 +88,8 @@ func (n *BUQuadnode) equalSizeNeighbor(dir side) *BUQuadnode {
 	// Backtrack mirroring the ascending moves.
 	if neighbor != nil && !neighbor.isLeaf() {
 		return neighbor.child(reflect(dir, n.quadrant())).(*BUQuadnode)
-	} else {
-		return neighbor
 	}
+	return neighbor
 }
 
 // cornerNeighbor locates a neighbor of the current quadnode in the horizontal
@@ -138,8 +137,7 @@ func (n *BUQuadnode) _neighbours(dir side, nodes *[]*BUQuadnode) {
 
 // neighbours returns a slice of all leaf neighbours of the current node.
 func (n *BUQuadnode) neighbours() []*BUQuadnode {
-
-	nodes := make([]*BUQuadnode, 0)
+	var nodes []*BUQuadnode
 	n._neighbours(north, &nodes)
 	n._neighbours(south, &nodes)
 	n._neighbours(east, &nodes)
