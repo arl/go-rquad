@@ -1,0 +1,6 @@
+Test images are made on http://www.xiconeditor.com/, exported, and then
+converted using ImageMagick's convert, with the following command:
+
+```bash
+convert icon.ico -alpha remove -resize 32x32 grid.32x32.png
+```
