@@ -10,7 +10,9 @@ import (
 // BUQuadtree is a standard quadtree implementation with bottom-up neighbor
 // finding technique.
 //
-// It internally uses the BUQuadnode implementation of Quadnode.
+// BUQuadtree works on rectangles quadrants as well as squares; quadrants of
+// the same parent may have different dimensions due to the integer division.
+// It internally handles BUQuadnode, that implement the Quadnode interface.
 type BUQuadtree struct {
 	resolution int
 	bm         *bmp.Bitmap
@@ -25,7 +27,7 @@ func NewBUQuadtree(bm *bmp.Bitmap, resolution int) (*BUQuadtree, error) {
 
 	// To ensure a consistent behavior and eliminate corner cases, the
 	// Quadtree's root node need to have children, i.e. it can't
-	// be a leaf node. Thus, the first instantiated Quadnode need to
+	// be a leaf node. Thus, the first instantiated BUQuadnode need to
 	// always be subdivided. These two conditions make sure that
 	// even with this subdivision the resolution will be respected.
 	if resolution < 1 {
@@ -43,11 +45,11 @@ func NewBUQuadtree(bm *bmp.Bitmap, resolution int) (*BUQuadtree, error) {
 		resolution: resolution,
 		bm:         bm,
 	}
-	q.root = q.createRootNode().(*BUQuadnode)
+	q.root = q.createRootNode()
 	return q, nil
 }
 
-func (q *BUQuadtree) createRootNode() Quadnode {
+func (q *BUQuadtree) createRootNode() *BUQuadnode {
 	n := &BUQuadnode{
 		quadnode: quadnode{
 			color:       bmp.Gray,
@@ -59,13 +61,13 @@ func (q *BUQuadtree) createRootNode() Quadnode {
 	return n
 }
 
-func (q *BUQuadtree) createInnerNode(topleft, bottomright image.Point, parent Quadnode) Quadnode {
+func (q *BUQuadtree) createInnerNode(topleft, bottomright image.Point, parent *BUQuadnode) *BUQuadnode {
 	n := &BUQuadnode{
 		quadnode: quadnode{
 			color:       bmp.Gray,
 			topLeft:     topleft,
 			bottomRight: bottomright,
-			parent:      parent.(*BUQuadnode),
+			parent:      parent,
 		},
 	}
 
@@ -84,7 +86,7 @@ func (q *BUQuadtree) createInnerNode(topleft, bottomright image.Point, parent Qu
 	return n
 }
 
-func (q *BUQuadtree) subdivide(n Quadnode) {
+func (q *BUQuadtree) subdivide(n *BUQuadnode) {
 	//     x0   x1     x2
 	//  y0 .----.-------.
 	//     |    |       |
@@ -94,38 +96,36 @@ func (q *BUQuadtree) subdivide(n Quadnode) {
 	//     | SW |  SE   |
 	//  y2 '----'-------'
 
-	node := n.(*BUQuadnode)
+	x0 := n.topLeft.X
+	x1 := n.topLeft.X + n.width()/2
+	x2 := n.bottomRight.X
 
-	x0 := node.topLeft.X
-	x1 := node.topLeft.X + node.width()/2
-	x2 := node.bottomRight.X
-
-	y0 := node.topLeft.Y
-	y1 := node.topLeft.Y + node.height()/2
-	y2 := node.bottomRight.Y
+	y0 := n.topLeft.Y
+	y1 := n.topLeft.Y + n.height()/2
+	y2 := n.bottomRight.Y
 
 	// create the 4 children nodes, one per quadrant
-	node.northWest = q.createInnerNode(
+	n.northWest = q.createInnerNode(
 		image.Point{x0, y0},
 		image.Point{x1, y1},
-		n).(*BUQuadnode)
-	node.southWest = q.createInnerNode(
+		n)
+	n.southWest = q.createInnerNode(
 		image.Point{x0, y1},
 		image.Point{x1, y2},
-		n).(*BUQuadnode)
-	node.northEast = q.createInnerNode(
+		n)
+	n.northEast = q.createInnerNode(
 		image.Point{x1, y0},
 		image.Point{x2, y1},
-		n).(*BUQuadnode)
-	node.southEast = q.createInnerNode(
+		n)
+	n.southEast = q.createInnerNode(
 		image.Point{x1, y1},
 		image.Point{x2, y2},
-		n).(*BUQuadnode)
+		n)
 }
 
 // PointQuery returns the Quadnode containing the point at given coordinates.
 //
-// If such node doesn't exist, exists is false
+// If such node doesn't exist, exists is false.
 func (q *BUQuadtree) PointQuery(pt image.Point) (n Quadnode, exists bool) {
 	return q.root.pointQuery(pt)
 }
