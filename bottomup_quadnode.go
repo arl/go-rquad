@@ -165,8 +165,6 @@ func (n *BUQuadnode) pointQuery(pt image.Point) (Quadnode, bool) {
 		return ne.pointQuery(pt)
 	} else if sw.inbound(pt) {
 		return sw.pointQuery(pt)
-	} else if se.inbound(pt) {
-		return se.pointQuery(pt)
 	}
-	panic("should never be here")
+	return se.pointQuery(pt)
 }
