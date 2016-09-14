@@ -149,10 +149,6 @@ func (n *BUQuadnode) neighbours() []*BUQuadnode {
 //
 // must not be called on the root node
 func (n *BUQuadnode) quadrant() quadrant {
-	if n.parent == nil {
-		panic("the root node's quadrant is undefined")
-	}
-
 	if n.parent.NorthWest() == n {
 		return northWest
 	} else if n.parent.SouthWest() == n {

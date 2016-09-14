@@ -1,7 +1,6 @@
 package quadtree
 
 import (
-	"fmt"
 	"image"
 
 	"github.com/aurelien-rainone/go-quadtrees/bmp"
@@ -75,10 +74,8 @@ func (n *quadnode) child(q quadrant) Quadnode {
 		return n.southWest
 	case northEast:
 		return n.northEast
-	case southEast:
-		return n.southEast
 	default:
-		panic(fmt.Sprintf("undefined quadrant: %v", q))
+		return n.southEast
 	}
 }
 
