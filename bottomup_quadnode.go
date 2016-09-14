@@ -50,7 +50,7 @@ func (n *BUQuadnode) children(dir side, nodes *[]*BUQuadnode) {
 		s2 = n.southWest.(*BUQuadnode)
 		break
 	case west:
-		s1 = n.southEast.(*BUQuadnode)
+		s1 = n.northWest.(*BUQuadnode)
 		s2 = n.southWest.(*BUQuadnode)
 	}
 
