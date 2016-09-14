@@ -82,24 +82,6 @@ func (n *quadnode) child(q quadrant) Quadnode {
 	}
 }
 
-// quadrant obtains this node's quadrant relative to its parent.
-//
-// must not be called on the root node
-func (n *quadnode) quadrant() quadrant {
-	if n.parent == nil {
-		panic("the root node's quadrant is undefined")
-	}
-
-	if n.parent.NorthWest() == n {
-		return northWest
-	} else if n.parent.SouthWest() == n {
-		return southWest
-	} else if n.parent.NorthEast() == n {
-		return northEast
-	}
-	return southEast
-}
-
 // inbound checks if a given point is inside the region represented by this
 // node.
 func (n *quadnode) inbound(pt image.Point) bool {

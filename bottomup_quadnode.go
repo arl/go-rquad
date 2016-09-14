@@ -145,6 +145,24 @@ func (n *BUQuadnode) neighbours() []*BUQuadnode {
 	return nodes
 }
 
+// quadrant obtains this node's quadrant relative to its parent.
+//
+// must not be called on the root node
+func (n *BUQuadnode) quadrant() quadrant {
+	if n.parent == nil {
+		panic("the root node's quadrant is undefined")
+	}
+
+	if n.parent.NorthWest() == n {
+		return northWest
+	} else if n.parent.SouthWest() == n {
+		return southWest
+	} else if n.parent.NorthEast() == n {
+		return northEast
+	}
+	return southEast
+}
+
 func (n *BUQuadnode) pointQuery(pt image.Point) (Quadnode, bool) {
 	if !n.inbound(pt) {
 		return nil, false
