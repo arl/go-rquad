@@ -68,6 +68,7 @@ func TestBUQuadtreePointQuery(t *testing.T) {
 		{image.Point{16, 0}, true, false},
 		{image.Point{8, 8}, true, false},
 		{image.Point{16, 8}, true, false},
+		{image.Point{1, 31}, true, false},
 		{image.Point{-1, 0}, false, false},
 		{image.Point{32, 0}, false, false},
 		{image.Point{0, -1}, false, false},
