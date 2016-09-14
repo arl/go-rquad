@@ -106,3 +106,56 @@ func TestBUQuadtreePointQuery(t *testing.T) {
 		}
 	}
 }
+
+func TestQuadtreeNeighbours(t *testing.T) {
+	var testTbl = []struct {
+		pt    image.Point // queried point
+		white int         // num white neighbours
+		black int         // num black neighbours
+	}{
+		{image.Point{3, 3}, 1, 1},
+		{image.Point{11, 3}, 2, 1},
+		{image.Point{23, 7}, 3, 0},
+		{image.Point{3, 11}, 3, 0},
+		{image.Point{11, 11}, 2, 2},
+		{image.Point{3, 19}, 2, 1},
+		{image.Point{11, 19}, 3, 1},
+		{image.Point{23, 23}, 1, 2},
+		{image.Point{3, 27}, 1, 1},
+		{image.Point{11, 27}, 3, 0},
+	}
+
+	bm, err := loadPNG("./testdata/labyrinth.32x32.png")
+	check(t, err)
+
+	for _, res := range []int{1, 2, 3, 4, 5, 6, 7, 8, 15} {
+		q, err := NewBUQuadtree(bm, res)
+		check(t, err)
+
+		for _, tt := range testTbl {
+			node, exists := q.PointQuery(tt.pt)
+			if !exists {
+				t.Fatalf("resolution %d, expected exists to be true for point %v, got false instead", res, tt.pt)
+			}
+			bunode := node.(*BUQuadnode)
+
+			var neighbours []*BUQuadnode
+			var black, white int
+			for _, nb := range bunode.neighbours() {
+				neighbours = append(neighbours, nb)
+				switch nb.Color() {
+				case bmp.Black:
+					black++
+				case bmp.White:
+					white++
+				}
+			}
+			if tt.white != white {
+				t.Errorf("resolution %d, expected pt %v to have %d white neighbours, got %d", res, tt.pt, tt.white, white)
+			}
+			if tt.black != black {
+				t.Errorf("resolution %d, expected pt %v to have %d black neighbours, got %d", res, tt.pt, tt.black, black)
+			}
+		}
+	}
+}
