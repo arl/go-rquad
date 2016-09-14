@@ -18,6 +18,9 @@ type BUQuadtree struct {
 }
 
 func NewBUQuadtree(bm *bmp.Bitmap, resolution int) (*BUQuadtree, error) {
+	// initialize package level variables
+	initPackage()
+
 	// To ensure a consistent behavior and eliminate corner cases, the
 	// Quadtree's root node need to have children, i.e. it can't
 	// be a leaf node. Thus, the first instantiated Quadnode need to

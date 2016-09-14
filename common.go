@@ -20,8 +20,14 @@ const (
 	west
 )
 
-// Init initializes the package and should be called before using it.
-func Init() {
+var initDone bool
+
+// initPackage initializes package level variables.
+func initPackage() {
+	if initDone {
+		return
+	}
+
 	// initialize the quadrant-side adjacency array
 	arrAdjacent = [4][4]bool{
 		/*       NW     NE     SW     SE  */
@@ -45,6 +51,8 @@ func Init() {
 		/* N     E      S     W  */
 		south, west, north, east,
 	}
+
+	initDone = true
 }
 
 var (
