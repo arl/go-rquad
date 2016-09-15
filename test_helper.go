@@ -15,6 +15,12 @@ func check(t *testing.T, err error) {
 	}
 }
 
+func checkB(b *testing.B, err error) {
+	if err != nil {
+		b.Fatal(err)
+	}
+}
+
 // helper function that uses bmp.NewFromImage internally.
 func loadPNG(filename string) (*bmp.Bitmap, error) {
 	var (
