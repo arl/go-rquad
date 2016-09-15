@@ -117,7 +117,7 @@ func TestBUQuadtreePointQuery(t *testing.T) {
 	}
 }
 
-func TestQuadtreeNeighbours(t *testing.T) {
+func TestBUQuadtreeNeighbours(t *testing.T) {
 	var (
 		laby1, laby2 *bmp.Bitmap
 		err          error
@@ -154,6 +154,16 @@ func TestQuadtreeNeighbours(t *testing.T) {
 		{laby1, 8, image.Point{11, 27}, 3, 0},
 		{laby1, 16, image.Point{11, 27}, 1, 1},
 		{laby2, 2, image.Point{3, 3}, 2, 0},
+		{laby2, 2, image.Point{15, 15}, 2, 2},
+		{laby2, 2, image.Point{16, 16}, 3, 1},
+		{laby2, 2, image.Point{15, 16}, 6, 2},
+		{laby2, 2, image.Point{16, 15}, 3, 1},
+		{laby2, 2, image.Point{6, 31}, 2, 1},
+		{laby2, 2, image.Point{10, 31}, 2, 1},
+		{laby2, 2, image.Point{23, 27}, 1, 3},
+		{laby2, 2, image.Point{27, 27}, 2, 2},
+		{laby2, 2, image.Point{8, 0}, 2, 3},
+		{laby2, 2, image.Point{16, 0}, 3, 2},
 	}
 
 	for _, tt := range testTbl {
@@ -166,10 +176,8 @@ func TestQuadtreeNeighbours(t *testing.T) {
 		}
 		bunode := node.(*BUQuadnode)
 
-		var neighbours []*BUQuadnode
 		var black, white int
 		for _, nb := range bunode.neighbours() {
-			neighbours = append(neighbours, nb)
 			switch nb.Color() {
 			case bmp.Black:
 				black++
