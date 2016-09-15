@@ -98,10 +98,10 @@ func TestBruteForceScannerIsWhite(t *testing.T) {
 	testIsWhite(t, &bruteForceScanner{})
 }
 
-func TestbruteForceScannerIsBlack(t *testing.T) {
+func TestBruteForceScannerIsBlack(t *testing.T) {
 	testIsBlack(t, &bruteForceScanner{})
 }
 
-func TestbruteForceScannerIsFilled(t *testing.T) {
+func TestBruteForceScannerIsFilled(t *testing.T) {
 	testIsFilled(t, &bruteForceScanner{})
 }
