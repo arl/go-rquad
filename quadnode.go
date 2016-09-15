@@ -1,6 +1,7 @@
 package quadtree
 
 import (
+	"fmt"
 	"image"
 
 	"github.com/aurelien-rainone/go-quadtrees/bmp"
@@ -84,4 +85,8 @@ func (n *quadnode) child(q quadrant) Quadnode {
 func (n *quadnode) inbound(pt image.Point) bool {
 	return (n.topLeft.X <= pt.X && pt.X < n.bottomRight.X) &&
 		(n.topLeft.Y <= pt.Y && pt.Y < n.bottomRight.Y)
+}
+
+func (n *quadnode) String() string {
+	return fmt.Sprintf("%v %v %s", n.topLeft, n.bottomRight, n.color)
 }
