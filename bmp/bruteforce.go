@@ -2,17 +2,17 @@ package bmp
 
 import "image"
 
-// bruteForceScanner is the naive implementation of a bitmap scanner, it checks
+// BruteForceScanner is the naive implementation of a bitmap scanner, it checks
 // every pixel consecutively.
-type bruteForceScanner struct {
+type BruteForceScanner struct {
 	b *Bitmap
 }
 
-func (s *bruteForceScanner) SetBmp(bm *Bitmap) {
+func (s *BruteForceScanner) SetBmp(bm *Bitmap) {
 	s.b = bm
 }
 
-func (s bruteForceScanner) IsWhite(topLeft, bottomRight image.Point) bool {
+func (s BruteForceScanner) IsWhite(topLeft, bottomRight image.Point) bool {
 	var yidx int
 
 	for y := topLeft.Y; y < bottomRight.Y; y++ {
@@ -27,7 +27,7 @@ func (s bruteForceScanner) IsWhite(topLeft, bottomRight image.Point) bool {
 	return true
 }
 
-func (s bruteForceScanner) IsBlack(topLeft, bottomRight image.Point) bool {
+func (s BruteForceScanner) IsBlack(topLeft, bottomRight image.Point) bool {
 	var yidx int
 
 	for y := topLeft.Y; y < bottomRight.Y; y++ {
@@ -42,7 +42,7 @@ func (s bruteForceScanner) IsBlack(topLeft, bottomRight image.Point) bool {
 	return true
 }
 
-func (s bruteForceScanner) IsFilled(topLeft, bottomRight image.Point) Color {
+func (s BruteForceScanner) IsFilled(topLeft, bottomRight image.Point) Color {
 	// naive implementation: check every pixel consecutively
 	var yidx int
 

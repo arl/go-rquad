@@ -95,15 +95,15 @@ func testIsFilled(t *testing.T, scanner Scanner) {
 }
 
 func TestBruteForceScannerIsWhite(t *testing.T) {
-	testIsWhite(t, &bruteForceScanner{})
+	testIsWhite(t, &BruteForceScanner{})
 }
 
 func TestBruteForceScannerIsBlack(t *testing.T) {
-	testIsBlack(t, &bruteForceScanner{})
+	testIsBlack(t, &BruteForceScanner{})
 }
 
 func TestBruteForceScannerIsFilled(t *testing.T) {
-	testIsFilled(t, &bruteForceScanner{})
+	testIsFilled(t, &BruteForceScanner{})
 }
 
 func benchmarkScanner(b *testing.B, pngfile string, scanner Scanner) {
@@ -127,7 +127,7 @@ func benchmarkScanner(b *testing.B, pngfile string, scanner Scanner) {
 }
 
 func BenchmarkBruteForceScanner(b *testing.B) {
-	benchmarkScanner(b, "./testdata/big.png", &bruteForceScanner{})
+	benchmarkScanner(b, "./testdata/big.png", &BruteForceScanner{})
 }
 
 func BenchmarkLinesScanner(b *testing.B) {
