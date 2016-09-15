@@ -69,4 +69,5 @@ func NewFromImage(img image.Image) *Bitmap {
 // SetScanner sets the internal bitmap scanner.
 func (b *Bitmap) SetScanner(s Scanner) {
 	b.Scanner = s
+	b.Scanner.SetBmp(b)
 }
