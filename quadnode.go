@@ -88,5 +88,5 @@ func (n *quadnode) inbound(pt image.Point) bool {
 }
 
 func (n *quadnode) String() string {
-	return fmt.Sprintf("%v %v %s", n.topLeft, n.bottomRight, n.color)
+	return fmt.Sprintf("(%d,%d %d,%d %s)", n.topLeft.X, n.topLeft.Y, n.bottomRight.X, n.bottomRight.Y, n.color)
 }
