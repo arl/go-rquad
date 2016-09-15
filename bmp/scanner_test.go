@@ -106,19 +106,30 @@ func TestBruteForceScannerIsFilled(t *testing.T) {
 	testIsFilled(t, &bruteForceScanner{})
 }
 
-func BenchmarkBruteForceScanner(b *testing.B) {
+func benchmarkScanner(b *testing.B, pngfile string, scanner Scanner) {
 	var (
 		bm  *Bitmap
 		err error
 	)
 
-	bm, err = loadPNG("./testdata/big.png")
+	bm, err = loadPNG(pngfile)
 	checkB(b, err)
 
-	bm.SetScanner(&bruteForceScanner{})
+	bm.SetScanner(scanner)
 
 	// run N times
+	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
 		bm.IsWhite(image.Point{0, 0}, image.Point{bm.Width, bm.Height})
+		bm.IsBlack(image.Point{0, 0}, image.Point{bm.Width, bm.Height})
+		bm.IsFilled(image.Point{0, 0}, image.Point{bm.Width, bm.Height})
 	}
+}
+
+func BenchmarkBruteForceScanner(b *testing.B) {
+	benchmarkScanner(b, "./testdata/big.png", &bruteForceScanner{})
+}
+
+func BenchmarkLinesScanner(b *testing.B) {
+	benchmarkScanner(b, "./testdata/big.png", &LinesScanner{})
 }
