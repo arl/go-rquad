@@ -74,8 +74,12 @@ func (q *BUQuadtree) createInnerNode(topleft, bottomright image.Point, parent *B
 	n.color = q.bm.IsFilled(topleft, bottomright)
 
 	switch {
-	case n.width() <= q.resolution || n.height() <= q.resolution:
-		// reached the maximal resolution
+	case n.width()/2 < q.resolution || n.height()/2 < q.resolution:
+		// reached the maximal resolution, so this node must be a leaf
+		if !n.isLeaf() {
+			// make this node a leaf
+			n.color = bmp.Black
+		}
 		break
 	case n.color == bmp.Gray:
 		q.subdivide(n)
