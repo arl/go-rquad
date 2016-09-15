@@ -92,29 +92,6 @@ func (n *BUQuadnode) equalSizeNeighbor(dir side) *BUQuadnode {
 	return neighbor
 }
 
-// cornerNeighbor locates a neighbor of the current quadnode in the horizontal
-// or vertical direction which is adjacent to one of its corners.
-//
-// The neighboring node must be adjacent to this corner.
-// It can return nil if the neighbor can't be found.
-func (n *BUQuadnode) cornerNeighbor(dir side, corner quadrant) *BUQuadnode {
-
-	// If no neighbor can be found in the given
-	// direction, node will be nil
-	node := n.equalSizeNeighbor(dir)
-	if node == nil {
-		return nil
-	}
-
-	// Go down until we reach either a free or
-	// an obstructed node, i.e. a leaf node.
-	for !node.isLeaf() {
-		node = node.child(reflect(dir, corner)).(*BUQuadnode)
-	}
-
-	return node
-}
-
 // _neighbours locates all leaf neighbours of the current node in the given
 // direction, appending them to a slice.
 func (n *BUQuadnode) _neighbours(dir side, nodes *[]*BUQuadnode) {
