@@ -40,16 +40,26 @@ func TestBUQuadtreeSubdivisions(t *testing.T) {
 	// meaning that no nodes can ever be smaller than 8x8, that's why every
 	// resolutions lower or equal than 8 should produce the same number of
 	// nodes.
-	bm, err := loadPNG("./testdata/labyrinth.32x32.png")
+	bm, err := loadPNG("./testdata/labyrinth1.32x32.png")
 	check(t, err)
 
-	for _, res := range []int{1, 2, 3, 4, 5, 6, 7, 8, 15} {
+	for _, res := range []int{1, 2, 3, 4, 5, 6, 7, 8} {
 		q, err := NewBUQuadtree(bm, res)
 		check(t, err)
 
 		nodes := listNodes(q.root)
 		if len(nodes) != 7 {
-			t.Errorf("TestBUQuadtreeSubdivisions: resolution:%d, expected 7 nodes, got %d", res, len(nodes))
+			t.Errorf("resolution:%d, expected 7 nodes, got %d", res, len(nodes))
+		}
+	}
+
+	for _, res := range []int{9, 15} {
+		q, err := NewBUQuadtree(bm, res)
+		check(t, err)
+
+		nodes := listNodes(q.root)
+		if len(nodes) != 1 {
+			t.Errorf("resolution:%d, expected 1 nodes, got %d", res, len(nodes))
 		}
 	}
 }
@@ -78,10 +88,10 @@ func TestBUQuadtreePointQuery(t *testing.T) {
 	// coordinate of reference node
 	refPt := image.Point{8, 0}
 
-	bm, err := loadPNG("./testdata/labyrinth.32x32.png")
+	bm, err := loadPNG("./testdata/labyrinth1.32x32.png")
 	check(t, err)
 
-	for _, res := range []int{1, 2, 3, 4, 5, 6, 7, 8, 15} {
+	for _, res := range []int{1, 2, 3, 4, 5, 6, 7, 8} {
 		q, err := NewBUQuadtree(bm, res)
 		check(t, err)
 
@@ -108,54 +118,71 @@ func TestBUQuadtreePointQuery(t *testing.T) {
 }
 
 func TestQuadtreeNeighbours(t *testing.T) {
+	var (
+		laby1, laby2 *bmp.Bitmap
+		err          error
+	)
+
+	// load both test images
+	laby1, err = loadPNG("./testdata/labyrinth1.32x32.png")
+	check(t, err)
+	laby2, err = loadPNG("./testdata/labyrinth2.32x32.png")
+	check(t, err)
+
+	// for logging purposes
+	imgAlias := map[*bmp.Bitmap]string{
+		laby1: "'labyrinth1.32x32'",
+		laby2: "'labyrinth2.32x32'",
+	}
+
 	var testTbl = []struct {
+		img   *bmp.Bitmap // source image
+		res   int         // resolution
 		pt    image.Point // queried point
 		white int         // num white neighbours
 		black int         // num black neighbours
 	}{
-		{image.Point{3, 3}, 1, 1},
-		{image.Point{11, 3}, 2, 1},
-		{image.Point{23, 7}, 3, 0},
-		{image.Point{3, 11}, 3, 0},
-		{image.Point{11, 11}, 2, 2},
-		{image.Point{3, 19}, 2, 1},
-		{image.Point{11, 19}, 3, 1},
-		{image.Point{23, 23}, 1, 2},
-		{image.Point{3, 27}, 1, 1},
-		{image.Point{11, 27}, 3, 0},
+		{laby1, 8, image.Point{3, 3}, 1, 1},
+		{laby1, 8, image.Point{11, 3}, 2, 1},
+		{laby1, 8, image.Point{23, 7}, 3, 0},
+		{laby1, 8, image.Point{3, 11}, 3, 0},
+		{laby1, 8, image.Point{11, 11}, 2, 2},
+		{laby1, 8, image.Point{3, 19}, 2, 1},
+		{laby1, 8, image.Point{11, 19}, 3, 1},
+		{laby1, 8, image.Point{23, 23}, 1, 2},
+		{laby1, 8, image.Point{3, 27}, 1, 1},
+		{laby1, 8, image.Point{11, 27}, 3, 0},
+		{laby1, 16, image.Point{11, 27}, 1, 1},
+		{laby2, 2, image.Point{3, 3}, 2, 0},
 	}
 
-	bm, err := loadPNG("./testdata/labyrinth.32x32.png")
-	check(t, err)
-
-	for _, res := range []int{1, 2, 3, 4, 5, 6, 7, 8, 15} {
-		q, err := NewBUQuadtree(bm, res)
+	for _, tt := range testTbl {
+		q, err := NewBUQuadtree(tt.img, tt.res)
 		check(t, err)
 
-		for _, tt := range testTbl {
-			node, exists := q.PointQuery(tt.pt)
-			if !exists {
-				t.Fatalf("resolution %d, expected exists to be true for point %v, got false instead", res, tt.pt)
-			}
-			bunode := node.(*BUQuadnode)
+		node, exists := q.PointQuery(tt.pt)
+		if !exists {
+			t.Fatalf("%s, resolution %d, expected exists to be true for point %v, got false instead", imgAlias[tt.img], tt.res, tt.pt)
+		}
+		bunode := node.(*BUQuadnode)
 
-			var neighbours []*BUQuadnode
-			var black, white int
-			for _, nb := range bunode.neighbours() {
-				neighbours = append(neighbours, nb)
-				switch nb.Color() {
-				case bmp.Black:
-					black++
-				case bmp.White:
-					white++
-				}
+		var neighbours []*BUQuadnode
+		var black, white int
+		for _, nb := range bunode.neighbours() {
+			neighbours = append(neighbours, nb)
+			switch nb.Color() {
+			case bmp.Black:
+				black++
+			case bmp.White:
+				white++
 			}
-			if tt.white != white {
-				t.Errorf("resolution %d, expected pt %v to have %d white neighbours, got %d", res, tt.pt, tt.white, white)
-			}
-			if tt.black != black {
-				t.Errorf("resolution %d, expected pt %v to have %d black neighbours, got %d", res, tt.pt, tt.black, black)
-			}
+		}
+		if tt.white != white {
+			t.Errorf("%s, resolution %d, expected pt %v to have %d white neighbours, got %d", imgAlias[tt.img], tt.res, tt.pt, tt.white, white)
+
+		}
+		if tt.black != black {
+			t.Errorf("%s, resolution %d, expected pt %v to have %d black neighbours, got %d", imgAlias[tt.img], tt.res, tt.pt, tt.black, black)
 		}
 	}
 }
