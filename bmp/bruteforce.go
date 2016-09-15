@@ -18,7 +18,7 @@ func (s bruteForceScanner) IsWhite(topLeft, bottomRight image.Point) bool {
 	for y := topLeft.Y; y < bottomRight.Y; y++ {
 		yidx = s.b.Width * y
 		for x := topLeft.X; x < bottomRight.X; x++ {
-			if s.b.Bits[x+yidx] != White {
+			if s.b.Bits[x+yidx] != byte(White) {
 				// immediately returns at the first 1 found
 				return false
 			}
@@ -33,7 +33,7 @@ func (s bruteForceScanner) IsBlack(topLeft, bottomRight image.Point) bool {
 	for y := topLeft.Y; y < bottomRight.Y; y++ {
 		yidx = s.b.Width * y
 		for x := topLeft.X; x < bottomRight.X; x++ {
-			if s.b.Bits[x+yidx] != Black {
+			if s.b.Bits[x+yidx] != byte(Black) {
 				// immediately returns at the first 1 found
 				return false
 			}
@@ -57,5 +57,5 @@ func (s bruteForceScanner) IsFilled(topLeft, bottomRight image.Point) Color {
 			}
 		}
 	}
-	return col
+	return Color(col)
 }

@@ -19,13 +19,13 @@ func NewBitmapFromStrings(ss []string) *Bitmap {
 	bmp := Bitmap{
 		Width:  w,
 		Height: h,
-		Bits:   make([]Color, w*h),
+		Bits:   make([]byte, w*h),
 	}
 
 	for y := range ss {
 		for x := range ss[y] {
 			if ss[y][x] == '1' {
-				bmp.Bits[x+w*y] = White
+				bmp.Bits[x+w*y] = byte(White)
 			}
 		}
 	}
