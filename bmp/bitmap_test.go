@@ -12,12 +12,6 @@ var (
 	testdata = "./testdata"
 )
 
-func check(t *testing.T, err error) {
-	if err != nil {
-		t.Fatal(err)
-	}
-}
-
 func TestBitmapFromImage(t *testing.T) {
 	gopher := []string{
 		"1111111111111000000000000001111111111111",

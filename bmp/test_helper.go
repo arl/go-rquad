@@ -1,8 +1,11 @@
-// +build ignore
 package bmp
 
 import (
 	"fmt"
+	"image"
+	"image/png"
+	"os"
+	"testing"
 )
 
 func NewBitmapFromStrings(ss []string) *Bitmap {
@@ -38,4 +41,39 @@ func (bmp Bitmap) String() string {
 		s += "\n"
 	}
 	return s
+}
+func check(t *testing.T, err error) {
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func checkB(b *testing.B, err error) {
+	if err != nil {
+		b.Fatal(err)
+	}
+}
+
+// helper function that uses NewFromImage internally.
+func loadPNG(filename string) (*Bitmap, error) {
+	var (
+		f   *os.File
+		img image.Image
+		bm  *Bitmap
+		err error
+	)
+
+	f, err = os.Open(filename)
+	if err != nil {
+		return bm, err
+	}
+	defer f.Close()
+
+	img, err = png.Decode(f)
+	if err != nil {
+		return bm, err
+	}
+
+	bm = NewFromImage(img)
+	return bm, nil
 }
