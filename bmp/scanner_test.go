@@ -105,3 +105,20 @@ func TestBruteForceScannerIsBlack(t *testing.T) {
 func TestBruteForceScannerIsFilled(t *testing.T) {
 	testIsFilled(t, &bruteForceScanner{})
 }
+
+func BenchmarkBruteForceScanner(b *testing.B) {
+	var (
+		bm  *Bitmap
+		err error
+	)
+
+	bm, err = loadPNG("./testdata/big.png")
+	checkB(b, err)
+
+	bm.SetScanner(&bruteForceScanner{})
+
+	// run N times
+	for n := 0; n < b.N; n++ {
+		bm.IsWhite(image.Point{0, 0}, image.Point{bm.Width, bm.Height})
+	}
+}
