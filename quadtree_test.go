@@ -1,7 +1,6 @@
 package quadtree
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/aurelien-rainone/go-quadtrees/bmp"
@@ -13,7 +12,6 @@ func benchmarkQuadtreeCreation(b *testing.B, pngfile string, scanner bmp.Scanner
 		err error
 	)
 
-	fmt.Println("loading", pngfile)
 	bm, err = loadPNG(pngfile)
 	checkB(b, err)
 
@@ -27,10 +25,34 @@ func benchmarkQuadtreeCreation(b *testing.B, pngfile string, scanner bmp.Scanner
 	}
 }
 
-func BenchmarkBUQuadtreeCreationBruteForceScanner(b *testing.B) {
+func BenchmarkBUQuadtreeCreationBruteForceScannerRes2(b *testing.B) {
+	benchmarkQuadtreeCreation(b, "./testdata/big.png", &bmp.BruteForceScanner{}, 2)
+}
+
+func BenchmarkBUQuadtreeCreationBruteForceScannerRes4(b *testing.B) {
 	benchmarkQuadtreeCreation(b, "./testdata/big.png", &bmp.BruteForceScanner{}, 4)
 }
 
-func BenchmarkBUQuadtreeCreationLinesScanner(b *testing.B) {
+func BenchmarkBUQuadtreeCreationBruteForceScannerRes8(b *testing.B) {
+	benchmarkQuadtreeCreation(b, "./testdata/big.png", &bmp.BruteForceScanner{}, 8)
+}
+
+func BenchmarkBUQuadtreeCreationBruteForceScannerRes16(b *testing.B) {
+	benchmarkQuadtreeCreation(b, "./testdata/big.png", &bmp.BruteForceScanner{}, 16)
+}
+
+func BenchmarkBUQuadtreeCreationLinesScannerRes2(b *testing.B) {
+	benchmarkQuadtreeCreation(b, "./testdata/big.png", &bmp.LinesScanner{}, 2)
+}
+
+func BenchmarkBUQuadtreeCreationLinesScannerRes4(b *testing.B) {
 	benchmarkQuadtreeCreation(b, "./testdata/big.png", &bmp.LinesScanner{}, 4)
+}
+
+func BenchmarkBUQuadtreeCreationLinesScannerRes8(b *testing.B) {
+	benchmarkQuadtreeCreation(b, "./testdata/big.png", &bmp.LinesScanner{}, 8)
+}
+
+func BenchmarkBUQuadtreeCreationLinesScannerRes16(b *testing.B) {
+	benchmarkQuadtreeCreation(b, "./testdata/big.png", &bmp.LinesScanner{}, 16)
 }
