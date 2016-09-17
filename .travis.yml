@@ -1,0 +1,19 @@
+language: go
+
+go: 
+ - tip
+
+sudo: false
+
+before_script:
+  - go vet ./...
+
+before_install:
+- go get github.com/axw/gocov/gocov
+- go get github.com/mattn/goveralls
+- if ! go get github.com/golang/tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
+
+script:
+- go test -covermode=count -coverprofile=fullprofile.cov
+- cat fullprofile.cov | egrep -v 'test_helper.go|*_string.go' > profile.cov
+- $HOME/gopath/bin/goveralls -service=travis-ci
