@@ -15,4 +15,4 @@ before_install:
 
 script:
 - ./testandcover.bash
-- $HOME/gopath/bin/goveralls -service=travis-ci
+- $HOME/gopath/bin/goveralls -coverprofile=profile.cov -service=travis-ci
