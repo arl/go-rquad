@@ -29,7 +29,7 @@ func (s *SmartScanner) SetBmp(bm *Bitmap) {
 }
 
 func (s *SmartScanner) selectScanner(topLeft, bottomRight image.Point) Scanner {
-	if bottomRight.X-topLeft.X <= s.maxBruteForceWidth {
+	if bottomRight.X-topLeft.X < s.maxBruteForceWidth {
 		// region is small enough, use brute force scanner
 		return s.brute
 	}
