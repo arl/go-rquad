@@ -19,9 +19,9 @@ const (
 // Bits is a slice of Color (1 byte integer that can take only two values:
 // Black and White.
 type Bitmap struct {
-	Width, Height int     // bitmap dimensions
-	Bits          []Color // rectangular color array, mapped to 1D
-	Scanner               // a bitmap is a scanner
+	Width, Height int    // bitmap dimensions
+	Bits          []byte // rectangular color array, mapped to 1D
+	Scanner              // a bitmap is a scanner
 }
 
 // New creates a new Bitmap having given dimensions, filled with Black color.
@@ -29,10 +29,10 @@ func New(w, h int) *Bitmap {
 	bm := Bitmap{
 		Width:  w,
 		Height: h,
-		Bits:   make([]Color, w*h),
+		Bits:   make([]byte, w*h),
 	}
 	// set the default scanner
-	bm.Scanner = &bruteForceScanner{}
+	bm.Scanner = &LinesScanner{}
 	bm.Scanner.SetBmp(&bm)
 	return &bm
 }
@@ -58,7 +58,7 @@ func NewFromImage(img image.Image) *Bitmap {
 		for x := b.Min.X; x < b.Max.X; x++ {
 			r, _, _, _ := img.At(x, y).RGBA()
 			if r != 0 {
-				bm.Bits[x+w*y] = White
+				bm.Bits[x+w*y] = byte(White)
 			}
 		}
 	}
@@ -69,4 +69,5 @@ func NewFromImage(img image.Image) *Bitmap {
 // SetScanner sets the internal bitmap scanner.
 func (b *Bitmap) SetScanner(s Scanner) {
 	b.Scanner = s
+	b.Scanner.SetBmp(b)
 }
