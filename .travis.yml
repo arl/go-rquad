@@ -14,6 +14,5 @@ before_install:
 - if ! go get github.com/golang/tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
 
 script:
-- go test -covermode=count -coverprofile=fullprofile.cov
-- cat fullprofile.cov | egrep -v 'test_helper.go|*_string.go' > profile.cov
+- ./testandcover.bash
 - $HOME/gopath/bin/goveralls -service=travis-ci
