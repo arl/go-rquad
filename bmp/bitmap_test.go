@@ -84,7 +84,7 @@ func TestBitmapFromImage(t *testing.T) {
 	bmp = NewFromImage(img)
 	exp = strings.Join(gopher, "\n") + "\n"
 	if bmp.String() != exp {
-		t.Errorf("NewFromImage() expected gopher, didn't have one")
+		t.Errorf("expected gopher, got something else...")
 	}
 }
 
@@ -99,14 +99,15 @@ func TestBlackImage(t *testing.T) {
 		{4, 2, 0, 0, 3, 1},
 		{4, 2, 2, 2, 3, 1},
 		{2, 4, 0, 0, 1, 3},
-		{2, 4, 2, 2, 1, 3},
+		{2, 4, 1, 2, 1, 3},
 	}
 
 	for _, tt := range testTbl {
-		scanner := BruteForceScanner{b: New(tt.w, tt.h)}
+		bm := New(tt.w, tt.h)
+		bm.SetScanner(&LinesScanner{})
 
-		if !scanner.IsBlack(image.Point{tt.minx, tt.miny}, image.Point{tt.maxx, tt.maxy}) {
-			t.Errorf("TestBlackImage (dim:%dx%d)(%d,%d|%d,%d): expected true, got false", tt.w, tt.h, tt.minx, tt.miny, tt.maxx, tt.maxy)
+		if !bm.IsBlack(image.Point{tt.minx, tt.miny}, image.Point{tt.maxx, tt.maxy}) {
+			t.Errorf("black image (dim:%dx%d)(%d,%d|%d,%d): expected true, got false", tt.w, tt.h, tt.minx, tt.miny, tt.maxx, tt.maxy)
 		}
 	}
 }

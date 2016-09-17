@@ -23,6 +23,7 @@ func testIsWhite(t *testing.T, scanner Scanner) {
 		{1, 0, 2, 1, false},
 		{1, 0, 3, 2, false},
 		{1, 2, 3, 3, true},
+		{2, 2, 3, 3, true},
 	}
 
 	scanner.SetBmp(NewBitmapFromStrings(ss))
@@ -82,6 +83,8 @@ func testIsFilled(t *testing.T, scanner Scanner) {
 		{0, 0, 1, 1, White},
 		{1, 0, 2, 1, White},
 		{1, 0, 3, 2, White},
+		{1, 2, 3, 3, Black},
+		{2, 2, 3, 3, Black},
 	}
 
 	scanner.SetBmp(NewBitmapFromStrings(ss))
@@ -94,18 +97,6 @@ func testIsFilled(t *testing.T, scanner Scanner) {
 	}
 }
 
-func TestBruteForceScannerIsWhite(t *testing.T) {
-	testIsWhite(t, &BruteForceScanner{})
-}
-
-func TestBruteForceScannerIsBlack(t *testing.T) {
-	testIsBlack(t, &BruteForceScanner{})
-}
-
-func TestBruteForceScannerIsFilled(t *testing.T) {
-	testIsFilled(t, &BruteForceScanner{})
-}
-
 func TestLinesScannerIsWhite(t *testing.T) {
 	testIsWhite(t, &LinesScanner{})
 }
@@ -116,6 +107,18 @@ func TestLinesScannerIsBlack(t *testing.T) {
 
 func TestLinesScannerIsFilled(t *testing.T) {
 	testIsFilled(t, &LinesScanner{})
+}
+
+func TestCornerScannerIsWhite(t *testing.T) {
+	testIsWhite(t, &CornerScanner{})
+}
+
+func TestCornerScannerIsBlack(t *testing.T) {
+	testIsBlack(t, &CornerScanner{})
+}
+
+func TestCornerScannerIsFilled(t *testing.T) {
+	testIsFilled(t, &CornerScanner{})
 }
 
 func benchmarkScanner(b *testing.B, pngfile string, scanner Scanner) {
@@ -138,10 +141,10 @@ func benchmarkScanner(b *testing.B, pngfile string, scanner Scanner) {
 	}
 }
 
-func BenchmarkBruteForceScanner(b *testing.B) {
-	benchmarkScanner(b, "./testdata/big.png", &BruteForceScanner{})
-}
-
 func BenchmarkLinesScanner(b *testing.B) {
 	benchmarkScanner(b, "./testdata/big.png", &LinesScanner{})
+}
+
+func BenchmarkCornerScanner(b *testing.B) {
+	benchmarkScanner(b, "./testdata/big.png", &CornerScanner{})
 }

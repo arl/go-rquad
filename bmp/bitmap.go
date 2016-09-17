@@ -32,7 +32,7 @@ func New(w, h int) *Bitmap {
 		Bits:   make([]byte, w*h),
 	}
 	// set the default scanner
-	bm.Scanner = &BruteForceScanner{}
+	bm.Scanner = &LinesScanner{}
 	bm.Scanner.SetBmp(&bm)
 	return &bm
 }
