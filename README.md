@@ -1,4 +1,5 @@
-# go-quadtrees: Quadtree implementation in Go &nbsp;&nbsp; [![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](http://godoc.org/github.com/aurelien-rainone/go-quadtrees) [![Build Status](https://travis-ci.org/aurelien-rainone/go-quadtrees.svg?branch=master)](https://travis-ci.org/aurelien-rainone/go-quadtrees) [![Coverage Status](https://coveralls.io/repos/github/aurelien-rainone/go-quadtrees/badge.svg?branch=master)](https://coveralls.io/github/aurelien-rainone/go-quadtrees?branch=master)
+# go-quadtrees: Quadtree implementation in Go
+[![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](http://godoc.org/github.com/aurelien-rainone/go-quadtrees) [![Build Status](https://travis-ci.org/aurelien-rainone/go-quadtrees.svg?branch=master)](https://travis-ci.org/aurelien-rainone/go-quadtrees) [![Coverage Status](https://coveralls.io/repos/github/aurelien-rainone/go-quadtrees/badge.svg?branch=master)](https://coveralls.io/github/aurelien-rainone/go-quadtrees?branch=master)
 
 ** Quadtrees and efficient neighbour finding techniques in Go**
 
