@@ -3,7 +3,7 @@ package bmp
 import "image"
 
 // CornerScanner checks the corners and other remarkable points of a
-// rectangular region  before eventually scanning it completely.
+// rectangular region before eventually scanning it completely.
 //
 // In the hope to avoid a full region scanning, some remarkable points will be
 // checked before. Those remarkable points are:
@@ -11,12 +11,19 @@ import "image"
 // - the rectangle centre.
 // - the 4 edges centres: top, right, bottom and left edges.
 type CornerScanner struct {
-	b     *Bitmap
-	lines Scanner
+	b                  *Bitmap
+	lines              Scanner
+	cornerScanMinWidth int
 }
 
-func NewCornerScanner(maxBruteForceWidth int) Scanner {
-	return &CornerScanner{}
+// NewCornerScanner returns a new CornerScan.
+//
+// If the scanned region width is lower than cornerScanMinWidth the corners
+// won't be scanned and the CornerScanner behaves as a LinesScanner.
+func NewCornerScanner(cornerScanMinWidth int) Scanner {
+	return &CornerScanner{
+		cornerScanMinWidth: cornerScanMinWidth,
+	}
 }
 
 func (s *CornerScanner) SetBmp(bm *Bitmap) {
@@ -92,24 +99,30 @@ func (s *CornerScanner) checkRemarkablePixels(topLeft, bottomRight image.Point, 
 }
 
 func (s *CornerScanner) IsWhite(topLeft, bottomRight image.Point) bool {
-	if !s.checkRemarkablePixels(topLeft, bottomRight, byte(White)) {
-		return false
+	if bottomRight.X-topLeft.X > s.cornerScanMinWidth {
+		if !s.checkRemarkablePixels(topLeft, bottomRight, byte(White)) {
+			return false
+		}
 	}
 	return s.lines.IsWhite(topLeft, bottomRight)
 }
 
 func (s *CornerScanner) IsBlack(topLeft, bottomRight image.Point) bool {
-	if !s.checkRemarkablePixels(topLeft, bottomRight, byte(Black)) {
-		return false
+	if bottomRight.X-topLeft.X > s.cornerScanMinWidth {
+		if !s.checkRemarkablePixels(topLeft, bottomRight, byte(Black)) {
+			return false
+		}
 	}
 	return s.lines.IsBlack(topLeft, bottomRight)
 }
 
 func (s *CornerScanner) IsFilled(topLeft, bottomRight image.Point) Color {
-	// color of top-left corner
-	c := s.b.Bits[topLeft.X+topLeft.Y*s.b.Width]
-	if !s.checkRemarkablePixels(topLeft, bottomRight, c) {
-		return Gray
+	if bottomRight.X-topLeft.X > s.cornerScanMinWidth {
+		// color of top-left corner
+		c := s.b.Bits[topLeft.X+topLeft.Y*s.b.Width]
+		if !s.checkRemarkablePixels(topLeft, bottomRight, c) {
+			return Gray
+		}
 	}
 	return s.lines.IsFilled(topLeft, bottomRight)
 }
