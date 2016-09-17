@@ -106,6 +106,18 @@ func TestBruteForceScannerIsFilled(t *testing.T) {
 	testIsFilled(t, &BruteForceScanner{})
 }
 
+func TestLinesScannerIsWhite(t *testing.T) {
+	testIsWhite(t, &LinesScanner{})
+}
+
+func TestLinesScannerIsBlack(t *testing.T) {
+	testIsBlack(t, &LinesScanner{})
+}
+
+func TestLinesScannerIsFilled(t *testing.T) {
+	testIsFilled(t, &LinesScanner{})
+}
+
 func benchmarkScanner(b *testing.B, pngfile string, scanner Scanner) {
 	var (
 		bm  *Bitmap
