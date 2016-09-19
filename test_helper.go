@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/aurelien-rainone/go-quadtrees/bmp"
+	"github.com/aurelien-rainone/binimg"
 )
 
 func check(t *testing.T, err error) {
@@ -21,12 +21,12 @@ func checkB(b *testing.B, err error) {
 	}
 }
 
-// helper function that uses bmp.NewFromImage internally.
-func loadPNG(filename string) (*bmp.Bitmap, error) {
+// helper function that uses binimg.NewFromImage internally.
+func loadPNG(filename string) (*binimg.Binary, error) {
 	var (
 		f   *os.File
 		img image.Image
-		bm  *bmp.Bitmap
+		bm  *binimg.Binary
 		err error
 	)
 
@@ -41,7 +41,7 @@ func loadPNG(filename string) (*bmp.Bitmap, error) {
 		return bm, err
 	}
 
-	bm = bmp.NewFromImage(img)
+	bm = binimg.NewFromImage(img)
 	return bm, nil
 }
 
@@ -49,12 +49,12 @@ func listNodes(n Quadnode) []Quadnode {
 	var _listNodes func(n Quadnode, nodes *[]Quadnode)
 	_listNodes = func(n Quadnode, nodes *[]Quadnode) {
 		switch n.Color() {
-		case bmp.Gray:
+		case Gray:
 			_listNodes(n.NorthWest(), nodes)
 			_listNodes(n.NorthEast(), nodes)
 			_listNodes(n.SouthWest(), nodes)
 			_listNodes(n.SouthEast(), nodes)
-		case bmp.White:
+		case White:
 			*nodes = append(*nodes, n)
 		}
 	}

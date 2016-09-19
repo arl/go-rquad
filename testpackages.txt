@@ -1,2 +1,1 @@
 github.com/aurelien-rainone/go-quadtrees
-github.com/aurelien-rainone/go-quadtrees/bmp

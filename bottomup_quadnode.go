@@ -1,10 +1,6 @@
 package quadtree
 
-import (
-	"image"
-
-	"github.com/aurelien-rainone/go-quadtrees/bmp"
-)
+import "image"
 
 // BUQuadnode is a node of a BUQuadtree.
 //
@@ -16,12 +12,12 @@ type BUQuadnode struct {
 
 // isLeaf checks if this node is a leaf, i.e. is either black or white.
 func (n *BUQuadnode) isLeaf() bool {
-	return n.color != bmp.Gray
+	return n.color != Gray
 }
 
 // isLeaf checks if this node is white.
 func (n *BUQuadnode) isWhite() bool {
-	return n.color == bmp.White
+	return n.color == White
 }
 
 // children fills the given slice with all the leaf children of this node (i.e
@@ -140,7 +136,7 @@ func (n *BUQuadnode) pointQuery(pt image.Point) (Quadnode, bool) {
 	if !n.inbound(pt) {
 		return nil, false
 	}
-	if n.color != bmp.Gray {
+	if n.color != Gray {
 		return n, true
 	}
 	nw := n.northWest.(*BUQuadnode)

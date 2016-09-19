@@ -1,9 +1,13 @@
 package quadtree
 
-import (
-	"image"
+import "image"
 
-	"github.com/aurelien-rainone/go-quadtrees/bmp"
+type NodeColor byte
+
+const (
+	Black NodeColor = 0
+	White           = 1
+	Gray            = 2
 )
 
 // Quadnode defines the interface for a quadtree node.
@@ -18,5 +22,5 @@ type Quadnode interface {
 	TopLeft() image.Point
 	BottomRight() image.Point
 
-	Color() bmp.Color
+	Color() NodeColor
 }

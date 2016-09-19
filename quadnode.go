@@ -3,8 +3,6 @@ package quadtree
 import (
 	"fmt"
 	"image"
-
-	"github.com/aurelien-rainone/go-quadtrees/bmp"
 )
 
 // quadnode is a basic implementation of the Quadnode interface.
@@ -23,7 +21,7 @@ type quadnode struct {
 	bottomRight image.Point
 
 	// node color
-	color bmp.Color
+	color NodeColor
 }
 
 func (n *quadnode) TopLeft() image.Point {
@@ -34,7 +32,7 @@ func (n *quadnode) BottomRight() image.Point {
 	return n.bottomRight
 }
 
-func (n *quadnode) Color() bmp.Color {
+func (n *quadnode) Color() NodeColor {
 	return n.color
 }
 
