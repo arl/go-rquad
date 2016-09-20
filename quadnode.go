@@ -5,7 +5,6 @@ import (
 	"image"
 )
 
-//go:generate stringer -type=NodeColor
 type NodeColor byte
 
 const (
