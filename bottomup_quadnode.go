@@ -22,7 +22,7 @@ func (n *BUQuadnode) isWhite() bool {
 
 // children fills the given slice with all the leaf children of this node (i.e
 // either black or white), that can be found in a given direction.
-func (n *BUQuadnode) children(dir side, nodes *[]*BUQuadnode) {
+func (n *BUQuadnode) children(dir side, nodes *NodeList) {
 
 	if n.isLeaf() {
 		return
@@ -90,7 +90,7 @@ func (n *BUQuadnode) equalSizeNeighbor(dir side) *BUQuadnode {
 
 // _neighbours locates all leaf neighbours of the current node in the given
 // direction, appending them to a slice.
-func (n *BUQuadnode) _neighbours(dir side, nodes *[]*BUQuadnode) {
+func (n *BUQuadnode) _neighbours(dir side, nodes *NodeList) {
 
 	// If no neighbor can be found in the given
 	// direction, node will be null.
@@ -108,14 +108,13 @@ func (n *BUQuadnode) _neighbours(dir side, nodes *[]*BUQuadnode) {
 	}
 }
 
-// neighbours returns a slice of all leaf neighbours of the current node.
-func (n *BUQuadnode) neighbours() []*BUQuadnode {
-	var nodes []*BUQuadnode
-	n._neighbours(north, &nodes)
-	n._neighbours(south, &nodes)
-	n._neighbours(east, &nodes)
-	n._neighbours(west, &nodes)
-	return nodes
+// Neighbours fills a NodeList with the neighbours of this node. n must be
+// a leaf node, or nodes will be an empty slice.
+func (n *BUQuadnode) Neighbours(nodes *NodeList) {
+	n._neighbours(north, nodes)
+	n._neighbours(south, nodes)
+	n._neighbours(east, nodes)
+	n._neighbours(west, nodes)
 }
 
 // quadrant obtains this node's quadrant relative to its parent.
