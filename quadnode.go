@@ -6,12 +6,12 @@ import (
 )
 
 // NodeColor is the set of colors that can take a Quadnode.
-type NodeColor byte
+type QNodeColor byte
 
 const (
 	// Black is the color of leaf nodes that
 	// are considered as obstructed.
-	Black NodeColor = 0
+	Black QNodeColor = 0
 
 	// White is the color of leaf nodes that
 	// are considered as free.
@@ -34,7 +34,7 @@ type Quadnode interface {
 	TopLeft() image.Point
 	BottomRight() image.Point
 
-	Color() NodeColor
+	Color() QNodeColor
 
 	// Neighbours fills a NodeList with the neighbours of this node. n must be
 	// a leaf node, or nodes will be an empty slice.
@@ -57,7 +57,7 @@ type quadnode struct {
 	bottomRight image.Point
 
 	// node color
-	color NodeColor
+	color QNodeColor
 }
 
 func (n *quadnode) TopLeft() image.Point {
@@ -68,7 +68,7 @@ func (n *quadnode) BottomRight() image.Point {
 	return n.bottomRight
 }
 
-func (n *quadnode) Color() NodeColor {
+func (n *quadnode) Color() QNodeColor {
 	return n.color
 }
 
