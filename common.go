@@ -1,6 +1,5 @@
 package quadtree
 
-//go:generate stringer -type=quadrant
 type quadrant int
 
 const (
@@ -10,7 +9,6 @@ const (
 	southEast
 )
 
-//go:generate stringer -type=side
 type side int
 
 const (
