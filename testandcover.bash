@@ -2,14 +2,20 @@
 
 # This script tests multiple packages and creates a consolidated cover profile
 # See https://gist.github.com/hailiang/0f22736320abe6be71ce for inspiration.
-# The list of packages to test is specified in testpackages.txt.
+# The list of packages to test is specified in $PACKAGES variables
 
 function die() {
   echo $*
   exit 1
 }
 
-readonly EXCLUDES='test_helper.go|*_string.go'
+# list packages to be test and covered, one by line.
+readonly PACKAGES='
+github.com/aurelien-rainone/go-quadtrees
+'
+
+# exclude files from coverage report/count (regex)
+readonly COVEREXCLUDES='test_helper.go|*_string.go'
 
 export GOPATH=`pwd`:$GOPATH
 
@@ -26,11 +32,12 @@ then
 fi
 
 # Test each package and append coverage profile info to profile.cov
-for pkg in `cat testpackages.txt`
+IFS='
+'
+for pkg in $PACKAGES
 do
-    #$HOME/gopath/bin/
     go test -v -covermode=count -coverprofile=profile_tmp.cov $pkg || ERROR="Error testing $pkg"
-    tail -n +2 profile_tmp.cov | egrep -v "${EXCLUDES}" >> profile.cov || die "Unable to append coverage for $pkg"
+    tail -n +2 profile_tmp.cov | egrep -v "${COVEREXCLUDES}" >> profile.cov || die "Unable to append coverage for $pkg"
 done
 
 if [ ! -z "$ERROR" ]
