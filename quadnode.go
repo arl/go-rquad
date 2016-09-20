@@ -5,6 +5,42 @@ import (
 	"image"
 )
 
+// NodeColor is the set of colors that can take a Quadnode.
+type NodeColor byte
+
+const (
+	// Black is the color of leaf nodes that
+	// are considered as obstructed.
+	Black NodeColor = 0
+
+	// White is the color of leaf nodes that
+	// are considered as free.
+	White = 1
+
+	// Gray is the color of non-leaf nodes that
+	// contain both black and white children.
+	Gray = 2
+)
+
+// Quadnode defines the interface for a quadtree node.
+type Quadnode interface {
+	Parent() Quadnode
+
+	NorthWest() Quadnode
+	NorthEast() Quadnode
+	SouthWest() Quadnode
+	SouthEast() Quadnode
+
+	TopLeft() image.Point
+	BottomRight() image.Point
+
+	Color() NodeColor
+
+	// Neighbours fills a NodeList with the neighbours of this node. n must be
+	// a leaf node, or nodes will be an empty slice.
+	Neighbours(nodes *NodeList)
+}
+
 // quadnode is a basic implementation of the Quadnode interface.
 type quadnode struct {
 	parent Quadnode // pointer to the parent node

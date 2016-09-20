@@ -199,7 +199,9 @@ func TestBUQuadtreeNeighbours(t *testing.T) {
 		bunode := node.(*BUQuadnode)
 
 		var black, white int
-		for _, nb := range bunode.neighbours() {
+		nodes := NodeList{}
+		bunode.Neighbours(&nodes)
+		for _, nb := range nodes {
 			switch nb.Color() {
 			case Black:
 				black++
@@ -249,7 +251,7 @@ func TestBUQuadtreeRootChildren(t *testing.T) {
 			t.Fatalf("resolution %d, quadtree root is nil, expected not nil", tt.res)
 		}
 
-		var children []*BUQuadnode
+		var children NodeList
 		root.children(tt.dir, &children)
 		var black, white int
 		for _, nb := range children {
@@ -308,7 +310,7 @@ func TestBUQuadtreeChildren(t *testing.T) {
 			t.Fatalf("resolution %d, parent of %v is nil, expected not nil", tt.res, tt.pt)
 		}
 
-		var children []*BUQuadnode
+		var children NodeList
 		parent.children(tt.dir, &children)
 		var black, white int
 		for _, nb := range children {
