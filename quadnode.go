@@ -5,6 +5,7 @@ import (
 	"image"
 )
 
+// NodeColor is the set of colors that can take a Quadnode.
 type NodeColor byte
 
 const (
