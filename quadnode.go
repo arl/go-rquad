@@ -9,9 +9,17 @@ import (
 type NodeColor byte
 
 const (
+	// Black is the color of leaf nodes that
+	// are considered as obstructed.
 	Black NodeColor = 0
-	White           = 1
-	Gray            = 2
+
+	// White is the color of leaf nodes that
+	// are considered as free.
+	White = 1
+
+	// Gray is the color of non-leaf nodes that
+	// contain both black and white children.
+	Gray = 2
 )
 
 // Quadnode defines the interface for a quadtree node.
