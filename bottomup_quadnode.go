@@ -15,11 +15,6 @@ func (n *BUQuadnode) isLeaf() bool {
 	return n.color != Gray
 }
 
-// isLeaf checks if this node is white.
-func (n *BUQuadnode) isWhite() bool {
-	return n.color == White
-}
-
 // children fills the given slice with all the leaf children of this node (i.e
 // either black or white), that can be found in a given direction.
 func (n *BUQuadnode) children(dir side, nodes *NodeList) {
