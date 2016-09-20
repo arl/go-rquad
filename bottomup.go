@@ -12,7 +12,7 @@ import (
 //
 // BUQuadtree works on rectangles quadrants as well as squares; quadrants of
 // the same parent may have different dimensions due to the integer division.
-// It internally handles BUQuadnode, that implement the Quadnode interface.
+// It internally handles BUQuadnode, that implement the QNode interface.
 type BUQuadtree struct {
 	resolution int
 	scanner    binimg.Scanner
@@ -137,9 +137,9 @@ func (q *BUQuadtree) subdivide(n *BUQuadnode) {
 		n)
 }
 
-// PointQuery returns the Quadnode containing the point at given coordinates.
+// PointQuery returns the QNode containing the point at given coordinates.
 //
 // If such node doesn't exist, exists is false.
-func (q *BUQuadtree) PointQuery(pt image.Point) (n Quadnode, exists bool) {
+func (q *BUQuadtree) PointQuery(pt image.Point) (n QNode, exists bool) {
 	return q.root.pointQuery(pt)
 }

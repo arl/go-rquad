@@ -4,7 +4,7 @@ import "image"
 
 // BUQuadnode is a node of a BUQuadtree.
 //
-// It is a basic implementation of the Quadnode interface, augmented with
+// It is a basic implementation of the QNode interface, augmented with
 // methods implementing the bottom-up neighbor finding techniques.
 type BUQuadnode struct {
 	quadnode
@@ -126,7 +126,7 @@ func (n *BUQuadnode) quadrant() quadrant {
 	return southEast
 }
 
-func (n *BUQuadnode) pointQuery(pt image.Point) (Quadnode, bool) {
+func (n *BUQuadnode) pointQuery(pt image.Point) (QNode, bool) {
 	if !n.inbound(pt) {
 		return nil, false
 	}

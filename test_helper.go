@@ -45,9 +45,9 @@ func loadPNG(filename string) (*binimg.Binary, error) {
 	return bm, nil
 }
 
-func listNodes(n Quadnode) []Quadnode {
-	var _listNodes func(n Quadnode, nodes *[]Quadnode)
-	_listNodes = func(n Quadnode, nodes *[]Quadnode) {
+func listNodes(n QNode) []QNode {
+	var _listNodes func(n QNode, nodes *[]QNode)
+	_listNodes = func(n QNode, nodes *[]QNode) {
 		switch n.Color() {
 		case Gray:
 			_listNodes(n.NorthWest(), nodes)
@@ -58,7 +58,7 @@ func listNodes(n Quadnode) []Quadnode {
 			*nodes = append(*nodes, n)
 		}
 	}
-	nodes := []Quadnode{}
+	nodes := []QNode{}
 	_listNodes(n, &nodes)
 	return nodes
 }
