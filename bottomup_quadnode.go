@@ -2,7 +2,7 @@ package quadtree
 
 import "image"
 
-// BUQuadnode is a node of a BUQuadtree.
+// BUQNode is a node of a BUQuadtree.
 //
 // It is a basic implementation of the QNode interface, augmented with
 // methods implementing the bottom-up neighbor finding techniques.

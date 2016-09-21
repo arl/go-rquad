@@ -5,7 +5,7 @@ import (
 	"image"
 )
 
-// NodeColor is the set of colors that can take a QNode.
+// QNodeColor is the set of colors that can take a QNode.
 type QNodeColor byte
 
 const (

@@ -12,33 +12,33 @@ import (
 //
 // BUQuadtree works on rectangles quadrants as well as squares; quadrants of
 // the same parent may have different dimensions due to the integer division.
-// It internally handles BUQuadnode, that implement the QNode interface.
+// It internally handles BUQNode's which implement the QNode interface.
 type BUQuadtree struct {
 	resolution int
 	scanner    binimg.Scanner
 	root       *BUQNode
 }
 
-// NewBUQuadtree creates a BUQuadtree and populates it with BUQuadnode's,
+// NewBUQuadtree creates a BUQuadtree and populates it with BUQNode's,
 // according to the content of the scanned image.
 func NewBUQuadtree(scanner binimg.Scanner, resolution int) (*BUQuadtree, error) {
 	// initialize package level variables
 	initPackage()
 
-	// To ensure a consistent behavior and eliminate corner cases, the
-	// Quadtree's root node need to have children, i.e. it can't
-	// be a leaf node. Thus, the first instantiated BUQuadnode need to
-	// always be subdivided. These two conditions make sure that
-	// even with this subdivision the resolution will be respected.
 	if resolution < 1 {
 		return nil, errors.New("resolution must be greater than 0")
 	}
+
+	// To ensure a consistent behavior and eliminate corner cases,
+	// the Quadtree's root node needs to have children.  Thus, the
+	// first instantiated BUQNode needs to always be subdivided.
+	// This condition asserts the resolution is respected.
 	minDim := scanner.Bounds().Dx()
 	if scanner.Bounds().Dy() < minDim {
 		minDim = scanner.Bounds().Dy()
 	}
 	if minDim < resolution*2 {
-		return nil, errors.New("the bitmap smaller dimension must be greater or equal to twice the resolution")
+		return nil, errors.New("the image smaller dimension must be greater or equal to twice the resolution")
 	}
 
 	q := &BUQuadtree{
