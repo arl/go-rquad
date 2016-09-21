@@ -74,28 +74,23 @@ func (q *BUQuadtree) createInnerNode(topleft, bottomright image.Point, parent *B
 		},
 	}
 
-	if uniform, col := q.scanner.Uniform(image.Rectangle{topleft, bottomright}); uniform {
+	uniform, col := q.scanner.Uniform(image.Rectangle{topleft, bottomright})
+	switch uniform {
+	case true:
+		// quadrant is uniform, won't need to subdivide any further
 		if col == binimg.White {
 			n.color = White
 		} else {
 			n.color = Black
 		}
-	} else {
-		n.color = Gray
-	}
-
-	switch {
-	case n.width()/2 < q.resolution || n.height()/2 < q.resolution:
-		// reached the maximal resolution, so this node must be a leaf
-		if !n.isLeaf() {
-			// make this node a leaf
+	case false:
+		// if we reached maximal resolution..
+		if n.width()/2 < q.resolution || n.height()/2 < q.resolution {
+			// ...make this node a black leaf, instead of gray
 			n.color = Black
+		} else {
+			q.subdivide(n)
 		}
-		break
-	case n.color == Gray:
-		q.subdivide(n)
-	default:
-		// quadrant is monocolor, don't need any further subdivisions
 	}
 	return n
 }
