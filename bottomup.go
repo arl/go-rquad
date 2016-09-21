@@ -16,7 +16,7 @@ import (
 type BUQuadtree struct {
 	resolution int
 	scanner    binimg.Scanner
-	root       *BUQuadnode
+	root       *BUQNode
 }
 
 // NewBUQuadtree creates a BUQuadtree and populates it with BUQuadnode's,
@@ -49,8 +49,8 @@ func NewBUQuadtree(scanner binimg.Scanner, resolution int) (*BUQuadtree, error) 
 	return q, nil
 }
 
-func (q *BUQuadtree) createRootNode() *BUQuadnode {
-	n := &BUQuadnode{
+func (q *BUQuadtree) createRootNode() *BUQNode {
+	n := &BUQNode{
 		quadnode: quadnode{
 			color:   Gray,
 			topLeft: image.Point{0, 0},
@@ -64,8 +64,8 @@ func (q *BUQuadtree) createRootNode() *BUQuadnode {
 	return n
 }
 
-func (q *BUQuadtree) createInnerNode(topleft, bottomright image.Point, parent *BUQuadnode) *BUQuadnode {
-	n := &BUQuadnode{
+func (q *BUQuadtree) createInnerNode(topleft, bottomright image.Point, parent *BUQNode) *BUQNode {
+	n := &BUQNode{
 		quadnode: quadnode{
 			color:       Gray,
 			topLeft:     topleft,
@@ -100,7 +100,7 @@ func (q *BUQuadtree) createInnerNode(topleft, bottomright image.Point, parent *B
 	return n
 }
 
-func (q *BUQuadtree) subdivide(n *BUQuadnode) {
+func (q *BUQuadtree) subdivide(n *BUQNode) {
 	//     x0   x1     x2
 	//  y0 .----.-------.
 	//     |    |       |

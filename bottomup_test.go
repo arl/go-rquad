@@ -196,7 +196,7 @@ func TestBUQuadtreeNeighbours(t *testing.T) {
 		if !exists {
 			t.Fatalf("%s, resolution %d, expected exists to be true for point %v, got false instead", imgAlias[tt.img], tt.res, tt.pt)
 		}
-		bunode := node.(*BUQuadnode)
+		bunode := node.(*BUQNode)
 
 		var black, white int
 		nodes := NodeList{}
@@ -305,7 +305,7 @@ func TestBUQuadtreeChildren(t *testing.T) {
 			t.Fatalf("resolution %d, expected exists to be true for point %v, got false instead", tt.res, tt.pt)
 		}
 
-		parent := node.Parent().(*BUQuadnode)
+		parent := node.Parent().(*BUQNode)
 		if parent == nil {
 			t.Fatalf("resolution %d, parent of %v is nil, expected not nil", tt.res, tt.pt)
 		}
