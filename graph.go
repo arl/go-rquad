@@ -46,8 +46,7 @@ func NewGraphFromQuadtree(q Quadtree) *Graph {
 		// save node into the graph
 		g.nodes = append(g.nodes, n)
 
-		var nbours QNodeList
-		qn.Neighbours(&nbours)
+		nbours := qn.Neighbours()
 		for _, qnb := range nbours {
 
 			var (

@@ -239,8 +239,7 @@ func TestBUQuadtreeNeighbours(t *testing.T) {
 		bunode := node.(*BUQNode)
 
 		var black, white int
-		nodes := QNodeList{}
-		bunode.Neighbours(&nodes)
+		nodes := bunode.Neighbours()
 		for _, nb := range nodes {
 			switch nb.Color() {
 			case Black:
