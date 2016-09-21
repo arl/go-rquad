@@ -11,4 +11,7 @@ type Quadtree interface {
 	//
 	// If such node doesn't exist, exists is false
 	PointQuery(pt image.Point) (n QNode, exists bool)
+
+	// WhiteNodes returns a slice of all the white nodes of the quadtree.
+	WhiteNodes() QNodeList
 }

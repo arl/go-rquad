@@ -22,7 +22,7 @@ func benchmarkQuadtreeCreation(b *testing.B, pngfile string, resolution int) {
 	// run N times
 	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
-		_, err := NewBUQuadtree(scanner, resolution, nil)
+		_, err := NewBUQuadtree(scanner, resolution)
 		checkB(b, err)
 	}
 }

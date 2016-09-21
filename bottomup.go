@@ -17,7 +17,8 @@ type BUQuadtree struct {
 	resolution  int            // maximal resolution
 	scanner     binimg.Scanner // reference image
 	root        *BUQNode       // root node
-	onWhiteNode func(QNode)    // white node callback
+	whiteNodes  QNodeList      // white nodes (filled during creation)
+	onWhiteNode func(QNode)    // callback that fills whiteNodes
 }
 
 // NewBUQuadtree creates a BUQuadtree and populates it with BUQNode's,
@@ -26,11 +27,7 @@ type BUQuadtree struct {
 // resolution is the minimal dimension that can have a leaf node, no further
 // subdivisions will be performed on a node if its width or height is equal to
 // this value.
-// The provided onWhiteNode callback (may be nil) will be called once for each
-// white node of the tree, during subdivision. The fact that it is called during
-// subdivisions means that neighbour finding functions might give wrong result
-// because all the neighbours may not have been created yet.
-func NewBUQuadtree(scanner binimg.Scanner, resolution int, onWhiteNode func(QNode)) (*BUQuadtree, error) {
+func NewBUQuadtree(scanner binimg.Scanner, resolution int) (*BUQuadtree, error) {
 	// initialize package level variables
 	initPackage()
 
@@ -51,9 +48,14 @@ func NewBUQuadtree(scanner binimg.Scanner, resolution int, onWhiteNode func(QNod
 	}
 
 	q := &BUQuadtree{
-		resolution:  resolution,
-		scanner:     scanner,
-		onWhiteNode: onWhiteNode,
+		resolution: resolution,
+		scanner:    scanner,
+	}
+
+	// onWhiteNode callback serves the purpose of filling the list of white
+	// nodes for providing it to the called of WhiteNodes()
+	q.onWhiteNode = func(n QNode) {
+		q.whiteNodes = append(q.whiteNodes, n)
 	}
 	q.root = q.createRootNode()
 	return q, nil
@@ -151,4 +153,9 @@ func (q *BUQuadtree) subdivide(n *BUQNode) {
 // If such node doesn't exist, exists is false.
 func (q *BUQuadtree) PointQuery(pt image.Point) (n QNode, exists bool) {
 	return q.root.pointQuery(pt)
+}
+
+// WhiteNodes returns a slice of all the white nodes of the quadtree.
+func (q *BUQuadtree) WhiteNodes() QNodeList {
+	return q.whiteNodes
 }
