@@ -83,9 +83,9 @@ func (n *BUQNode) equalSizeNeighbor(dir side) *BUQNode {
 	return neighbor
 }
 
-// _neighbours locates all leaf neighbours of the current node in the given
+// neighbours locates all leaf neighbours of the current node in the given
 // direction, appending them to a slice.
-func (n *BUQNode) _neighbours(dir side, nodes *QNodeList) {
+func (n *BUQNode) neighbours(dir side, nodes *QNodeList) {
 
 	// If no neighbor can be found in the given
 	// direction, node will be null.
@@ -106,10 +106,10 @@ func (n *BUQNode) _neighbours(dir side, nodes *QNodeList) {
 // Neighbours fills a NodeList with the neighbours of this node. n must be
 // a leaf node, or nodes will be an empty slice.
 func (n *BUQNode) Neighbours(nodes *QNodeList) {
-	n._neighbours(north, nodes)
-	n._neighbours(south, nodes)
-	n._neighbours(east, nodes)
-	n._neighbours(west, nodes)
+	n.neighbours(north, nodes)
+	n.neighbours(south, nodes)
+	n.neighbours(east, nodes)
+	n.neighbours(west, nodes)
 }
 
 // quadrant obtains this node's quadrant relative to its parent.
