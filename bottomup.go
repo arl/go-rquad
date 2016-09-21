@@ -14,14 +14,23 @@ import (
 // the same parent may have different dimensions due to the integer division.
 // It internally handles BUQNode's which implement the QNode interface.
 type BUQuadtree struct {
-	resolution int
-	scanner    binimg.Scanner
-	root       *BUQNode
+	resolution  int            // maximal resolution
+	scanner     binimg.Scanner // reference image
+	root        *BUQNode       // root node
+	onWhiteNode func(QNode)    // white node callback
 }
 
 // NewBUQuadtree creates a BUQuadtree and populates it with BUQNode's,
 // according to the content of the scanned image.
-func NewBUQuadtree(scanner binimg.Scanner, resolution int) (*BUQuadtree, error) {
+//
+// resolution is the minimal dimension that can have a leaf node, no further
+// subdivisions will be performed on a node if its width or height is equal to
+// this value.
+// The provided onWhiteNode callback (may be nil) will be called once for each
+// white node of the tree, during subdivision. The fact that it is called during
+// subdivisions means that neighbour finding functions might give wrong result
+// because all the neighbours may not have been created yet.
+func NewBUQuadtree(scanner binimg.Scanner, resolution int, onWhiteNode func(QNode)) (*BUQuadtree, error) {
 	// initialize package level variables
 	initPackage()
 
@@ -42,8 +51,9 @@ func NewBUQuadtree(scanner binimg.Scanner, resolution int) (*BUQuadtree, error) 
 	}
 
 	q := &BUQuadtree{
-		resolution: resolution,
-		scanner:    scanner,
+		resolution:  resolution,
+		scanner:     scanner,
+		onWhiteNode: onWhiteNode,
 	}
 	q.root = q.createRootNode()
 	return q, nil
@@ -80,6 +90,10 @@ func (q *BUQuadtree) createInnerNode(topleft, bottomright image.Point, parent *B
 		// quadrant is uniform, won't need to subdivide any further
 		if col == binimg.White {
 			n.color = White
+			// white node callback
+			if q.onWhiteNode != nil {
+				q.onWhiteNode(n)
+			}
 		} else {
 			n.color = Black
 		}

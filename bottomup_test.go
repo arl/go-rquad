@@ -33,11 +33,50 @@ func TestBUQuadtreeLogicalErrors(t *testing.T) {
 		bm = binimg.New(image.Rect(0, 0, tt.w, tt.h))
 		scanner, err = binimg.NewScanner(bm)
 		check(t, err)
-		_, err = NewBUQuadtree(scanner, tt.res)
+		_, err = NewBUQuadtree(scanner, tt.res, nil)
 		actual := err == nil
 		if actual != tt.expected {
 			t.Errorf("(%d,%d,%d): expected %v, actual %v, err:'%v'",
 				tt.w, tt.h, tt.res, tt.expected, actual, err)
+		}
+	}
+}
+
+func TestBUQuadtreeOnWhiteNode(t *testing.T) {
+	var (
+		err     error
+		bm      image.Image
+		scanner binimg.Scanner
+	)
+	bm, err = loadPNG("./testdata/labyrinth1.32x32.png")
+	check(t, err)
+	scanner, err = binimg.NewScanner(bm)
+	check(t, err)
+
+	count := 0
+	countWhiteNodes := func(n QNode) {
+		count++
+	}
+
+	for _, res := range []int{1, 2, 3, 4, 5, 6, 7, 8} {
+		count = 0
+		_, err := NewBUQuadtree(scanner, res, countWhiteNodes)
+		check(t, err)
+
+		if count != 7 {
+			t.Errorf("resolution:%d, expected 7 white nodes, got %d",
+				res, count)
+		}
+	}
+
+	for _, res := range []int{9, 15} {
+		count = 0
+		_, err := NewBUQuadtree(scanner, res, countWhiteNodes)
+		check(t, err)
+
+		if count != 1 {
+			t.Errorf("resolution:%d, expected 1 white nodes, got %d",
+				res, count)
 		}
 	}
 }
@@ -59,7 +98,7 @@ func TestBUQuadtreeSubdivisions(t *testing.T) {
 	check(t, err)
 
 	for _, res := range []int{1, 2, 3, 4, 5, 6, 7, 8} {
-		q, err := NewBUQuadtree(scanner, res)
+		q, err := NewBUQuadtree(scanner, res, nil)
 		check(t, err)
 
 		nodes := listNodes(q.root)
@@ -70,7 +109,7 @@ func TestBUQuadtreeSubdivisions(t *testing.T) {
 	}
 
 	for _, res := range []int{9, 15} {
-		q, err := NewBUQuadtree(scanner, res)
+		q, err := NewBUQuadtree(scanner, res, nil)
 		check(t, err)
 
 		nodes := listNodes(q.root)
@@ -115,7 +154,7 @@ func TestBUQuadtreePointQuery(t *testing.T) {
 	check(t, err)
 
 	for _, res := range []int{1, 2, 3, 4, 5, 6, 7, 8} {
-		q, err := NewBUQuadtree(scanner, res)
+		q, err := NewBUQuadtree(scanner, res, nil)
 		check(t, err)
 
 		for _, tt := range testTbl {
@@ -194,7 +233,7 @@ func TestBUQuadtreeNeighbours(t *testing.T) {
 	for _, tt := range testTbl {
 		scanner, err := binimg.NewScanner(tt.img)
 		check(t, err)
-		q, err := NewBUQuadtree(scanner, tt.res)
+		q, err := NewBUQuadtree(scanner, tt.res, nil)
 		check(t, err)
 
 		node, exists := q.PointQuery(tt.pt)
@@ -251,7 +290,7 @@ func TestBUQuadtreeRootChildren(t *testing.T) {
 	}
 
 	for _, tt := range testTbl {
-		q, err := NewBUQuadtree(scanner, tt.res)
+		q, err := NewBUQuadtree(scanner, tt.res, nil)
 		check(t, err)
 
 		root := q.root
@@ -308,7 +347,7 @@ func TestBUQuadtreeChildren(t *testing.T) {
 	}
 
 	for _, tt := range testTbl {
-		q, err := NewBUQuadtree(scanner, tt.res)
+		q, err := NewBUQuadtree(scanner, tt.res, nil)
 		check(t, err)
 
 		node, exists := q.PointQuery(tt.pt)
