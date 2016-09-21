@@ -244,7 +244,7 @@ func TestBUQuadtreeNeighbours(t *testing.T) {
 		bunode := node.(*BUQNode)
 
 		var black, white int
-		nodes := NodeList{}
+		nodes := QNodeList{}
 		bunode.Neighbours(&nodes)
 		for _, nb := range nodes {
 			switch nb.Color() {
@@ -299,7 +299,7 @@ func TestBUQuadtreeRootChildren(t *testing.T) {
 				tt.res)
 		}
 
-		var children NodeList
+		var children QNodeList
 		root.children(tt.dir, &children)
 		var black, white int
 		for _, nb := range children {
@@ -362,7 +362,7 @@ func TestBUQuadtreeChildren(t *testing.T) {
 				tt.res, tt.pt)
 		}
 
-		var children NodeList
+		var children QNodeList
 		parent.children(tt.dir, &children)
 		var black, white int
 		for _, nb := range children {
