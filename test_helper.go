@@ -45,6 +45,20 @@ func loadPNG(filename string) (*binimg.Binary, error) {
 	return bm, nil
 }
 
+func savePNG(img image.Image, filename string) error {
+	out, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	err = png.Encode(out, img)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func listNodes(n QNode) QNodeList {
 	var _listNodes func(n QNode, nodes *QNodeList)
 	_listNodes = func(n QNode, nodes *QNodeList) {
