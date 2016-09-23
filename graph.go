@@ -7,14 +7,11 @@ import (
 	astar "github.com/beefsack/go-astar"
 )
 
-// NodeList is a slice of Node's.
-type NodeList []*Node
-
 // A Node is a node, or vertex, of a Graph based off the white QNode's of a
 // Quadtree.
 type Node struct {
-	QNode          // underlying quadtree node
-	links NodeList // links to neighbours
+	QNode         // underlying quadtree node
+	links []*Node // links to neighbours
 }
 
 // An Edge represents an edge between 2 Nodes.
@@ -30,8 +27,7 @@ type Edge struct{ n1, n2 *Node }
 //   adjacent nodes must be retrieved in 0(1).
 // - we don't need to query the graph for adjacency between 2 random nodes.
 type Graph struct {
-	nodes NodeList
-	edges []Edge
+	nodes []*Node
 }
 
 type GenEdgeFunc func(n1 QNode, n2 QNode) *Edge
@@ -42,7 +38,7 @@ type GenEdgeFunc func(n1 QNode, n2 QNode) *Edge
 func NewGraphFromQuadtree(q Quadtree) *Graph {
 	whiteNodes := q.WhiteNodes()
 	g := &Graph{
-		nodes: make(NodeList, 0, len(whiteNodes)),
+		nodes: make([]*Node, 0, len(whiteNodes)),
 	}
 
 	// lookup table for fast retrieving of the Node's we
