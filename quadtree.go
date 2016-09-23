@@ -14,4 +14,7 @@ type Quadtree interface {
 
 	// WhiteNodes returns a slice of all the white nodes of the quadtree.
 	WhiteNodes() QNodeList
+
+	// Root returns the quadtree root node.
+	Root() QNode
 }

@@ -159,3 +159,8 @@ func (q *BUQuadtree) PointQuery(pt image.Point) (n QNode, exists bool) {
 func (q *BUQuadtree) WhiteNodes() QNodeList {
 	return q.whiteNodes
 }
+
+// Root returns the quadtree root node.
+func (q *BUQuadtree) Root() QNode {
+	return q.root
+}
