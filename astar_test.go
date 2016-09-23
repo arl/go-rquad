@@ -29,14 +29,6 @@ func drawNode(ctx *gg.Context, node *Node) {
 	ctx.Stroke()
 }
 
-func createGraphFromImage(scanner binimg.Scanner, res int) (*Graph, error) {
-	q, err := NewBUQuadtree(scanner, res)
-	if err != nil {
-		return nil, err
-	}
-	return NewGraphFromQuadtree(q), nil
-}
-
 func TestAStar(t *testing.T) {
 	var (
 		bm      image.Image
@@ -58,7 +50,6 @@ func TestAStar(t *testing.T) {
 
 	fmt.Println("graph: nodes", len(g.nodes))
 	org, dst := g.nodes[300], g.nodes[1300]
-	//org, dst := g.nodes[0], g.nodes[1]
 
 	fmt.Println("org: ", org)
 	fmt.Println("dst: ", dst)
@@ -69,13 +60,9 @@ func TestAStar(t *testing.T) {
 
 	path, _, found := astar.Path(org, dst)
 	if found {
-		//fmt.Println("distance", distance)
-
 		for _, p := range path {
 			drawNode(ctx, p.(*Node))
 		}
-
-		//fmt.Println("found path")
 		drawPath(ctx, path)
 	} else {
 		t.Errorf("path not found")

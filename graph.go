@@ -12,6 +12,7 @@ import (
 type Node struct {
 	QNode         // underlying quadtree node
 	links []*Node // links to neighbours
+	edges []*Edge // edges, edges[i] points to links[i]
 }
 
 // An Edge represents an edge between 2 Nodes.
@@ -30,12 +31,13 @@ type Graph struct {
 	nodes []*Node
 }
 
+// GenEdgeFunc creates an Edge from 2 QNode's.
 type GenEdgeFunc func(n1 QNode, n2 QNode) *Edge
 
 // NewGraphFromQuadtree creates a Graph where vertices are the white nodes of
 // the given quadtree, and edges exist where 2 white nodes are neighbours in 2D
 // space (their underlying rectangle share a segment)
-func NewGraphFromQuadtree(q Quadtree) *Graph {
+func NewGraphFromQuadtree(q Quadtree, genEdgeFunc GenEdgeFunc) *Graph {
 	whiteNodes := q.WhiteNodes()
 	g := &Graph{
 		nodes: make([]*Node, 0, len(whiteNodes)),
@@ -75,8 +77,9 @@ func NewGraphFromQuadtree(q Quadtree) *Graph {
 			// get neighbour from lut or create a new one
 			nb := newOrGet(qnb)
 			n.links = append(n.links, nb)
-			//e := Edge{n, nb}
-			//g.edges = append(g.edges, e)
+			if genEdgeFunc != nil {
+				n.edges = append(n.edges, genEdgeFunc(qn, qnb))
+			}
 		}
 	}
 	return g
@@ -151,5 +154,6 @@ func (n *Node) squaredDistance(to *Node) float64 {
 }
 
 func (n *Node) String() string {
-	return fmt.Sprintf("Node {%s,%s|%d links}", n.TopLeft(), n.BottomRight(), len(n.links))
+	return fmt.Sprintf("Node {%s,%s|%d links}",
+		n.TopLeft(), n.BottomRight(), len(n.links))
 }
