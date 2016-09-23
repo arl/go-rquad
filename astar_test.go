@@ -69,26 +69,3 @@ func TestAStar(t *testing.T) {
 	}
 	savePNG(ctx.Image(), "testpath.png")
 }
-
-func BenchmarkGenerateGraph(b *testing.B) {
-	var (
-		bm      image.Image
-		err     error
-		scanner binimg.Scanner
-	)
-
-	pngfile := "./testdata/big.png"
-	resolution := 16
-
-	bm, err = loadPNG(pngfile)
-	checkB(b, err)
-	scanner, err = binimg.NewScanner(bm)
-	checkB(b, err)
-
-	// run N times
-	b.ResetTimer()
-	for n := 0; n < b.N; n++ {
-		_, err = createGraphFromImage(scanner, resolution)
-		checkB(b, err)
-	}
-}
