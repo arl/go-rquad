@@ -1,7 +1,5 @@
 package quadtree
 
-import "image"
-
 // BUQNode is a node of a BUQuadtree.
 //
 // It is a basic implementation of the QNode interface, augmented with
@@ -126,26 +124,4 @@ func (n *BUQNode) quadrant() quadrant {
 		return northEast
 	}
 	return southEast
-}
-
-func (n *BUQNode) pointQuery(pt image.Point) (QNode, bool) {
-	if !n.inbound(pt) {
-		return nil, false
-	}
-	if n.color != Gray {
-		return n, true
-	}
-	nw := n.northWest.(*BUQNode)
-	ne := n.northEast.(*BUQNode)
-	sw := n.southWest.(*BUQNode)
-	se := n.southEast.(*BUQNode)
-
-	if nw.inbound(pt) {
-		return nw.pointQuery(pt)
-	} else if ne.inbound(pt) {
-		return ne.pointQuery(pt)
-	} else if sw.inbound(pt) {
-		return sw.pointQuery(pt)
-	}
-	return se.pointQuery(pt)
 }

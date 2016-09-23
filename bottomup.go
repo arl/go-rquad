@@ -148,13 +148,6 @@ func (q *BUQuadtree) subdivide(n *BUQNode) {
 		n)
 }
 
-// PointQuery returns the QNode containing the point at given coordinates.
-//
-// If such node doesn't exist, exists is false.
-func (q *BUQuadtree) PointQuery(pt image.Point) (n QNode, exists bool) {
-	return q.root.pointQuery(pt)
-}
-
 // WhiteNodes returns a slice of all the white nodes of the quadtree.
 func (q *BUQuadtree) WhiteNodes() QNodeList {
 	return q.whiteNodes

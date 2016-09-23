@@ -115,7 +115,7 @@ func TestBUQuadtreeSubdivisions(t *testing.T) {
 	}
 }
 
-func TestBUQuadtreePointQuery(t *testing.T) {
+func TestBUQuadtreeQuery(t *testing.T) {
 	var testTbl = []struct {
 		pt     image.Point // queried point
 		exists bool        //node exists
@@ -153,13 +153,13 @@ func TestBUQuadtreePointQuery(t *testing.T) {
 		check(t, err)
 
 		for _, tt := range testTbl {
-			node, exists := q.PointQuery(tt.pt)
+			node, exists := Query(q, tt.pt)
 			if exists != tt.exists {
 				t.Fatalf("resolution %d, expected exists to be %t for point %v, got %t instead",
 					res, tt.exists, tt.pt, exists)
 			}
 			// obtain the refNode
-			refNode, refExists := q.PointQuery(refPt)
+			refNode, refExists := Query(q, refPt)
 			if !refExists {
 				t.Fatalf("reference node should exist")
 			}
@@ -231,7 +231,7 @@ func TestBUQuadtreeNeighbours(t *testing.T) {
 		q, err := NewBUQuadtree(scanner, tt.res)
 		check(t, err)
 
-		node, exists := q.PointQuery(tt.pt)
+		node, exists := Query(q, tt.pt)
 		if !exists {
 			t.Fatalf("%s, resolution %d, expected exists to be true for point %v, got false instead",
 				imgAlias[tt.img], tt.res, tt.pt)
@@ -344,7 +344,7 @@ func TestBUQuadtreeChildren(t *testing.T) {
 		q, err := NewBUQuadtree(scanner, tt.res)
 		check(t, err)
 
-		node, exists := q.PointQuery(tt.pt)
+		node, exists := Query(q, tt.pt)
 		if !exists {
 			t.Fatalf("resolution %d, expected exists to be true for point %v, got false instead",
 				tt.res, tt.pt)
