@@ -14,7 +14,7 @@ type Quadtree interface {
 	Root() QNode
 }
 
-// Query allows to obtain the maximum-depth node that contains a point.
+// Query returns the leaf node that contains a given point.
 func Query(q Quadtree, pt image.Point) (n QNode, exists bool) {
 	return query(q.Root(), pt)
 }
