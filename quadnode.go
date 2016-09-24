@@ -99,5 +99,5 @@ func (n *qnode) child(q quadrant) QNode {
 }
 
 func (n *qnode) String() string {
-	return fmt.Sprintf("(%v,%d %d,%d %s)", n.bounds, n.color)
+	return fmt.Sprintf("(%v %s)", n.bounds, n.color)
 }
