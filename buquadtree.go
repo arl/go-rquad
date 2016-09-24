@@ -36,7 +36,7 @@ func NewBUQuadtree(scanner binimg.Scanner, resolution int) (*BUQuadtree, error) 
 	}
 
 	// To ensure a consistent behavior and eliminate corner cases,
-	// the Quadtree's root node needs to have children.  Thus, the
+	// the Quadtree's root node needs to have children. Thus, the
 	// first instantiated BUQNode needs to always be subdivided.
 	// This condition asserts the resolution is respected.
 	minDim := scanner.Bounds().Dx()
@@ -118,7 +118,7 @@ func (q *BUQuadtree) subdivide(n *BUQNode) {
 	//  y1 '----'-------'
 	//     | SW |  SE   |
 	//  y2 '----'-------'
-
+	//
 	x0 := n.bounds.Min.X
 	x1 := n.bounds.Min.X + n.bounds.Dx()/2
 	x2 := n.bounds.Max.X

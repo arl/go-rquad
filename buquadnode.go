@@ -16,7 +16,6 @@ func (n *BUQNode) isLeaf() bool {
 // children fills the given slice with all the leaf children of this node (i.e
 // either black or white), that can be found in a given direction.
 func (n *BUQNode) children(dir side, nodes *QNodeList) {
-
 	if n.isLeaf() {
 		return
 	}
@@ -59,7 +58,7 @@ func (n *BUQNode) children(dir side, nodes *QNodeList) {
 // equalSizeNeighbor locates an equal-sized neighbor of the current node in the
 // vertical or horizontal direction.
 //
-//  cf. Hanan Samet 1981 article Neighbor Finding in Quadtrees.
+// cf. Hanan Samet 1981 article Neighbor Finding in Quadtrees.
 // It can return nil if the neighbor can't be found.
 func (n *BUQNode) equalSizeNeighbor(dir side) *BUQNode {
 	var neighbor *BUQNode
@@ -84,7 +83,6 @@ func (n *BUQNode) equalSizeNeighbor(dir side) *BUQNode {
 // neighbours locates all leaf neighbours of the current node in the given
 // direction, appending them to a slice.
 func (n *BUQNode) neighbours(dir side, nodes *QNodeList) {
-
 	// If no neighbor can be found in the given
 	// direction, node will be null.
 	node := n.equalSizeNeighbor(dir)
