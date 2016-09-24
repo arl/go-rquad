@@ -51,9 +51,6 @@ func TestAStar(t *testing.T) {
 	fmt.Println("graph: nodes", len(g.nodes))
 	org, dst := g.nodes[300], g.nodes[1300]
 
-	fmt.Println("org: ", org)
-	fmt.Println("dst: ", dst)
-
 	ctx := gg.NewContextForImage(bm)
 	drawNode(ctx, org)
 	drawNode(ctx, dst)
