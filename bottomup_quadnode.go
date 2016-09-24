@@ -103,13 +103,11 @@ func (n *BUQNode) neighbours(dir side, nodes *QNodeList) {
 
 // Neighbours returns the node neighbours. n should be
 // a leaf node, or the returned slice will be empty.
-func (n *BUQNode) Neighbours() QNodeList {
-	var nodes QNodeList
-	n.neighbours(north, &nodes)
-	n.neighbours(south, &nodes)
-	n.neighbours(east, &nodes)
-	n.neighbours(west, &nodes)
-	return nodes
+func (n *BUQNode) Neighbours(nodes *QNodeList) {
+	n.neighbours(north, nodes)
+	n.neighbours(south, nodes)
+	n.neighbours(east, nodes)
+	n.neighbours(west, nodes)
 }
 
 // quadrant obtains this node's quadrant relative to its parent.

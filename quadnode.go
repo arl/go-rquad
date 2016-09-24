@@ -36,9 +36,9 @@ type QNode interface {
 
 	Color() QNodeColor
 
-	// Neighbours returns the node neighbours. n should be
+	// Neighbours obtains the node neighbours. n should be
 	// a leaf node, or the returned slice will be empty.
-	Neighbours() QNodeList
+	Neighbours(*QNodeList)
 }
 
 // quadnode is a basic implementation of the QNode interface.
