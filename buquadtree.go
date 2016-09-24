@@ -64,11 +64,10 @@ func NewBUQuadtree(scanner binimg.Scanner, resolution int) (*BUQuadtree, error) 
 func (q *BUQuadtree) createRootNode() *BUQNode {
 	n := &BUQNode{
 		quadnode: quadnode{
-			color:   Gray,
-			topLeft: image.Point{0, 0},
-			bottomRight: image.Point{
-				q.scanner.Bounds().Dx(),
-				q.scanner.Bounds().Dy(),
+			color: Gray,
+			bounds: image.Rectangle{
+				image.Point{0, 0},
+				q.scanner.Bounds().Size(),
 			},
 		},
 	}
@@ -76,17 +75,16 @@ func (q *BUQuadtree) createRootNode() *BUQNode {
 	return n
 }
 
-func (q *BUQuadtree) createInnerNode(topleft, bottomright image.Point, parent *BUQNode) *BUQNode {
+func (q *BUQuadtree) createInnerNode(bounds image.Rectangle, parent *BUQNode) *BUQNode {
 	n := &BUQNode{
 		quadnode: quadnode{
-			color:       Gray,
-			topLeft:     topleft,
-			bottomRight: bottomright,
-			parent:      parent,
+			color:  Gray,
+			bounds: bounds,
+			parent: parent,
 		},
 	}
 
-	uniform, col := q.scanner.Uniform(image.Rectangle{topleft, bottomright})
+	uniform, col := q.scanner.Uniform(bounds)
 	switch uniform {
 	case true:
 		// quadrant is uniform, won't need to subdivide any further
@@ -121,31 +119,19 @@ func (q *BUQuadtree) subdivide(n *BUQNode) {
 	//     | SW |  SE   |
 	//  y2 '----'-------'
 
-	x0 := n.topLeft.X
-	x1 := n.topLeft.X + n.width()/2
-	x2 := n.bottomRight.X
+	x0 := n.bounds.Min.X
+	x1 := n.bounds.Min.X + n.width()/2
+	x2 := n.bounds.Max.X
 
-	y0 := n.topLeft.Y
-	y1 := n.topLeft.Y + n.height()/2
-	y2 := n.bottomRight.Y
+	y0 := n.bounds.Min.Y
+	y1 := n.bounds.Min.Y + n.height()/2
+	y2 := n.bounds.Max.Y
 
 	// create the 4 children nodes, one per quadrant
-	n.northWest = q.createInnerNode(
-		image.Point{x0, y0},
-		image.Point{x1, y1},
-		n)
-	n.southWest = q.createInnerNode(
-		image.Point{x0, y1},
-		image.Point{x1, y2},
-		n)
-	n.northEast = q.createInnerNode(
-		image.Point{x1, y0},
-		image.Point{x2, y1},
-		n)
-	n.southEast = q.createInnerNode(
-		image.Point{x1, y1},
-		image.Point{x2, y2},
-		n)
+	n.northWest = q.createInnerNode(image.Rect(x0, y0, x1, y1), n)
+	n.southWest = q.createInnerNode(image.Rect(x0, y1, x1, y2), n)
+	n.northEast = q.createInnerNode(image.Rect(x1, y0, x2, y1), n)
+	n.southEast = q.createInnerNode(image.Rect(x1, y1, x2, y2), n)
 }
 
 // WhiteNodes returns a slice of all the white nodes of the quadtree.

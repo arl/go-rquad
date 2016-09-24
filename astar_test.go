@@ -22,7 +22,7 @@ func drawNode(ctx *gg.Context, node *Node) {
 	ctx.SetRGB(1, 0, 0)
 	ctx.SetLineWidth(1)
 	ctx.DrawRectangle(
-		float64(node.TopLeft().X), float64(node.TopLeft().Y),
+		float64(node.Bounds().Min.X), float64(node.Bounds().Min.Y),
 		node.width(), node.height())
 	ctx.Stroke()
 }

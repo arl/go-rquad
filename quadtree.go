@@ -20,26 +20,19 @@ func Query(q Quadtree, pt image.Point) (n QNode, exists bool) {
 }
 
 func query(n QNode, pt image.Point) (QNode, bool) {
-	if !Inbound(n, pt) {
+	if !pt.In(n.Bounds()) {
 		return nil, false
 	}
 	if n.Color() != Gray {
 		return n, true
 	}
 
-	if Inbound(n.NorthWest(), pt) {
+	if pt.In(n.NorthWest().Bounds()) {
 		return query(n.NorthWest(), pt)
-	} else if Inbound(n.NorthEast(), pt) {
+	} else if pt.In(n.NorthEast().Bounds()) {
 		return query(n.NorthEast(), pt)
-	} else if Inbound(n.SouthWest(), pt) {
+	} else if pt.In(n.SouthWest().Bounds()) {
 		return query(n.SouthWest(), pt)
 	}
 	return query(n.SouthEast(), pt)
-}
-
-// Inbound checks if a given point is inside
-// the region represented by this node.
-func Inbound(n QNode, pt image.Point) bool {
-	return (n.TopLeft().X <= pt.X && pt.X < n.BottomRight().X) &&
-		(n.TopLeft().Y <= pt.Y && pt.Y < n.BottomRight().Y)
 }

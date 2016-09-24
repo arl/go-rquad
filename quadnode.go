@@ -31,9 +31,7 @@ type QNode interface {
 	SouthWest() QNode
 	SouthEast() QNode
 
-	TopLeft() image.Point
-	BottomRight() image.Point
-
+	Bounds() image.Rectangle
 	Color() QNodeColor
 
 	// Neighbours obtains the node neighbours. n should be
@@ -50,22 +48,19 @@ type quadnode struct {
 	southWest QNode // pointer to the southwest child
 	southEast QNode // pointer to the southeast child
 
-	// node top-left corner coordinates, the origin
-	topLeft image.Point
-
-	// node bottom-right corner coordinates, the point is included
-	bottomRight image.Point
+	// node bounds
+	bounds image.Rectangle
 
 	// node color
 	color QNodeColor
 }
 
 func (n *quadnode) TopLeft() image.Point {
-	return n.topLeft
+	return n.bounds.Min
 }
 
 func (n *quadnode) BottomRight() image.Point {
-	return n.bottomRight
+	return n.bounds.Max
 }
 
 func (n *quadnode) Color() QNodeColor {
@@ -92,12 +87,16 @@ func (n *quadnode) Parent() QNode {
 	return n.parent
 }
 
+func (n *quadnode) Bounds() image.Rectangle {
+	return n.bounds
+}
+
 func (n *quadnode) width() int {
-	return n.bottomRight.X - n.topLeft.X
+	return n.bounds.Dx()
 }
 
 func (n *quadnode) height() int {
-	return n.bottomRight.Y - n.topLeft.Y
+	return n.bounds.Dy()
 }
 
 // child returns a pointer to the child node associated to the given quadrant
@@ -115,5 +114,5 @@ func (n *quadnode) child(q quadrant) QNode {
 }
 
 func (n *quadnode) String() string {
-	return fmt.Sprintf("(%d,%d %d,%d %s)", n.topLeft.X, n.topLeft.Y, n.bottomRight.X, n.bottomRight.Y, n.color)
+	return fmt.Sprintf("(%v,%d %d,%d %s)", n.bounds, n.color)
 }
