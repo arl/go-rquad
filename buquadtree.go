@@ -99,7 +99,7 @@ func (q *BUQuadtree) createInnerNode(bounds image.Rectangle, parent *BUQNode) *B
 		}
 	case false:
 		// if we reached maximal resolution..
-		if n.width()/2 < q.resolution || n.height()/2 < q.resolution {
+		if n.bounds.Dx()/2 < q.resolution || n.bounds.Dy()/2 < q.resolution {
 			// ...make this node a black leaf, instead of gray
 			n.color = Black
 		} else {
@@ -120,11 +120,11 @@ func (q *BUQuadtree) subdivide(n *BUQNode) {
 	//  y2 '----'-------'
 
 	x0 := n.bounds.Min.X
-	x1 := n.bounds.Min.X + n.width()/2
+	x1 := n.bounds.Min.X + n.bounds.Dx()/2
 	x2 := n.bounds.Max.X
 
 	y0 := n.bounds.Min.Y
-	y1 := n.bounds.Min.Y + n.height()/2
+	y1 := n.bounds.Min.Y + n.bounds.Dy()/2
 	y2 := n.bounds.Max.Y
 
 	// create the 4 children nodes, one per quadrant

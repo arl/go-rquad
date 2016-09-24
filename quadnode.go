@@ -83,14 +83,6 @@ func (n *quadnode) Bounds() image.Rectangle {
 	return n.bounds
 }
 
-func (n *quadnode) width() int {
-	return n.bounds.Dx()
-}
-
-func (n *quadnode) height() int {
-	return n.bounds.Dy()
-}
-
 // child returns a pointer to the child node associated to the given quadrant
 func (n *quadnode) child(q quadrant) QNode {
 	switch q {
