@@ -20,7 +20,8 @@ const (
 
 var initDone bool
 
-// initPackage initializes package level variables.
+// initPackage initializes package level variables. This is automatically
+// called when first needed.
 func initPackage() {
 	if initDone {
 		return

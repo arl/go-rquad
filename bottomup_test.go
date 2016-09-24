@@ -36,7 +36,42 @@ func TestBUQuadtreeLogicalErrors(t *testing.T) {
 		_, err = NewBUQuadtree(scanner, tt.res)
 		actual := err == nil
 		if actual != tt.expected {
-			t.Errorf("(%d,%d,%d): expected %v, actual %v, err:'%v'", tt.w, tt.h, tt.res, tt.expected, actual, err)
+			t.Errorf("(%d,%d,%d): expected %v, actual %v, err:'%v'",
+				tt.w, tt.h, tt.res, tt.expected, actual, err)
+		}
+	}
+}
+
+func TestBUQuadtreeWhiteNodes(t *testing.T) {
+	var (
+		err     error
+		bm      image.Image
+		scanner binimg.Scanner
+	)
+	bm, err = loadPNG("./testdata/labyrinth1.32x32.png")
+	check(t, err)
+	scanner, err = binimg.NewScanner(bm)
+	check(t, err)
+
+	for _, res := range []int{1, 2, 3, 4, 5, 6, 7, 8} {
+		q, err := NewBUQuadtree(scanner, res)
+		check(t, err)
+
+		whiteNodes := q.WhiteNodes()
+		if len(whiteNodes) != 7 {
+			t.Errorf("resolution:%d, expected 7 white nodes, got %d",
+				res, len(whiteNodes))
+		}
+	}
+
+	for _, res := range []int{9, 15} {
+		q, err := NewBUQuadtree(scanner, res)
+		check(t, err)
+
+		whiteNodes := q.WhiteNodes()
+		if len(whiteNodes) != 1 {
+			t.Errorf("resolution:%d, expected 1 white nodes, got %d",
+				res, len(whiteNodes))
 		}
 	}
 }
@@ -63,7 +98,8 @@ func TestBUQuadtreeSubdivisions(t *testing.T) {
 
 		nodes := listNodes(q.root)
 		if len(nodes) != 7 {
-			t.Errorf("resolution:%d, expected 7 nodes, got %d", res, len(nodes))
+			t.Errorf("resolution:%d, expected 7 nodes, got %d",
+				res, len(nodes))
 		}
 	}
 
@@ -73,12 +109,13 @@ func TestBUQuadtreeSubdivisions(t *testing.T) {
 
 		nodes := listNodes(q.root)
 		if len(nodes) != 1 {
-			t.Errorf("resolution:%d, expected 1 nodes, got %d", res, len(nodes))
+			t.Errorf("resolution:%d, expected 1 nodes, got %d",
+				res, len(nodes))
 		}
 	}
 }
 
-func TestBUQuadtreePointQuery(t *testing.T) {
+func TestBUQuadtreeQuery(t *testing.T) {
 	var testTbl = []struct {
 		pt     image.Point // queried point
 		exists bool        //node exists
@@ -116,12 +153,13 @@ func TestBUQuadtreePointQuery(t *testing.T) {
 		check(t, err)
 
 		for _, tt := range testTbl {
-			node, exists := q.PointQuery(tt.pt)
+			node, exists := Query(q, tt.pt)
 			if exists != tt.exists {
-				t.Fatalf("resolution %d, expected exists to be %t for point %v, got %t instead", res, tt.exists, tt.pt, exists)
+				t.Fatalf("resolution %d, expected exists to be %t for point %v, got %t instead",
+					res, tt.exists, tt.pt, exists)
 			}
 			// obtain the refNode
-			refNode, refExists := q.PointQuery(refPt)
+			refNode, refExists := Query(q, refPt)
 			if !refExists {
 				t.Fatalf("reference node should exist")
 			}
@@ -130,7 +168,8 @@ func TestBUQuadtreePointQuery(t *testing.T) {
 				// check if queried node should be equal to reference node
 				eqRef := node == refNode
 				if eqRef != tt.eqRef {
-					t.Errorf("resolution %d, got %t for comparison between reference node and queried node, expected %t. node:%v", res, eqRef, tt.eqRef, node)
+					t.Errorf("resolution %d, got %t for comparison between reference node and queried node, expected %t. node:%v",
+						res, eqRef, tt.eqRef, node)
 				}
 			}
 		}
@@ -192,14 +231,15 @@ func TestBUQuadtreeNeighbours(t *testing.T) {
 		q, err := NewBUQuadtree(scanner, tt.res)
 		check(t, err)
 
-		node, exists := q.PointQuery(tt.pt)
+		node, exists := Query(q, tt.pt)
 		if !exists {
-			t.Fatalf("%s, resolution %d, expected exists to be true for point %v, got false instead", imgAlias[tt.img], tt.res, tt.pt)
+			t.Fatalf("%s, resolution %d, expected exists to be true for point %v, got false instead",
+				imgAlias[tt.img], tt.res, tt.pt)
 		}
-		bunode := node.(*BUQuadnode)
+		bunode := node.(*BUQNode)
 
 		var black, white int
-		nodes := NodeList{}
+		var nodes QNodeList
 		bunode.Neighbours(&nodes)
 		for _, nb := range nodes {
 			switch nb.Color() {
@@ -210,11 +250,13 @@ func TestBUQuadtreeNeighbours(t *testing.T) {
 			}
 		}
 		if tt.white != white {
-			t.Errorf("%s, resolution %d, expected pt %v to have %d white neighbours, got %d", imgAlias[tt.img], tt.res, tt.pt, tt.white, white)
+			t.Errorf("%s, resolution %d, expected pt %v to have %d white neighbours, got %d",
+				imgAlias[tt.img], tt.res, tt.pt, tt.white, white)
 
 		}
 		if tt.black != black {
-			t.Errorf("%s, resolution %d, expected pt %v to have %d black neighbours, got %d", imgAlias[tt.img], tt.res, tt.pt, tt.black, black)
+			t.Errorf("%s, resolution %d, expected pt %v to have %d black neighbours, got %d",
+				imgAlias[tt.img], tt.res, tt.pt, tt.black, black)
 		}
 	}
 }
@@ -248,10 +290,11 @@ func TestBUQuadtreeRootChildren(t *testing.T) {
 
 		root := q.root
 		if root == nil {
-			t.Fatalf("resolution %d, quadtree root is nil, expected not nil", tt.res)
+			t.Fatalf("resolution %d, quadtree root is nil, expected not nil",
+				tt.res)
 		}
 
-		var children NodeList
+		var children QNodeList
 		root.children(tt.dir, &children)
 		var black, white int
 		for _, nb := range children {
@@ -263,11 +306,13 @@ func TestBUQuadtreeRootChildren(t *testing.T) {
 			}
 		}
 		if tt.white != white {
-			t.Errorf("resolution %d, expected root to have %d white children at %s, got %d", tt.res, tt.white, tt.dir, white)
+			t.Errorf("resolution %d, expected root to have %d white children at %s, got %d",
+				tt.res, tt.white, tt.dir, white)
 
 		}
 		if tt.black != black {
-			t.Errorf("resolution %d, expected root to have %d black children at %s, got %d", tt.res, tt.black, tt.dir, black)
+			t.Errorf("resolution %d, expected root to have %d black children at %s, got %d",
+				tt.res, tt.black, tt.dir, black)
 		}
 	}
 }
@@ -300,17 +345,19 @@ func TestBUQuadtreeChildren(t *testing.T) {
 		q, err := NewBUQuadtree(scanner, tt.res)
 		check(t, err)
 
-		node, exists := q.PointQuery(tt.pt)
+		node, exists := Query(q, tt.pt)
 		if !exists {
-			t.Fatalf("resolution %d, expected exists to be true for point %v, got false instead", tt.res, tt.pt)
+			t.Fatalf("resolution %d, expected exists to be true for point %v, got false instead",
+				tt.res, tt.pt)
 		}
 
-		parent := node.Parent().(*BUQuadnode)
+		parent := node.Parent().(*BUQNode)
 		if parent == nil {
-			t.Fatalf("resolution %d, parent of %v is nil, expected not nil", tt.res, tt.pt)
+			t.Fatalf("resolution %d, parent of %v is nil, expected not nil",
+				tt.res, tt.pt)
 		}
 
-		var children NodeList
+		var children QNodeList
 		parent.children(tt.dir, &children)
 		var black, white int
 		for _, nb := range children {
@@ -322,11 +369,13 @@ func TestBUQuadtreeChildren(t *testing.T) {
 			}
 		}
 		if tt.white != white {
-			t.Errorf("resolution %d, expected %v to have %d white children at %s, got %d", tt.res, parent, tt.white, tt.dir, white)
+			t.Errorf("resolution %d, expected %v to have %d white children at %s, got %d",
+				tt.res, parent, tt.white, tt.dir, white)
 
 		}
 		if tt.black != black {
-			t.Errorf("resolution %d, expected %v to have %d black children at %s, got %d", tt.res, parent, tt.black, tt.dir, black)
+			t.Errorf("resolution %d, expected %v to have %d black children at %s, got %d",
+				tt.res, parent, tt.black, tt.dir, black)
 		}
 	}
 }

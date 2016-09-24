@@ -12,45 +12,57 @@ import (
 //
 // BUQuadtree works on rectangles quadrants as well as squares; quadrants of
 // the same parent may have different dimensions due to the integer division.
-// It internally handles BUQuadnode, that implement the Quadnode interface.
+// It internally handles BUQNode's which implement the QNode interface.
 type BUQuadtree struct {
-	resolution int
-	scanner    binimg.Scanner
-	root       *BUQuadnode
+	resolution  int            // maximal resolution
+	scanner     binimg.Scanner // reference image
+	root        *BUQNode       // root node
+	whiteNodes  QNodeList      // white nodes (filled during creation)
+	onWhiteNode func(QNode)    // callback that fills whiteNodes
 }
 
-// NewBUQuadtree creates a BUQuadtree and populates it with BUQuadnode's,
+// NewBUQuadtree creates a BUQuadtree and populates it with BUQNode's,
 // according to the content of the scanned image.
+//
+// resolution is the minimal dimension that can have a leaf node, no further
+// subdivisions will be performed on a node if its width or height is equal to
+// this value.
 func NewBUQuadtree(scanner binimg.Scanner, resolution int) (*BUQuadtree, error) {
 	// initialize package level variables
 	initPackage()
 
-	// To ensure a consistent behavior and eliminate corner cases, the
-	// Quadtree's root node need to have children, i.e. it can't
-	// be a leaf node. Thus, the first instantiated BUQuadnode need to
-	// always be subdivided. These two conditions make sure that
-	// even with this subdivision the resolution will be respected.
 	if resolution < 1 {
 		return nil, errors.New("resolution must be greater than 0")
 	}
+
+	// To ensure a consistent behavior and eliminate corner cases,
+	// the Quadtree's root node needs to have children.  Thus, the
+	// first instantiated BUQNode needs to always be subdivided.
+	// This condition asserts the resolution is respected.
 	minDim := scanner.Bounds().Dx()
 	if scanner.Bounds().Dy() < minDim {
 		minDim = scanner.Bounds().Dy()
 	}
 	if minDim < resolution*2 {
-		return nil, errors.New("the bitmap smaller dimension must be greater or equal to twice the resolution")
+		return nil, errors.New("the image smaller dimension must be greater or equal to twice the resolution")
 	}
 
 	q := &BUQuadtree{
 		resolution: resolution,
 		scanner:    scanner,
 	}
+
+	// onWhiteNode callback serves the purpose of filling the list of white
+	// nodes for providing it to the called of WhiteNodes()
+	q.onWhiteNode = func(n QNode) {
+		q.whiteNodes = append(q.whiteNodes, n)
+	}
 	q.root = q.createRootNode()
 	return q, nil
 }
 
-func (q *BUQuadtree) createRootNode() *BUQuadnode {
-	n := &BUQuadnode{
+func (q *BUQuadtree) createRootNode() *BUQNode {
+	n := &BUQNode{
 		quadnode: quadnode{
 			color:   Gray,
 			topLeft: image.Point{0, 0},
@@ -64,8 +76,8 @@ func (q *BUQuadtree) createRootNode() *BUQuadnode {
 	return n
 }
 
-func (q *BUQuadtree) createInnerNode(topleft, bottomright image.Point, parent *BUQuadnode) *BUQuadnode {
-	n := &BUQuadnode{
+func (q *BUQuadtree) createInnerNode(topleft, bottomright image.Point, parent *BUQNode) *BUQNode {
+	n := &BUQNode{
 		quadnode: quadnode{
 			color:       Gray,
 			topLeft:     topleft,
@@ -74,33 +86,32 @@ func (q *BUQuadtree) createInnerNode(topleft, bottomright image.Point, parent *B
 		},
 	}
 
-	if uniform, col := q.scanner.Uniform(image.Rectangle{topleft, bottomright}); uniform {
+	uniform, col := q.scanner.Uniform(image.Rectangle{topleft, bottomright})
+	switch uniform {
+	case true:
+		// quadrant is uniform, won't need to subdivide any further
 		if col == binimg.White {
 			n.color = White
+			// white node callback
+			if q.onWhiteNode != nil {
+				q.onWhiteNode(n)
+			}
 		} else {
 			n.color = Black
 		}
-	} else {
-		n.color = Gray
-	}
-
-	switch {
-	case n.width()/2 < q.resolution || n.height()/2 < q.resolution:
-		// reached the maximal resolution, so this node must be a leaf
-		if !n.isLeaf() {
-			// make this node a leaf
+	case false:
+		// if we reached maximal resolution..
+		if n.width()/2 < q.resolution || n.height()/2 < q.resolution {
+			// ...make this node a black leaf, instead of gray
 			n.color = Black
+		} else {
+			q.subdivide(n)
 		}
-		break
-	case n.color == Gray:
-		q.subdivide(n)
-	default:
-		// quadrant is monocolor, don't need any further subdivisions
 	}
 	return n
 }
 
-func (q *BUQuadtree) subdivide(n *BUQuadnode) {
+func (q *BUQuadtree) subdivide(n *BUQNode) {
 	//     x0   x1     x2
 	//  y0 .----.-------.
 	//     |    |       |
@@ -137,9 +148,12 @@ func (q *BUQuadtree) subdivide(n *BUQuadnode) {
 		n)
 }
 
-// PointQuery returns the Quadnode containing the point at given coordinates.
-//
-// If such node doesn't exist, exists is false.
-func (q *BUQuadtree) PointQuery(pt image.Point) (n Quadnode, exists bool) {
-	return q.root.pointQuery(pt)
+// WhiteNodes returns a slice of all the white nodes of the quadtree.
+func (q *BUQuadtree) WhiteNodes() QNodeList {
+	return q.whiteNodes
+}
+
+// Root returns the quadtree root node.
+func (q *BUQuadtree) Root() QNode {
+	return q.root
 }

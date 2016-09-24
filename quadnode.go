@@ -5,13 +5,13 @@ import (
 	"image"
 )
 
-// NodeColor is the set of colors that can take a Quadnode.
-type NodeColor byte
+// QNodeColor is the set of colors that can take a QNode.
+type QNodeColor byte
 
 const (
 	// Black is the color of leaf nodes that
 	// are considered as obstructed.
-	Black NodeColor = 0
+	Black QNodeColor = 0
 
 	// White is the color of leaf nodes that
 	// are considered as free.
@@ -22,33 +22,33 @@ const (
 	Gray = 2
 )
 
-// Quadnode defines the interface for a quadtree node.
-type Quadnode interface {
-	Parent() Quadnode
+// QNode defines the interface for a quadtree node.
+type QNode interface {
+	Parent() QNode
 
-	NorthWest() Quadnode
-	NorthEast() Quadnode
-	SouthWest() Quadnode
-	SouthEast() Quadnode
+	NorthWest() QNode
+	NorthEast() QNode
+	SouthWest() QNode
+	SouthEast() QNode
 
 	TopLeft() image.Point
 	BottomRight() image.Point
 
-	Color() NodeColor
+	Color() QNodeColor
 
-	// Neighbours fills a NodeList with the neighbours of this node. n must be
-	// a leaf node, or nodes will be an empty slice.
-	Neighbours(nodes *NodeList)
+	// Neighbours obtains the node neighbours. n should be
+	// a leaf node, or the returned slice will be empty.
+	Neighbours(*QNodeList)
 }
 
-// quadnode is a basic implementation of the Quadnode interface.
+// quadnode is a basic implementation of the QNode interface.
 type quadnode struct {
-	parent Quadnode // pointer to the parent node
+	parent QNode // pointer to the parent node
 
-	northWest Quadnode // pointer to the northwest child
-	northEast Quadnode // pointer to the northeast child
-	southWest Quadnode // pointer to the southwest child
-	southEast Quadnode // pointer to the southeast child
+	northWest QNode // pointer to the northwest child
+	northEast QNode // pointer to the northeast child
+	southWest QNode // pointer to the southwest child
+	southEast QNode // pointer to the southeast child
 
 	// node top-left corner coordinates, the origin
 	topLeft image.Point
@@ -57,7 +57,7 @@ type quadnode struct {
 	bottomRight image.Point
 
 	// node color
-	color NodeColor
+	color QNodeColor
 }
 
 func (n *quadnode) TopLeft() image.Point {
@@ -68,27 +68,27 @@ func (n *quadnode) BottomRight() image.Point {
 	return n.bottomRight
 }
 
-func (n *quadnode) Color() NodeColor {
+func (n *quadnode) Color() QNodeColor {
 	return n.color
 }
 
-func (n *quadnode) NorthWest() Quadnode {
+func (n *quadnode) NorthWest() QNode {
 	return n.northWest
 }
 
-func (n *quadnode) NorthEast() Quadnode {
+func (n *quadnode) NorthEast() QNode {
 	return n.northEast
 }
 
-func (n *quadnode) SouthWest() Quadnode {
+func (n *quadnode) SouthWest() QNode {
 	return n.southWest
 }
 
-func (n *quadnode) SouthEast() Quadnode {
+func (n *quadnode) SouthEast() QNode {
 	return n.southEast
 }
 
-func (n *quadnode) Parent() Quadnode {
+func (n *quadnode) Parent() QNode {
 	return n.parent
 }
 
@@ -101,7 +101,7 @@ func (n *quadnode) height() int {
 }
 
 // child returns a pointer to the child node associated to the given quadrant
-func (n *quadnode) child(q quadrant) Quadnode {
+func (n *quadnode) child(q quadrant) QNode {
 	switch q {
 	case northWest:
 		return n.northWest
@@ -112,13 +112,6 @@ func (n *quadnode) child(q quadrant) Quadnode {
 	default:
 		return n.southEast
 	}
-}
-
-// inbound checks if a given point is inside the region represented by this
-// node.
-func (n *quadnode) inbound(pt image.Point) bool {
-	return (n.topLeft.X <= pt.X && pt.X < n.bottomRight.X) &&
-		(n.topLeft.Y <= pt.Y && pt.Y < n.bottomRight.Y)
 }
 
 func (n *quadnode) String() string {
