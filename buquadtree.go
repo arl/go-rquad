@@ -64,11 +64,8 @@ func NewBUQuadtree(scanner binimg.Scanner, resolution int) (*BUQuadtree, error) 
 func (q *BUQuadtree) createRootNode() *BUQNode {
 	n := &BUQNode{
 		qnode: qnode{
-			color: Gray,
-			bounds: image.Rectangle{
-				image.Point{0, 0},
-				q.scanner.Bounds().Size(),
-			},
+			color:  Gray,
+			bounds: q.scanner.Bounds(),
 		},
 	}
 	q.subdivide(n)
