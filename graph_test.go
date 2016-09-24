@@ -7,8 +7,23 @@ import (
 	"github.com/aurelien-rainone/binimg"
 )
 
-func createGraphFromImage(scanner binimg.Scanner, res int) (*Graph, error) {
-	q, err := NewBUQuadtree(scanner, res)
+func createScannerFromPNG(pngfile string) (binimg.Scanner, error) {
+	var (
+		bm      image.Image
+		err     error
+		scanner binimg.Scanner
+	)
+	if bm, err = loadPNG(pngfile); err != nil {
+		return nil, err
+	}
+	if scanner, err = binimg.NewScanner(bm); err != nil {
+		return nil, err
+	}
+	return scanner, nil
+}
+
+func createGraphFromScanner(scanner binimg.Scanner, resolution int) (*Graph, error) {
+	q, err := NewBUQuadtree(scanner, resolution)
 	if err != nil {
 		return nil, err
 	}
@@ -30,7 +45,7 @@ func benchmarkGraphCreation(b *testing.B, pngfile string, resolution int) {
 	// run N times
 	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
-		createGraphFromImage(scanner, resolution)
+		createGraphFromScanner(scanner, resolution)
 		checkB(b, err)
 	}
 }
