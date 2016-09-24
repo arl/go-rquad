@@ -55,14 +55,6 @@ type quadnode struct {
 	color QNodeColor
 }
 
-func (n *quadnode) TopLeft() image.Point {
-	return n.bounds.Min
-}
-
-func (n *quadnode) BottomRight() image.Point {
-	return n.bounds.Max
-}
-
 func (n *quadnode) Color() QNodeColor {
 	return n.color
 }
