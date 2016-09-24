@@ -40,7 +40,7 @@ type GenEdgeFunc func(n1 QNode, n2 QNode) *Edge
 func NewGraphFromQuadtree(q Quadtree, genEdgeFunc GenEdgeFunc) *Graph {
 	whiteNodes := q.WhiteNodes()
 	g := &Graph{
-		nodes: make([]*Node, 0, len(whiteNodes)),
+		nodes: make([]*Node, len(whiteNodes), len(whiteNodes)),
 	}
 
 	// lookup table for fast retrieving of the Node's we
@@ -63,22 +63,26 @@ func NewGraphFromQuadtree(q Quadtree, genEdgeFunc GenEdgeFunc) *Graph {
 	}
 
 	// range over the quadtree nodes
-	for _, qn := range whiteNodes {
+	for i, qn := range whiteNodes {
 
 		// get node from lut or create a new one
 		n := newOrGet(qn)
 
 		// save node into the graph
-		g.nodes = append(g.nodes, n)
+		g.nodes[i] = n
 
+		// pre-allocate the slices
 		nbours := qn.Neighbours()
-		for _, qnb := range nbours {
+		n.links = make([]*Node, len(nbours), len(nbours))
+		n.edges = make([]*Edge, len(nbours), len(nbours))
+
+		for j, qnb := range nbours {
 
 			// get neighbour from lut or create a new one
 			nb := newOrGet(qnb)
-			n.links = append(n.links, nb)
+			n.links[j] = nb
 			if genEdgeFunc != nil {
-				n.edges = append(n.edges, genEdgeFunc(qn, qnb))
+				n.edges[j] = genEdgeFunc(qn, qnb)
 			}
 		}
 	}
@@ -102,9 +106,9 @@ func (n *Node) center() (x, y float64) {
 
 // PathNeighbors returns the neighbors of the Truck
 func (n *Node) PathNeighbors() []astar.Pather {
-	nodes := make([]astar.Pather, 0, len(n.links))
-	for _, link := range n.links {
-		nodes = append(nodes, link)
+	nodes := make([]astar.Pather, len(n.links), len(n.links))
+	for i := range n.links {
+		nodes[i] = n.links[i]
 	}
 	return nodes
 }
