@@ -5,7 +5,7 @@ package quadtree
 // It is a basic implementation of the QNode interface, augmented with
 // methods implementing the bottom-up neighbor finding techniques.
 type BUQNode struct {
-	quadnode
+	qnode
 }
 
 // isLeaf checks if this node is a leaf, i.e. is either black or white.

@@ -63,7 +63,7 @@ func NewBUQuadtree(scanner binimg.Scanner, resolution int) (*BUQuadtree, error) 
 
 func (q *BUQuadtree) createRootNode() *BUQNode {
 	n := &BUQNode{
-		quadnode: quadnode{
+		qnode: qnode{
 			color: Gray,
 			bounds: image.Rectangle{
 				image.Point{0, 0},
@@ -77,7 +77,7 @@ func (q *BUQuadtree) createRootNode() *BUQNode {
 
 func (q *BUQuadtree) createInnerNode(bounds image.Rectangle, parent *BUQNode) *BUQNode {
 	n := &BUQNode{
-		quadnode: quadnode{
+		qnode: qnode{
 			color:  Gray,
 			bounds: bounds,
 			parent: parent,

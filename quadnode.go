@@ -39,8 +39,9 @@ type QNode interface {
 	Neighbours(*QNodeList)
 }
 
-// quadnode is a basic implementation of the QNode interface.
-type quadnode struct {
+// qnode is a basic implementation of the QNode interface and serves as
+// an embeddable struct to various QNode implementations.
+type qnode struct {
 	parent QNode // pointer to the parent node
 
 	northWest QNode // pointer to the northwest child
@@ -55,36 +56,36 @@ type quadnode struct {
 	color QNodeColor
 }
 
-func (n *quadnode) Color() QNodeColor {
+func (n *qnode) Color() QNodeColor {
 	return n.color
 }
 
-func (n *quadnode) NorthWest() QNode {
+func (n *qnode) NorthWest() QNode {
 	return n.northWest
 }
 
-func (n *quadnode) NorthEast() QNode {
+func (n *qnode) NorthEast() QNode {
 	return n.northEast
 }
 
-func (n *quadnode) SouthWest() QNode {
+func (n *qnode) SouthWest() QNode {
 	return n.southWest
 }
 
-func (n *quadnode) SouthEast() QNode {
+func (n *qnode) SouthEast() QNode {
 	return n.southEast
 }
 
-func (n *quadnode) Parent() QNode {
+func (n *qnode) Parent() QNode {
 	return n.parent
 }
 
-func (n *quadnode) Bounds() image.Rectangle {
+func (n *qnode) Bounds() image.Rectangle {
 	return n.bounds
 }
 
 // child returns a pointer to the child node associated to the given quadrant
-func (n *quadnode) child(q quadrant) QNode {
+func (n *qnode) child(q quadrant) QNode {
 	switch q {
 	case northWest:
 		return n.northWest
@@ -97,6 +98,6 @@ func (n *quadnode) child(q quadrant) QNode {
 	}
 }
 
-func (n *quadnode) String() string {
+func (n *qnode) String() string {
 	return fmt.Sprintf("(%v,%d %d,%d %s)", n.bounds, n.color)
 }
