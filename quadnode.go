@@ -54,6 +54,9 @@ type qnode struct {
 
 	// node color
 	color QNodeColor
+
+	// node location for its parent
+	location quadrant
 }
 
 func (n *qnode) Color() QNodeColor {

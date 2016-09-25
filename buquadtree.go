@@ -72,12 +72,13 @@ func (q *BUQuadtree) createRootNode() *BUQNode {
 	return n
 }
 
-func (q *BUQuadtree) createInnerNode(bounds image.Rectangle, parent *BUQNode) *BUQNode {
+func (q *BUQuadtree) createInnerNode(bounds image.Rectangle, parent *BUQNode, location quadrant) *BUQNode {
 	n := &BUQNode{
 		qnode: qnode{
-			color:  Gray,
-			bounds: bounds,
-			parent: parent,
+			color:    Gray,
+			bounds:   bounds,
+			parent:   parent,
+			location: location,
 		},
 	}
 
@@ -125,10 +126,10 @@ func (q *BUQuadtree) subdivide(n *BUQNode) {
 	y2 := n.bounds.Max.Y
 
 	// create the 4 children nodes, one per quadrant
-	n.northWest = q.createInnerNode(image.Rect(x0, y0, x1, y1), n)
-	n.southWest = q.createInnerNode(image.Rect(x0, y1, x1, y2), n)
-	n.northEast = q.createInnerNode(image.Rect(x1, y0, x2, y1), n)
-	n.southEast = q.createInnerNode(image.Rect(x1, y1, x2, y2), n)
+	n.northWest = q.createInnerNode(image.Rect(x0, y0, x1, y1), n, northWest)
+	n.southWest = q.createInnerNode(image.Rect(x0, y1, x1, y2), n, southWest)
+	n.northEast = q.createInnerNode(image.Rect(x1, y0, x2, y1), n, northEast)
+	n.southEast = q.createInnerNode(image.Rect(x1, y1, x2, y2), n, southEast)
 }
 
 // WhiteNodes returns a slice of all the white nodes of the quadtree.

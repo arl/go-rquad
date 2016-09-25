@@ -66,7 +66,7 @@ func (n *BUQNode) equalSizeNeighbor(dir side) *BUQNode {
 	// Ascent the tree up to a common ancestor.
 	if n.parent != nil {
 		buparent := n.parent.(*BUQNode)
-		if adjacent(dir, n.quadrant()) {
+		if adjacent(dir, n.location) {
 			neighbor = buparent.equalSizeNeighbor(dir)
 		} else {
 			neighbor = buparent
@@ -75,7 +75,7 @@ func (n *BUQNode) equalSizeNeighbor(dir side) *BUQNode {
 
 	// Backtrack mirroring the ascending moves.
 	if neighbor != nil && !neighbor.isLeaf() {
-		return neighbor.child(reflect(dir, n.quadrant())).(*BUQNode)
+		return neighbor.child(reflect(dir, n.location)).(*BUQNode)
 	}
 	return neighbor
 }
