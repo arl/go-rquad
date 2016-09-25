@@ -9,17 +9,17 @@ import (
 type QNodeColor byte
 
 const (
-	// Black is the color of leaf nodes that
-	// are considered as obstructed.
-	Black QNodeColor = 0
+	// Black is the color of leaf nodes
+	// that are considered as obstructed.
+	Black QNodeColor = 0 + iota
 
-	// White is the color of leaf nodes that
-	// are considered as free.
-	White = 1
+	// White is the color of leaf nodes
+	// that are considered as free.
+	White
 
-	// Gray is the color of non-leaf nodes that
-	// contain both black and white children.
-	Gray = 2
+	// Gray is the color of non-leaf nodes
+	// that contain both black and white children.
+	Gray
 )
 
 // QNode defines the interface for a quadtree node.

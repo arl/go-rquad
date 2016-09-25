@@ -4,9 +4,9 @@ package quadtree
 
 import "fmt"
 
-const _QNodeColor_name = "Black"
+const _QNodeColor_name = "BlackWhiteGray"
 
-var _QNodeColor_index = [...]uint8{0, 5}
+var _QNodeColor_index = [...]uint8{0, 5, 10, 14}
 
 func (i QNodeColor) String() string {
 	if i >= QNodeColor(len(_QNodeColor_index)-1) {
