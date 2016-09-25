@@ -42,40 +42,6 @@ func TestBUQuadtreeLogicalErrors(t *testing.T) {
 	}
 }
 
-func TestBUQuadtreeWhiteNodes(t *testing.T) {
-	var (
-		err     error
-		bm      image.Image
-		scanner binimg.Scanner
-	)
-	bm, err = loadPNG("./testdata/labyrinth1.32x32.png")
-	check(t, err)
-	scanner, err = binimg.NewScanner(bm)
-	check(t, err)
-
-	for _, res := range []int{1, 2, 3, 4, 5, 6, 7, 8} {
-		q, err := NewBUQuadtree(scanner, res)
-		check(t, err)
-
-		whiteNodes := q.WhiteNodes()
-		if len(whiteNodes) != 7 {
-			t.Errorf("resolution:%d, expected 7 white nodes, got %d",
-				res, len(whiteNodes))
-		}
-	}
-
-	for _, res := range []int{9, 15} {
-		q, err := NewBUQuadtree(scanner, res)
-		check(t, err)
-
-		whiteNodes := q.WhiteNodes()
-		if len(whiteNodes) != 1 {
-			t.Errorf("resolution:%d, expected 1 white nodes, got %d",
-				res, len(whiteNodes))
-		}
-	}
-}
-
 func TestBUQuadtreeSubdivisions(t *testing.T) {
 	// this is a simple 32x32 image, white background with 3 black squares,
 	// located so that they fill a quadrant the biggest of which is 8x8 pixels,
