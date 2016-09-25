@@ -12,10 +12,10 @@ const (
 type side int
 
 const (
-	north side = iota
+	west side = iota
+	north
 	east
 	south
-	west
 )
 
 var initDone bool
@@ -30,25 +30,25 @@ func initPackage() {
 	// initialize the quadrant-side adjacency array
 	arrAdjacent = [4][4]bool{
 		/*       NW     NE     SW     SE  */
+		/* W */ {true, false, true, false},
 		/* N */ {true, true, false, false},
 		/* E */ {false, true, false, true},
 		/* S */ {false, false, true, true},
-		/* W */ {true, false, true, false},
 	}
 
 	// initialize the mirror-quadrant array
 	arrReflect = [4][4]quadrant{
 		/*           NW         NE         SW         SE    */
+		/* W */ {northEast, northWest, southEast, southWest},
 		/* N */ {southWest, southEast, northWest, northEast},
 		/* E */ {northEast, northWest, southEast, southWest},
 		/* S */ {southWest, southEast, northWest, northEast},
-		/* W */ {northEast, northWest, southEast, southWest},
 	}
 
 	// initialize the opposite sides array
 	arrOpposite = [4]side{
 		/* N     E      S     W  */
-		south, west, north, east,
+		east, south, west, north,
 	}
 
 	initDone = true
