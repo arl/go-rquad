@@ -7,6 +7,7 @@ const (
 	northEast
 	southWest
 	southEast
+	rootQuadrant
 )
 
 type side int

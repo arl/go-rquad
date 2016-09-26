@@ -2,7 +2,9 @@
 
 # This script tests multiple packages and creates a consolidated cover profile
 # See https://gist.github.com/hailiang/0f22736320abe6be71ce for inspiration.
-# The list of packages to test is specified in $PACKAGES variables
+# - The list of packages to test is specified in $PACKAGES variables.
+# - Files to exclude from coverage (test helpers, generated code, etc.) are the
+#   ones matching the regex in $COVEREXCLUDES.
 
 function die() {
   echo $*

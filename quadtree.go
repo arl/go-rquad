@@ -8,6 +8,8 @@ type QNodeList []QNode
 // Quadtree defines the interface for a quadtree type.
 type Quadtree interface {
 	// WhiteNodes returns a slice of all the white nodes of the quadtree.
+	// TODO:  instead of WhiteNodes we could have a Leaves method, that can
+	// accept Black, White or All as parameters
 	WhiteNodes() QNodeList
 
 	// Root returns the quadtree root node.
