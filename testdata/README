@@ -4,3 +4,9 @@ converted using ImageMagick's convert, with the following command:
 ```bash
 convert icon.ico -alpha remove -resize 32x32 grid.32x32.png
 ```
+
+Use imageMagick's `scale` instead of `resize` in order to keep a small image
+*pixelized* while showing it bigger:
+```bash
+convert small.png -scale 4000% - | display -
+```
