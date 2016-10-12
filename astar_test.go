@@ -62,7 +62,6 @@ func TestAStar(t *testing.T) {
 }
 
 func benchmarkAStar(b *testing.B, pngfile string, resolution int, orgidx, dstidx int) {
-
 	var (
 		g       *Graph
 		err     error
