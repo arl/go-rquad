@@ -126,7 +126,6 @@ func (n *CNQNode) Step3UpdateWest() {
 			if western.cn2.bounds.Min.Y == western.bounds.Min.Y {
 				western.cn2.cn0 = western
 			}
-		} else {
 		}
 	}
 }
@@ -152,7 +151,6 @@ func (n *CNQNode) Step3UpdateNorth() {
 			if northern.cn3.bounds.Min.X == northern.bounds.Min.X {
 				northern.cn3.cn1 = northern
 			}
-		} else {
 		}
 	}
 }

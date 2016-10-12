@@ -132,31 +132,24 @@ func (q *CNQuadtree) subdivide(p *CNQNode) {
 	sw := q.newNode(image.Rect(x0, y1, x1, y2), p, southWest)
 	se := q.newNode(image.Rect(x1, y1, x2, y2), p, southEast)
 
-	// as decomposition is performed in Z-order, the western and
-	// northern cardinal neighbours of the parent may not be
-	// leaves, if the quadrant in which they lie has been decomposed
-	// so we look up for those nodes.
-	leafcn0 := p.cn0
-	leafcn1 := p.cn1
-
 	// each sub-quadrant first inherit its parent external neighbours
 	// and then updates its internal neighbours.
-	nw.cn0 = leafcn0 // inherited
-	nw.cn1 = leafcn1 // inherited
-	nw.cn2 = ne      // set for decomposition, will need to be updated after
-	nw.cn3 = sw      // set for decomposition, will need to be updated after
-	ne.cn0 = nw      // set for decomposition, will need to be updated after
-	ne.cn1 = leafcn1 // inherited
-	ne.cn2 = p.cn2   // inherited
-	ne.cn3 = se      // set for decomposition, will need to be updated after
-	sw.cn0 = leafcn0 // inherited
-	sw.cn1 = nw      // set for decomposition, will need to be updated after
-	sw.cn2 = se      // set for decomposition, will need to be updated after
-	sw.cn3 = p.cn3   // inherited
-	se.cn0 = sw      // set for decomposition, will need to be updated after
-	se.cn1 = ne      // set for decomposition, will need to be updated after
-	se.cn2 = p.cn2   // inherited
-	se.cn3 = p.cn3   // inherited
+	nw.cn0 = p.cn0 // inherited
+	nw.cn1 = p.cn1 // inherited
+	nw.cn2 = ne    // set for decomposition, will need to be updated after
+	nw.cn3 = sw    // set for decomposition, will need to be updated after
+	ne.cn0 = nw    // set for decomposition, will need to be updated after
+	ne.cn1 = p.cn1 // inherited
+	ne.cn2 = p.cn2 // inherited
+	ne.cn3 = se    // set for decomposition, will need to be updated after
+	sw.cn0 = p.cn0 // inherited
+	sw.cn1 = nw    // set for decomposition, will need to be updated after
+	sw.cn2 = se    // set for decomposition, will need to be updated after
+	sw.cn3 = p.cn3 // inherited
+	se.cn0 = sw    // set for decomposition, will need to be updated after
+	se.cn1 = ne    // set for decomposition, will need to be updated after
+	se.cn2 = p.cn2 // inherited
+	se.cn3 = p.cn3 // inherited
 
 	p.northWest = nw
 	p.northEast = ne
@@ -166,49 +159,6 @@ func (q *CNQuadtree) subdivide(p *CNQNode) {
 	p.updateNECardinalNeighbours()
 	p.updateSWCardinalNeighbours()
 
-	// CHECK INVARIANTS
-	// since it is not yet decomposed and thus the parents’
-	// eastern cardinal neighbor is itself the Eastern CN of the
-	// NE and SE child quadrants
-	if p.cn2 != nil {
-		if p.cn2.size < p.size {
-			panic("should not happen")
-		}
-		if p.cn2 != ne.cn2 || p.cn2 != se.cn2 {
-			panic("should not happen")
-		}
-	}
-
-	// since it is not yet decomposed and thus the parents’
-	// southern cardinal neighbor is itself the Southern CN of
-	// the SW and SE child quadrants.
-	if p.cn3 != nil {
-		if p.cn3.size < p.size {
-			panic("should not happen")
-		}
-		if p.cn3 != sw.cn3 || p.cn3 != se.cn3 {
-			panic("should not happen")
-		}
-	}
-
-	q.updateAllNeighbours(p)
-
-	if !nw.isLeaf() {
-		q.subdivide(nw)
-	}
-	if !ne.isLeaf() {
-		q.subdivide(ne)
-	}
-	if !sw.isLeaf() {
-		q.subdivide(sw)
-	}
-	if !se.isLeaf() {
-		q.subdivide(se)
-	}
-}
-
-// this would be the step 3
-func (q *CNQuadtree) updateAllNeighbours(p *CNQNode) {
 	// Step3: Updating all neighbours accordingly
 	// After the decomposition of a quadrant, all its neighbors in
 	// the four directions must be informed of the change so that
@@ -230,6 +180,19 @@ func (q *CNQuadtree) updateAllNeighbours(p *CNQNode) {
 	}
 	if p.cn3 != nil {
 		p.Step3UpdateSouth()
+	}
+
+	if !nw.isLeaf() {
+		q.subdivide(nw)
+	}
+	if !ne.isLeaf() {
+		q.subdivide(ne)
+	}
+	if !sw.isLeaf() {
+		q.subdivide(sw)
+	}
+	if !se.isLeaf() {
+		q.subdivide(se)
 	}
 }
 
