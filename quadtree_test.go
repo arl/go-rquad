@@ -176,14 +176,11 @@ func testDebugQuadtreeNeighboursExample(t *testing.T, fn newQuadtreeFunc) {
 		err     error
 		pngfile string
 	)
-	//pngfile = "./testdata/labyrinth-small.8x8.png"
-	//pngfile = "./testdata/labyrinth-small.NE.step2.png"
 	pngfile = "./testdata/labyrinth-small.8x8.step1.png"
 	laby, err = loadPNG(pngfile)
 	check(t, err)
 
 	var testTbl = []struct {
-		//res   int         // resolution
 		pt    image.Point // queried point
 		white int         // num white neighbours
 		black int         // num black neighbours
@@ -233,29 +230,6 @@ func testDebugQuadtreeNeighboursExample(t *testing.T, fn newQuadtreeFunc) {
 				pngfile, 1, tt.pt, tt.black, black)
 		}
 	}
-}
-
-func testDebugQuadtreeNeighboursStep1(t *testing.T, fn newQuadtreeFunc) {
-	var (
-		laby    *binimg.Binary
-		err     error
-		pngfile string
-	)
-	pngfile = "./testdata/labyrinth-small.8x8.step1.png"
-	laby, err = loadPNG(pngfile)
-	check(t, err)
-
-	scanner, err := binimg.NewScanner(laby)
-	check(t, err)
-	q, err := fn(scanner, 1)
-	check(t, err)
-	var n QNode
-	n, _ = Query(q, image.Point{0, 0})
-	fmt.Println("1", n)
-	n, _ = Query(q, image.Point{4, 2})
-	fmt.Println("7", n)
-	n, _ = Query(q, image.Point{6, 3})
-	fmt.Println("11", n)
 }
 
 func testDebugQuadtreeNeighboursSmall(t *testing.T, fn newQuadtreeFunc) {
