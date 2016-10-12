@@ -105,6 +105,7 @@ func (n *CNQNode) updateSWCardinalNeighbours() {
 	}
 }
 
+// Step3UpdateWest updates the western neighbours of current quadrant.
 func (n *CNQNode) Step3UpdateWest() {
 	NW := n.northWest.(*CNQNode)
 	SW := n.southWest.(*CNQNode)
@@ -112,8 +113,8 @@ func (n *CNQNode) Step3UpdateWest() {
 	// TODO: change for a direct loop on the western neighbours
 	var westernNeighbours QNodeList
 	n.neighbours(west, &westernNeighbours)
-	for _, western_ := range westernNeighbours {
-		western := western_.(*CNQNode)
+	for _, neighbour := range westernNeighbours {
+		western := neighbour.(*CNQNode)
 		if western.cn2 == n {
 			if western.bounds.Max.Y > SW.bounds.Min.Y {
 				// choose SW
@@ -130,6 +131,7 @@ func (n *CNQNode) Step3UpdateWest() {
 	}
 }
 
+// Step3UpdateNorth updates the northern neighbours of current quadrant.
 func (n *CNQNode) Step3UpdateNorth() {
 	NW := n.northWest.(*CNQNode)
 	NE := n.northEast.(*CNQNode)
@@ -137,8 +139,8 @@ func (n *CNQNode) Step3UpdateNorth() {
 	// TODO: change for a direct loop on the northern neighbours
 	var northernNeighbours QNodeList
 	n.neighbours(north, &northernNeighbours)
-	for _, northern_ := range northernNeighbours {
-		northern := northern_.(*CNQNode)
+	for _, neighbour := range northernNeighbours {
+		northern := neighbour.(*CNQNode)
 		if northern.cn3 == n {
 			if northern.bounds.Max.X > NE.bounds.Min.X {
 				// choose NE
@@ -155,6 +157,7 @@ func (n *CNQNode) Step3UpdateNorth() {
 	}
 }
 
+// Step3UpdateEast updates the eastern neighbours of current quadrant.
 func (n *CNQNode) Step3UpdateEast() {
 	// To update the eastern CN of a quadrant Q that is being
 	// decomposed: Q.CN2.CN0=Q.Ch[NE]
@@ -172,6 +175,7 @@ func (n *CNQNode) Step3UpdateEast() {
 	}
 }
 
+// Step3UpdateSouth updates the southern neighbours of current quadrant.
 func (n *CNQNode) Step3UpdateSouth() {
 	// To update the southern CN of a quadrant Q that is being
 	// decomposed: Q.CN3.CN1=Q.Ch[SE]
