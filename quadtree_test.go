@@ -137,11 +137,6 @@ func testQuadtreeNeighbours(t *testing.T, fn newQuadtreeFunc) {
 		}
 
 		if tt.white != white {
-			fmt.Println("all white nodes are:")
-			for _, wn := range q.WhiteNodes() {
-				fmt.Println(wn)
-			}
-
 			t.Errorf("%s, resolution %d, expected pt %v to have %d white neighbours, got %d",
 				imgAlias[tt.img], tt.res, tt.pt, tt.white, white)
 			t.FailNow()
@@ -219,13 +214,10 @@ func testDebugQuadtreeNeighboursExample(t *testing.T, fn newQuadtreeFunc) {
 		}
 		if tt.white != white {
 
-			fmt.Println("neighbours:\n", strW)
-			//fmt.Println(Query(q, image.Pt(5, 3))) //n531)
 			t.Errorf("%s, resolution %d, expected pt %v to have %d white neighbours, got %d",
 				pngfile, 1, tt.pt, tt.white, white)
 		}
 		if tt.black != black {
-			fmt.Println("neighbours:\n", strB)
 			t.Errorf("%s, resolution %d, expected pt %v to have %d black neighbours, got %d",
 				pngfile, 1, tt.pt, tt.black, black)
 		}
@@ -284,12 +276,10 @@ func testDebugQuadtreeNeighboursSmall(t *testing.T, fn newQuadtreeFunc) {
 		if tt.white != white {
 			t.Errorf("%s, resolution %d, expected pt %v to have %d white neighbours, got %d",
 				pngfile, tt.res, tt.pt, tt.white, white)
-			fmt.Printf("the node is %v\n", node.(*CNQNode))
 		}
 		if tt.black != black {
 			t.Errorf("%s, resolution %d, expected pt %v to have %d black neighbours, got %d",
 				pngfile, tt.res, tt.pt, tt.black, black)
-			fmt.Printf("the node is %v\n", node.(*CNQNode))
 		}
 	}
 }
@@ -298,7 +288,7 @@ func TestDebugCNQuadtreeNeighbours(t *testing.T) {
 	testDebugQuadtreeNeighboursExample(t, newCNQuadtree)
 }
 
-func benchmarkQuadtreeCreation(b *testing.B, pngfile string, resolution int) {
+func benchmarkQuadtreeCreation(b *testing.B, pngfile string, fn newQuadtreeFunc, resolution int) {
 	var (
 		bm      image.Image
 		err     error
@@ -313,23 +303,39 @@ func benchmarkQuadtreeCreation(b *testing.B, pngfile string, resolution int) {
 	// run N times
 	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
-		_, err := NewBUQuadtree(scanner, resolution)
+		_, err := fn(scanner, resolution)
 		checkB(b, err)
 	}
 }
 
 func BenchmarkBUQuadtreeCreationRes2(b *testing.B) {
-	benchmarkQuadtreeCreation(b, "./testdata/big.png", 2)
+	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newBUQuadtree, 2)
 }
 
 func BenchmarkBUQuadtreeCreationRes4(b *testing.B) {
-	benchmarkQuadtreeCreation(b, "./testdata/big.png", 4)
+	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newBUQuadtree, 4)
 }
 
 func BenchmarkBUQuadtreeCreationRes8(b *testing.B) {
-	benchmarkQuadtreeCreation(b, "./testdata/big.png", 8)
+	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newBUQuadtree, 8)
 }
 
 func BenchmarkBUQuadtreeCreationRes16(b *testing.B) {
-	benchmarkQuadtreeCreation(b, "./testdata/big.png", 16)
+	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newBUQuadtree, 16)
+}
+
+func BenchmarkCNQuadtreeCreationRes2(b *testing.B) {
+	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newCNQuadtree, 2)
+}
+
+func BenchmarkCNQuadtreeCreationRes4(b *testing.B) {
+	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newCNQuadtree, 4)
+}
+
+func BenchmarkCNQuadtreeCreationRes8(b *testing.B) {
+	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newCNQuadtree, 8)
+}
+
+func BenchmarkCNQuadtreeCreationRes16(b *testing.B) {
+	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newCNQuadtree, 16)
 }
