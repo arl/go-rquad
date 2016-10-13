@@ -135,11 +135,11 @@ func (n *CNQNode) Step3UpdateEast() {
 	// decomposed: Q.CN2.CN0=Q.Ch[NE]
 
 	// On each direction, a full traversal of the neighbors should
-	//be performed. In every quadrant where a reference to the
-	//parent quadrant is stored as the Cardinal Neighbor, it
-	//should be replaced by one of its children created after the
-	//decomposition.To minimize the effort, the step 3 and step
-	//2 will be performed in a single traversal on each side.
+	// be performed. In every quadrant where a reference to the
+	// parent quadrant is stored as the Cardinal Neighbor, it
+	// should be replaced by one of its children created after the
+	// decomposition.To minimize the effort, the step 3 and step
+	// 2 will be performed in a single traversal on each side.
 
 	if n.cn[east] != nil && n.cn[east].cn[west] == n {
 		// parent is stored as the cn
