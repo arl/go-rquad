@@ -74,7 +74,7 @@ func (n *CNQNode) updateSWCardinalNeighbours() {
 			C0 := n.northWest.(*CNQNode)
 			C2 := n.southWest.(*CNQNode)
 			C0.cn[north] = n.cn[north]
-			// to update C1, we perform a north-south traversal
+			// to update C2, we perform a north-south traversal
 			// recording the cumulative size of traversed nodes
 			cur := C0.cn[west]
 			cumsize := cur.size
