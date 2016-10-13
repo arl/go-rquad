@@ -93,11 +93,8 @@ func (n *CNQNode) updateSWCardinalNeighbours() {
 
 // Step3UpdateWest updates the western neighbours of current quadrant.
 func (n *CNQNode) Step3UpdateWest() {
-	// TODO: change for a direct loop on the western neighbours
-	var westernNeighbours QNodeList
-	n.neighbours(west, &westernNeighbours)
-	for _, neighbour := range westernNeighbours {
-		western := neighbour.(*CNQNode)
+	n.forEachNeighbour(west, func(qn QNode) {
+		western := qn.(*CNQNode)
 		if western.cn[east] == n {
 			if western.bounds.Max.Y > n.southWest.(*CNQNode).bounds.Min.Y {
 				// choose SW
@@ -110,16 +107,13 @@ func (n *CNQNode) Step3UpdateWest() {
 				western.cn[east].cn[west] = western
 			}
 		}
-	}
+	})
 }
 
 // Step3UpdateNorth updates the northern neighbours of current quadrant.
 func (n *CNQNode) Step3UpdateNorth() {
-	// TODO: change for a direct loop on the northern neighbours
-	var northernNeighbours QNodeList
-	n.neighbours(north, &northernNeighbours)
-	for _, neighbour := range northernNeighbours {
-		northern := neighbour.(*CNQNode)
+	n.forEachNeighbour(north, func(qn QNode) {
+		northern := qn.(*CNQNode)
 		if northern.cn[south] == n {
 			if northern.bounds.Max.X > n.northEast.(*CNQNode).bounds.Min.X {
 				// choose NE
@@ -132,7 +126,7 @@ func (n *CNQNode) Step3UpdateNorth() {
 				northern.cn[south].cn[north] = northern
 			}
 		}
-	}
+	})
 }
 
 // Step3UpdateEast updates the eastern neighbours of current quadrant.
@@ -169,83 +163,62 @@ func (n *CNQNode) isLeaf() bool {
 	return n.color != Gray
 }
 
-// neighbours locates all leaf neighbours of the current node in the given
-// direction, appending them to a slice.
-func (n *CNQNode) neighbours(dir side, nodes *QNodeList) {
+// forEachNeighbour calls fn on every neighbour of the current node in the given
+// direction
+func (n *CNQNode) forEachNeighbour(dir side, fn func(QNode)) {
+	// start from the cardinal neighbour on the given direction
+	N := n.cn[dir]
+	if N == nil {
+		return
+	}
+	fn(N)
+	if N.size >= n.size {
+		return
+	}
+
 	switch dir {
 
-	case north:
-		N := n.cn[north]
-		if N != nil {
-			*nodes = append(*nodes, N)
-			if N.size < n.size {
-				// perform west to east traversal
-				for {
-					N = N.cn[east]
-					if N != nil && N.cn[south] == n {
-						*nodes = append(*nodes, N)
-					} else {
-						break
-					}
-				}
-			}
-		}
-
 	case west:
-		// On the western side, the neighbors are found starting
-		// from the western CN and moving to the south.
-		N := n.cn[west]
-		if N != nil {
-			*nodes = append(*nodes, N)
-			if N.size < n.size {
-				// perform north to south traversal
-				for {
-					N = N.cn[south]
-					if N != nil && N.cn[east] == n {
-						*nodes = append(*nodes, N)
-					} else {
-						break
-					}
-				}
+		// perform north to south traversal
+		for {
+			N = N.cn[south]
+			if N != nil && N.cn[east] == n {
+				fn(N)
+			} else {
+				return
 			}
 		}
 
-	case south:
-		// for the southern side, the neighbors are identified
-		// starting from the southern CN and moving to the west
-		N := n.cn[south]
-		if N != nil {
-			*nodes = append(*nodes, N)
-			if N.size < n.size {
-				// perform east to west traversal
-				for {
-					N = N.cn[west]
-					if N != nil && N.cn[north] == n {
-						*nodes = append(*nodes, N)
-					} else {
-						break
-					}
-				}
+	case north:
+		// perform west to east traversal
+		for {
+			N = N.cn[east]
+			if N != nil && N.cn[south] == n {
+				fn(N)
+			} else {
+				break
 			}
 		}
 
 	case east:
-		// For the eastern side, the neighbors are identified
-		// starting from the Eastern CN and moving north
-		N := n.cn[east]
-		if N != nil {
-			*nodes = append(*nodes, N)
-			if N.size < n.size {
-				// perform south to north traversal
-				for {
-					N = N.cn[north]
-					if N != nil && N.cn[west] == n {
-						*nodes = append(*nodes, N)
-					} else {
-						break
-					}
-				}
+		// perform south to north traversal
+		for {
+			N = N.cn[north]
+			if N != nil && N.cn[west] == n {
+				fn(N)
+			} else {
+				return
+			}
+		}
 
+	case south:
+		// perform east to west traversal
+		for {
+			N = N.cn[west]
+			if N != nil && N.cn[north] == n {
+				fn(N)
+			} else {
+				return
 			}
 		}
 	}
@@ -254,12 +227,8 @@ func (n *CNQNode) neighbours(dir side, nodes *QNodeList) {
 // ForEachNeighbour calls the given function for each neighbour of current
 // node.
 func (n *CNQNode) ForEachNeighbour(fn func(QNode)) {
-	var nodes QNodeList
-	n.neighbours(north, &nodes)
-	n.neighbours(south, &nodes)
-	n.neighbours(east, &nodes)
-	n.neighbours(west, &nodes)
-	for _, nb := range nodes {
-		fn(nb)
-	}
+	n.forEachNeighbour(west, fn)
+	n.forEachNeighbour(north, fn)
+	n.forEachNeighbour(east, fn)
+	n.forEachNeighbour(south, fn)
 }
