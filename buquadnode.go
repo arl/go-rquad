@@ -16,10 +16,6 @@ func (n *BUQNode) isLeaf() bool {
 // children fills the given slice with all the leaf children of this node (i.e
 // either black or white), that can be found in a given direction.
 func (n *BUQNode) children(dir side, nodes *QNodeList) {
-	if n.isLeaf() {
-		return
-	}
-
 	var (
 		s1, s2 *BUQNode
 	)
