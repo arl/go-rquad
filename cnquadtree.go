@@ -20,11 +20,10 @@ import (
 // University, Kingdom of Saudi Arabia, in his paper "Cardinal Neighbor
 // Quadtree: a New Quadtree-based Structure for Constant-Time Neighbor Finding"
 type CNQuadtree struct {
-	resolution  int            // maximal resolution
-	scanner     binimg.Scanner // reference image
-	root        *CNQNode       // root node
-	whiteNodes  QNodeList      // white nodes (filled during creation)
-	onWhiteNode func(QNode)    // callback that fills whiteNodes
+	resolution int            // maximal resolution
+	scanner    binimg.Scanner // reference image
+	root       *CNQNode       // root node
+	leaves     QNodeList      // leaf nodes (filled during creation)
 }
 
 // NewCNQuadtree creates a CNQuadtree and populates it with CNQNode's,
@@ -60,11 +59,6 @@ func NewCNQuadtree(scanner binimg.Scanner, resolution int) (*CNQuadtree, error) 
 		scanner:    scanner,
 	}
 
-	// onWhiteNode callback serves the purpose of filling the list of white
-	// nodes for providing it to the called of WhiteNodes()
-	q.onWhiteNode = func(n QNode) {
-		q.whiteNodes = append(q.whiteNodes, n)
-	}
 	q.root = q.newNode(q.scanner.Bounds(), nil, rootQuadrant)
 	q.subdivide(q.root)
 	return q, nil
@@ -87,10 +81,6 @@ func (q *CNQuadtree) newNode(bounds image.Rectangle, parent *CNQNode, location q
 		// quadrant is uniform, won't need to subdivide any further
 		if col == binimg.White {
 			n.color = White
-			// white node callback
-			if q.onWhiteNode != nil {
-				q.onWhiteNode(n)
-			}
 		} else {
 			n.color = Black
 		}
@@ -100,6 +90,11 @@ func (q *CNQuadtree) newNode(bounds image.Rectangle, parent *CNQNode, location q
 			// ...make this node a black leaf, instead of gray
 			n.color = Black
 		}
+	}
+
+	// fills leaves slices
+	if n.color != Gray {
+		q.leaves = append(q.leaves, n)
 	}
 	return n
 }
@@ -196,12 +191,23 @@ func (q *CNQuadtree) subdivide(p *CNQNode) {
 	}
 }
 
-// WhiteNodes returns a slice of all the white nodes of the quadtree.
-func (q *CNQuadtree) WhiteNodes() QNodeList {
-	return q.whiteNodes
-}
-
 // Root returns the quadtree root node.
 func (q *CNQuadtree) Root() QNode {
 	return q.root
+}
+
+// ForEachLeaf calls the given function for each leaf node of the quadtree.
+//
+// Successive calls to the provided function are performed in no particular
+// order. The color parameter allows to loop on the leaves of a particular
+// color, Black or White.
+// NOTE: As by definition, Gray leaves do not exist, passing Gray to
+// ForEachLeaf should return all leaves, independently of their color.
+func (q *CNQuadtree) ForEachLeaf(color QNodeColor, fn func(QNode)) {
+	//panic(" TEST if its workingq.leaves not implemented yet for CNQuadtree")
+	for _, n := range q.leaves {
+		if color == Gray || n.Color() == color {
+			fn(n)
+		}
+	}
 }

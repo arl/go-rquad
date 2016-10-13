@@ -38,14 +38,18 @@ type GenEdgeFunc func(n1 QNode, n2 QNode) *Edge
 // the given quadtree, and edges exist where 2 white nodes are neighbours in 2D
 // space (their underlying rectangle share a segment)
 func NewGraphFromQuadtree(q Quadtree, genEdgeFunc GenEdgeFunc) *Graph {
-	whiteNodes := q.WhiteNodes()
+	var whites QNodeList
+	q.ForEachLeaf(White, func(n QNode) {
+		whites = append(whites, n)
+	})
+
 	g := &Graph{
-		nodes: make([]*Node, len(whiteNodes), len(whiteNodes)),
+		nodes: make([]*Node, len(whites), len(whites)),
 	}
 
 	// lookup table for fast retrieving of the Node's we
 	// created from the QNode coming from the Quadtree
-	nodesLut := make(map[QNode]*Node, len(whiteNodes))
+	nodesLut := make(map[QNode]*Node, len(whites))
 
 	// get from the lookup table or create the node
 	newOrGet := func(qn QNode) *Node {
@@ -65,7 +69,7 @@ func NewGraphFromQuadtree(q Quadtree, genEdgeFunc GenEdgeFunc) *Graph {
 	var nbours QNodeList
 
 	// range over the quadtree nodes
-	for i, qn := range whiteNodes {
+	for i, qn := range whites {
 
 		// get node from lut or create a new one
 		n := newOrGet(qn)

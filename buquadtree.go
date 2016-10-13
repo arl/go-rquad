@@ -14,11 +14,10 @@ import (
 // the same parent may have different dimensions due to the integer division.
 // It internally handles BUQNode's which implement the QNode interface.
 type BUQuadtree struct {
-	resolution  int            // maximal resolution
-	scanner     binimg.Scanner // reference image
-	root        *BUQNode       // root node
-	whiteNodes  QNodeList      // white nodes (filled during creation)
-	onWhiteNode func(QNode)    // callback that fills whiteNodes
+	resolution int            // maximal resolution
+	scanner    binimg.Scanner // reference image
+	root       *BUQNode       // root node
+	leaves     QNodeList      // leaf nodes (filled during creation)
 }
 
 // NewBUQuadtree creates a BUQuadtree and populates it with BUQNode's,
@@ -52,13 +51,23 @@ func NewBUQuadtree(scanner binimg.Scanner, resolution int) (*BUQuadtree, error) 
 		scanner:    scanner,
 	}
 
-	// onWhiteNode callback serves the purpose of filling the list of white
-	// nodes for providing it to the called of WhiteNodes()
-	q.onWhiteNode = func(n QNode) {
-		q.whiteNodes = append(q.whiteNodes, n)
-	}
 	q.root = q.createRootNode()
 	return q, nil
+}
+
+// ForEachLeaf calls the given function for each leaf node of the quadtree.
+//
+// Successive calls to the provided function are performed in no particular
+// order. The color parameter allows to loop on the leaves of a particular
+// color, Black or White.
+// NOTE: As by definition, Gray leaves do not exist, passing Gray to
+// ForEachLeaf should return all leaves, independently of their color.
+func (q *BUQuadtree) ForEachLeaf(color QNodeColor, fn func(QNode)) {
+	for _, n := range q.leaves {
+		if color == Gray || n.Color() == color {
+			fn(n)
+		}
+	}
 }
 
 func (q *BUQuadtree) createRootNode() *BUQNode {
@@ -88,10 +97,6 @@ func (q *BUQuadtree) createInnerNode(bounds image.Rectangle, parent *BUQNode, lo
 		// quadrant is uniform, won't need to subdivide any further
 		if col == binimg.White {
 			n.color = White
-			// white node callback
-			if q.onWhiteNode != nil {
-				q.onWhiteNode(n)
-			}
 		} else {
 			n.color = Black
 		}
@@ -103,6 +108,11 @@ func (q *BUQuadtree) createInnerNode(bounds image.Rectangle, parent *BUQNode, lo
 		} else {
 			q.subdivide(n)
 		}
+	}
+
+	// fills leaves slices
+	if n.color != Gray {
+		q.leaves = append(q.leaves, n)
 	}
 	return n
 }
@@ -130,11 +140,6 @@ func (q *BUQuadtree) subdivide(n *BUQNode) {
 	n.southWest = q.createInnerNode(image.Rect(x0, y1, x1, y2), n, southWest)
 	n.northEast = q.createInnerNode(image.Rect(x1, y0, x2, y1), n, northEast)
 	n.southEast = q.createInnerNode(image.Rect(x1, y1, x2, y2), n, southEast)
-}
-
-// WhiteNodes returns a slice of all the white nodes of the quadtree.
-func (q *BUQuadtree) WhiteNodes() QNodeList {
-	return q.whiteNodes
 }
 
 // Root returns the quadtree root node.

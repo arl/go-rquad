@@ -7,10 +7,15 @@ type QNodeList []QNode
 
 // Quadtree defines the interface for a quadtree type.
 type Quadtree interface {
-	// WhiteNodes returns a slice of all the white nodes of the quadtree.
-	// TODO:  instead of WhiteNodes we could have a Leaves method, that can
-	// accept Black, White or All as parameters
-	WhiteNodes() QNodeList
+
+	// ForEachLeaf calls the given function for each leaf node of the quadtree.
+	//
+	// Successive calls to the provided function are performed in no particular
+	// order. The color parameter allows to loop on the leaves of a particular
+	// color, Black or White.
+	// NOTE: As by definition, Gray leaves do not exist, passing Gray to
+	// ForEachLeaf should return all leaves, independently of their color.
+	ForEachLeaf(QNodeColor, func(QNode))
 
 	// Root returns the quadtree root node.
 	Root() QNode
