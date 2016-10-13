@@ -45,23 +45,19 @@ func (n *CNQNode) updateNECardinalNeighbours() {
 	C1 := n.northEast.(*CNQNode)
 
 	if n.cn[north] != nil {
-		if n.cn[north].size >= n.size {
-			C0.cn[north] = n.cn[north]
-			C1.cn[north] = n.cn[north]
-		} else {
+		if n.cn[north].size < n.size {
 			C0.cn[north] = n.cn[north]
 			// to update C1, we perform a west-east traversal
+			// recording the cumulative size of traversed nodes
 			cur := C0.cn[north]
-			// TODO: here we could initialize cumsize with cur.size and avoid
-			// to enter in the loop if not needed
-			cumsize := 0 // cumulative size of traversed cardinal neighbours
+			cumsize := cur.size
 			for cumsize < C0.size {
-				cumsize += cur.size
 				tmp := cur.cn[east]
 				if tmp == nil {
 					break
 				}
 				cur = tmp
+				cumsize += cur.size
 			}
 			C1.cn[north] = cur
 		}
@@ -77,23 +73,19 @@ func (n *CNQNode) updateSWCardinalNeighbours() {
 	C0 := n.northWest.(*CNQNode)
 	C2 := n.southWest.(*CNQNode)
 	if n.cn[north] != nil {
-		if n.cn[north].size >= n.size {
-			C0.cn[west] = n.cn[west]
-			C2.cn[west] = n.cn[west]
-		} else {
+		if n.cn[north].size < n.size {
 			C0.cn[north] = n.cn[north]
 			// to update C1, we perform a north-south traversal
+			// recording the cumulative size of traversed nodes
 			cur := C0.cn[west]
-			// TODO: here we could initialize cumsize with cur.size and avoid
-			// to enter in the loop if not needed
-			cumsize := 0 // cumulative size of traversed cardinal neighbours
+			cumsize := cur.size
 			for cumsize < C0.size {
-				cumsize += cur.size
 				tmp := cur.cn[south]
 				if tmp == nil {
 					break
 				}
 				cur = tmp
+				cumsize += cur.size
 			}
 			C2.cn[west] = cur
 		}
