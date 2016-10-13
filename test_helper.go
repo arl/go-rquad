@@ -76,3 +76,33 @@ func listNodes(n QNode) QNodeList {
 	_listNodes(n, &nodes)
 	return nodes
 }
+
+type newQuadtreeFunc func(binimg.Scanner, int) (Quadtree, error)
+
+func newBUQuadtree(scanner binimg.Scanner, resolution int) (Quadtree, error) {
+	return NewBUQuadtree(scanner, resolution)
+}
+
+func newCNQuadtree(scanner binimg.Scanner, resolution int) (Quadtree, error) {
+	return NewCNQuadtree(scanner, resolution)
+}
+
+func appendNode(nl *QNodeList) func(QNode) {
+	return func(n QNode) {
+		*nl = append(*nl, n)
+	}
+}
+
+func neighbourColors(n QNode) (white, black int) {
+	var nodes QNodeList
+	n.Neighbours(&nodes)
+	for _, nb := range nodes {
+		switch nb.Color() {
+		case Black:
+			black++
+		case White:
+			white++
+		}
+	}
+	return
+}
