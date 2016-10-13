@@ -41,11 +41,10 @@ func (n *CNQNode) updateNECardinalNeighbours() {
 		return
 	}
 	// step 2.2: Updating Cardinal Neighbors of NE sub-Quadrant.
-	C0 := n.northWest.(*CNQNode)
-	C1 := n.northEast.(*CNQNode)
-
 	if n.cn[north] != nil {
 		if n.cn[north].size < n.size {
+			C0 := n.northWest.(*CNQNode)
+			C1 := n.northEast.(*CNQNode)
 			C0.cn[north] = n.cn[north]
 			// to update C1, we perform a west-east traversal
 			// recording the cumulative size of traversed nodes
@@ -70,10 +69,10 @@ func (n *CNQNode) updateSWCardinalNeighbours() {
 		return
 	}
 	// step 2.1: Updating Cardinal Neighbors of SW sub-Quadrant.
-	C0 := n.northWest.(*CNQNode)
-	C2 := n.southWest.(*CNQNode)
 	if n.cn[north] != nil {
 		if n.cn[north].size < n.size {
+			C0 := n.northWest.(*CNQNode)
+			C2 := n.southWest.(*CNQNode)
 			C0.cn[north] = n.cn[north]
 			// to update C1, we perform a north-south traversal
 			// recording the cumulative size of traversed nodes
@@ -94,21 +93,18 @@ func (n *CNQNode) updateSWCardinalNeighbours() {
 
 // Step3UpdateWest updates the western neighbours of current quadrant.
 func (n *CNQNode) Step3UpdateWest() {
-	NW := n.northWest.(*CNQNode)
-	SW := n.southWest.(*CNQNode)
-
 	// TODO: change for a direct loop on the western neighbours
 	var westernNeighbours QNodeList
 	n.neighbours(west, &westernNeighbours)
 	for _, neighbour := range westernNeighbours {
 		western := neighbour.(*CNQNode)
 		if western.cn[east] == n {
-			if western.bounds.Max.Y > SW.bounds.Min.Y {
+			if western.bounds.Max.Y > n.southWest.(*CNQNode).bounds.Min.Y {
 				// choose SW
-				western.cn[east] = SW
+				western.cn[east] = n.southWest.(*CNQNode)
 			} else {
 				// choose NW
-				western.cn[east] = NW
+				western.cn[east] = n.northWest.(*CNQNode)
 			}
 			if western.cn[east].bounds.Min.Y == western.bounds.Min.Y {
 				western.cn[east].cn[west] = western
@@ -119,21 +115,18 @@ func (n *CNQNode) Step3UpdateWest() {
 
 // Step3UpdateNorth updates the northern neighbours of current quadrant.
 func (n *CNQNode) Step3UpdateNorth() {
-	NW := n.northWest.(*CNQNode)
-	NE := n.northEast.(*CNQNode)
-
 	// TODO: change for a direct loop on the northern neighbours
 	var northernNeighbours QNodeList
 	n.neighbours(north, &northernNeighbours)
 	for _, neighbour := range northernNeighbours {
 		northern := neighbour.(*CNQNode)
 		if northern.cn[south] == n {
-			if northern.bounds.Max.X > NE.bounds.Min.X {
+			if northern.bounds.Max.X > n.northEast.(*CNQNode).bounds.Min.X {
 				// choose NE
-				northern.cn[south] = NE
+				northern.cn[south] = n.northEast.(*CNQNode)
 			} else {
 				// choose NW
-				northern.cn[south] = NW
+				northern.cn[south] = n.northWest.(*CNQNode)
 			}
 			if northern.cn[south].bounds.Min.X == northern.bounds.Min.X {
 				northern.cn[south].cn[north] = northern
