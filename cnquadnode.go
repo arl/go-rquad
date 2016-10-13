@@ -29,17 +29,14 @@ package quadtree
 //   Node D for 𝑖 ∈ 0,1,2,3 where 0,1,2,3 represent respectively the directions
 //   West, North, East and South and where 𝜑 𝑖°(𝐷)=𝐷. 𝜑 𝑖²(𝐷) = 𝜑 𝑖(𝜑 𝑖(𝐷 ))
 type CNQNode struct {
-	qnode             // base quadnode
-	cn0      *CNQNode // western cardinal neighbour
-	cn1      *CNQNode // northern cardinal neighbour
-	cn2      *CNQNode // eastern cardinal neighbour
-	cn3      *CNQNode // southern cardinal neighbour
-	location quadrant // node location
-	size     int      // size of quadrant sides
+	qnode                // base quadnode
+	cn       [4]*CNQNode // cardinal neighbours
+	location quadrant    // node location
+	size     int         // size of quadrant sides
 }
 
 func (n *CNQNode) updateNECardinalNeighbours() {
-	if n.parent == nil || n.cn1 == nil {
+	if n.parent == nil || n.cn[1] == nil {
 		// nothing to update as this quadrant lies on the north border
 		return
 	}
@@ -47,14 +44,14 @@ func (n *CNQNode) updateNECardinalNeighbours() {
 	C0 := n.northWest.(*CNQNode)
 	C1 := n.northEast.(*CNQNode)
 
-	if n.cn1 != nil {
-		if n.cn1.size >= n.size {
-			C0.cn1 = n.cn1
-			C1.cn1 = n.cn1
+	if n.cn[1] != nil {
+		if n.cn[1].size >= n.size {
+			C0.cn[1] = n.cn[1]
+			C1.cn[1] = n.cn[1]
 		} else {
-			C0.cn1 = n.cn1
+			C0.cn[1] = n.cn[1]
 			// to update C1, we perform a west-east traversal
-			cur := C0.cn1
+			cur := C0.cn[1]
 			// TODO: here we could initialize cumsize with cur.size and avoid
 			// to enter in the loop if not needed
 			cumsize := 0 // cumulative size of traversed cardinal neighbours
@@ -66,27 +63,27 @@ func (n *CNQNode) updateNECardinalNeighbours() {
 				}
 				cur = tmp
 			}
-			C1.cn1 = cur
+			C1.cn[1] = cur
 		}
 	}
 }
 
 func (n *CNQNode) updateSWCardinalNeighbours() {
-	if n.parent == nil || n.cn0 == nil {
+	if n.parent == nil || n.cn[0] == nil {
 		// nothing to update as this quadrant lies on the west border
 		return
 	}
 	// step 2.1: Updating Cardinal Neighbors of SW sub-Quadrant.
 	C0 := n.northWest.(*CNQNode)
 	C2 := n.southWest.(*CNQNode)
-	if n.cn1 != nil {
-		if n.cn1.size >= n.size {
-			C0.cn0 = n.cn0
-			C2.cn0 = n.cn0
+	if n.cn[1] != nil {
+		if n.cn[1].size >= n.size {
+			C0.cn[0] = n.cn[0]
+			C2.cn[0] = n.cn[0]
 		} else {
-			C0.cn1 = n.cn1
+			C0.cn[1] = n.cn[1]
 			// to update C1, we perform a north-south traversal
-			cur := C0.cn0
+			cur := C0.cn[0]
 			// TODO: here we could initialize cumsize with cur.size and avoid
 			// to enter in the loop if not needed
 			cumsize := 0 // cumulative size of traversed cardinal neighbours
@@ -98,7 +95,7 @@ func (n *CNQNode) updateSWCardinalNeighbours() {
 				}
 				cur = tmp
 			}
-			C2.cn0 = cur
+			C2.cn[0] = cur
 		}
 	}
 }
@@ -113,16 +110,16 @@ func (n *CNQNode) Step3UpdateWest() {
 	n.neighbours(west, &westernNeighbours)
 	for _, neighbour := range westernNeighbours {
 		western := neighbour.(*CNQNode)
-		if western.cn2 == n {
+		if western.cn[2] == n {
 			if western.bounds.Max.Y > SW.bounds.Min.Y {
 				// choose SW
-				western.cn2 = SW
+				western.cn[2] = SW
 			} else {
 				// choose NW
-				western.cn2 = NW
+				western.cn[2] = NW
 			}
-			if western.cn2.bounds.Min.Y == western.bounds.Min.Y {
-				western.cn2.cn0 = western
+			if western.cn[2].bounds.Min.Y == western.bounds.Min.Y {
+				western.cn[2].cn[0] = western
 			}
 		}
 	}
@@ -138,16 +135,16 @@ func (n *CNQNode) Step3UpdateNorth() {
 	n.neighbours(north, &northernNeighbours)
 	for _, neighbour := range northernNeighbours {
 		northern := neighbour.(*CNQNode)
-		if northern.cn3 == n {
+		if northern.cn[3] == n {
 			if northern.bounds.Max.X > NE.bounds.Min.X {
 				// choose NE
-				northern.cn3 = NE
+				northern.cn[3] = NE
 			} else {
 				// choose NW
-				northern.cn3 = NW
+				northern.cn[3] = NW
 			}
-			if northern.cn3.bounds.Min.X == northern.bounds.Min.X {
-				northern.cn3.cn1 = northern
+			if northern.cn[3].bounds.Min.X == northern.bounds.Min.X {
+				northern.cn[3].cn[1] = northern
 			}
 		}
 	}
@@ -165,9 +162,9 @@ func (n *CNQNode) Step3UpdateEast() {
 	//decomposition.To minimize the effort, the step 3 and step
 	//2 will be performed in a single traversal on each side.
 
-	if n.cn2 != nil && n.cn2.cn0 == n {
+	if n.cn[2] != nil && n.cn[2].cn[0] == n {
 		// parent is stored as the cn
-		n.cn2.cn0 = n.northEast.(*CNQNode)
+		n.cn[2].cn[0] = n.northEast.(*CNQNode)
 	}
 }
 
@@ -177,12 +174,8 @@ func (n *CNQNode) Step3UpdateSouth() {
 	// decomposed: Q.CN3.CN1=Q.Ch[SE]
 	// TODO: could the paper be wrong about that?
 	// and mean this instead: Q.CN3.CN1=Q.Ch[SW]
-	if n.cn3 != nil && n.cn3.cn1 == n {
-
-		//Step3UpdateSouth of  [(2,2)-2-Gray|CN ←(0,2)-2 ↑(2,0)-2 →(4,0)-4 ↓(0,4)-4]
-		//n.cn3 was [(0,4)-4-White|CN ← ↑(0,2)-2 →(4,4)-4 ↓]
-		//n.cn3  is [(0,4)-4-White|CN ← ↑(2,3)-1 →(4,4)-4 ↓]
-		n.cn3.cn1 = n.southWest.(*CNQNode)
+	if n.cn[3] != nil && n.cn[3].cn[1] == n {
+		n.cn[3].cn[1] = n.southWest.(*CNQNode)
 	}
 }
 
@@ -196,15 +189,15 @@ func (n *CNQNode) cardinalNeighbour(dir side) *CNQNode {
 	//       so we won't need this function but just to do n.cn[0]
 	switch dir {
 	case west:
-		return n.cn0
+		return n.cn[0]
 	case north:
-		return n.cn1
+		return n.cn[1]
 	case east:
-		return n.cn2
+		return n.cn[2]
 	default:
 		fallthrough
 	case south:
-		return n.cn3
+		return n.cn[3]
 	}
 }
 
@@ -221,7 +214,7 @@ func (n *CNQNode) neighbours(dir side, nodes *QNodeList) {
 				// perform west to east traversal
 				for {
 					N = N.cardinalNeighbour(east)
-					if N != nil && N.cn3 == n {
+					if N != nil && N.cn[3] == n {
 						*nodes = append(*nodes, N)
 					} else {
 						break
@@ -240,7 +233,7 @@ func (n *CNQNode) neighbours(dir side, nodes *QNodeList) {
 				// perform north to south traversal
 				for {
 					N = N.cardinalNeighbour(south)
-					if N != nil && N.cn2 == n {
+					if N != nil && N.cn[2] == n {
 						*nodes = append(*nodes, N)
 					} else {
 						break
@@ -259,7 +252,7 @@ func (n *CNQNode) neighbours(dir side, nodes *QNodeList) {
 				// perform east to west traversal
 				for {
 					N = N.cardinalNeighbour(west)
-					if N != nil && N.cn1 == n {
+					if N != nil && N.cn[1] == n {
 						*nodes = append(*nodes, N)
 					} else {
 						break
@@ -278,7 +271,7 @@ func (n *CNQNode) neighbours(dir side, nodes *QNodeList) {
 				// perform south to north traversal
 				for {
 					N = N.cardinalNeighbour(north)
-					if N != nil && N.cn0 == n {
+					if N != nil && N.cn[0] == n {
 						*nodes = append(*nodes, N)
 					} else {
 						break

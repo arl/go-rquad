@@ -129,22 +129,22 @@ func (q *CNQuadtree) subdivide(p *CNQNode) {
 
 	// each sub-quadrant first inherit its parent external neighbours
 	// and then updates its internal neighbours.
-	nw.cn0 = p.cn0 // inherited
-	nw.cn1 = p.cn1 // inherited
-	nw.cn2 = ne    // set for decomposition, will need to be updated after
-	nw.cn3 = sw    // set for decomposition, will need to be updated after
-	ne.cn0 = nw    // set for decomposition, will need to be updated after
-	ne.cn1 = p.cn1 // inherited
-	ne.cn2 = p.cn2 // inherited
-	ne.cn3 = se    // set for decomposition, will need to be updated after
-	sw.cn0 = p.cn0 // inherited
-	sw.cn1 = nw    // set for decomposition, will need to be updated after
-	sw.cn2 = se    // set for decomposition, will need to be updated after
-	sw.cn3 = p.cn3 // inherited
-	se.cn0 = sw    // set for decomposition, will need to be updated after
-	se.cn1 = ne    // set for decomposition, will need to be updated after
-	se.cn2 = p.cn2 // inherited
-	se.cn3 = p.cn3 // inherited
+	nw.cn[0] = p.cn[0] // inherited
+	nw.cn[1] = p.cn[1] // inherited
+	nw.cn[2] = ne      // set for decomposition, will need to be updated after
+	nw.cn[3] = sw      // set for decomposition, will need to be updated after
+	ne.cn[0] = nw      // set for decomposition, will need to be updated after
+	ne.cn[1] = p.cn[1] // inherited
+	ne.cn[2] = p.cn[2] // inherited
+	ne.cn[3] = se      // set for decomposition, will need to be updated after
+	sw.cn[0] = p.cn[0] // inherited
+	sw.cn[1] = nw      // set for decomposition, will need to be updated after
+	sw.cn[2] = se      // set for decomposition, will need to be updated after
+	sw.cn[3] = p.cn[3] // inherited
+	se.cn[0] = sw      // set for decomposition, will need to be updated after
+	se.cn[1] = ne      // set for decomposition, will need to be updated after
+	se.cn[2] = p.cn[2] // inherited
+	se.cn[3] = p.cn[3] // inherited
 
 	p.northWest = nw
 	p.northEast = ne
@@ -164,16 +164,16 @@ func (q *CNQuadtree) subdivide(p *CNQNode) {
 	// parent quadrant is stored as the Cardinal Neighbor, it
 	// should be replaced by one of its children created after the
 	// decomposition
-	if p.cn0 != nil {
+	if p.cn[0] != nil {
 		p.Step3UpdateWest()
 	}
-	if p.cn1 != nil {
+	if p.cn[1] != nil {
 		p.Step3UpdateNorth()
 	}
-	if p.cn2 != nil {
+	if p.cn[2] != nil {
 		p.Step3UpdateEast()
 	}
-	if p.cn3 != nil {
+	if p.cn[3] != nil {
 		p.Step3UpdateSouth()
 	}
 
