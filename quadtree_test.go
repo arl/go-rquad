@@ -73,28 +73,28 @@ func testQuadtreeNeighbours(t *testing.T, fn newQuadtreeFunc) {
 		white int            // num white neighbours
 		black int            // num black neighbours
 	}{
-		{laby1, 8, image.Point{3, 3}, 1, 1},
-		{laby1, 8, image.Point{11, 3}, 2, 1},
-		{laby1, 8, image.Point{23, 7}, 3, 0},
-		{laby1, 8, image.Point{3, 11}, 3, 0},
-		{laby1, 8, image.Point{11, 11}, 2, 2},
-		{laby1, 8, image.Point{3, 19}, 2, 1},
-		{laby1, 8, image.Point{11, 19}, 3, 1},
-		{laby1, 8, image.Point{23, 23}, 1, 2},
-		{laby1, 8, image.Point{3, 27}, 1, 1},
-		{laby1, 8, image.Point{11, 27}, 3, 0},
-		{laby1, 16, image.Point{11, 27}, 1, 1},
+		{laby1, 8, image.Pt(3, 3), 1, 1},
+		{laby1, 8, image.Pt(11, 3), 2, 1},
+		{laby1, 8, image.Pt(23, 7), 3, 0},
+		{laby1, 8, image.Pt(3, 11), 3, 0},
+		{laby1, 8, image.Pt(11, 11), 2, 2},
+		{laby1, 8, image.Pt(3, 19), 2, 1},
+		{laby1, 8, image.Pt(11, 19), 3, 1},
+		{laby1, 8, image.Pt(23, 23), 1, 2},
+		{laby1, 8, image.Pt(3, 27), 1, 1},
+		{laby1, 8, image.Pt(11, 27), 3, 0},
+		{laby1, 16, image.Pt(11, 27), 1, 1},
 
-		{laby2, 1, image.Point{0, 0}, 1, 1},
-		{laby2, 1, image.Point{2, 0}, 2, 2},
-		{laby2, 1, image.Point{4, 0}, 2, 1},
-		{laby2, 1, image.Point{2, 2}, 2, 2},
-		{laby2, 1, image.Point{3, 2}, 3, 1},
-		{laby2, 1, image.Point{2, 3}, 4, 0},
-		{laby2, 1, image.Point{3, 3}, 3, 1},
-		{laby2, 1, image.Point{6, 0}, 1, 1},
-		{laby2, 1, image.Point{4, 2}, 3, 2},
-		{laby2, 1, image.Point{0, 4}, 4, 0},
+		{laby2, 1, image.Pt(0, 0), 1, 1},
+		{laby2, 1, image.Pt(2, 0), 2, 2},
+		{laby2, 1, image.Pt(4, 0), 2, 1},
+		{laby2, 1, image.Pt(2, 2), 2, 2},
+		{laby2, 1, image.Pt(3, 2), 3, 1},
+		{laby2, 1, image.Pt(2, 3), 4, 0},
+		{laby2, 1, image.Pt(3, 3), 3, 1},
+		{laby2, 1, image.Pt(6, 0), 1, 1},
+		{laby2, 1, image.Pt(4, 2), 3, 2},
+		{laby2, 1, image.Pt(0, 4), 4, 0},
 	}
 
 	for _, tt := range testTbl {
@@ -154,10 +154,10 @@ func testDebugQuadtreeNeighboursExample(t *testing.T, fn newQuadtreeFunc) {
 		white int         // num white neighbours
 		black int         // num black neighbours
 	}{
-		{image.Point{4, 2}, 3, 1},
-		{image.Point{4, 4}, 3, 2},
-		{image.Point{5, 3}, 3, 1},
-		{image.Point{6, 2}, 3, 1},
+		{image.Pt(4, 2), 3, 1},
+		{image.Pt(4, 4), 3, 2},
+		{image.Pt(5, 3), 3, 1},
+		{image.Pt(6, 2), 3, 1},
 	}
 
 	scanner, err := binimg.NewScanner(laby)
@@ -201,14 +201,14 @@ func testDebugQuadtreeNeighboursSmall(t *testing.T, fn newQuadtreeFunc) {
 		white int         // num white neighbours
 		black int         // num black neighbours
 	}{
-		{1, image.Point{0, 0}, 2, 0},
-		{1, image.Point{1, 0}, 2, 1},
-		{1, image.Point{2, 0}, 2, 1},
-		{1, image.Point{3, 0}, 2, 0},
-		{1, image.Point{0, 1}, 2, 1},
-		{1, image.Point{1, 1}, 2, 2},
-		{1, image.Point{2, 1}, 2, 2},
-		{1, image.Point{3, 1}, 2, 1},
+		{1, image.Pt(0, 0), 2, 0},
+		{1, image.Pt(1, 0), 2, 1},
+		{1, image.Pt(2, 0), 2, 1},
+		{1, image.Pt(3, 0), 2, 0},
+		{1, image.Pt(0, 1), 2, 1},
+		{1, image.Pt(1, 1), 2, 2},
+		{1, image.Pt(2, 1), 2, 2},
+		{1, image.Pt(3, 1), 2, 1},
 	}
 
 	for _, tt := range testTbl {

@@ -89,23 +89,23 @@ func TestBUQuadtreeQuery(t *testing.T) {
 		exists bool        // node exists
 		eqRef  bool        // node should be equal to ref node
 	}{
-		{image.Point{8, 0}, true, true},
-		{image.Point{15, 0}, true, true},
-		{image.Point{8, 7}, true, true},
-		{image.Point{15, 7}, true, true},
-		{image.Point{7, 0}, true, false},
-		{image.Point{16, 0}, true, false},
-		{image.Point{8, 8}, true, false},
-		{image.Point{16, 8}, true, false},
-		{image.Point{1, 31}, true, false},
-		{image.Point{-1, 0}, false, false},
-		{image.Point{32, 0}, false, false},
-		{image.Point{0, -1}, false, false},
-		{image.Point{0, 32}, false, false},
+		{image.Pt(8, 0), true, true},
+		{image.Pt(15, 0), true, true},
+		{image.Pt(8, 7), true, true},
+		{image.Pt(15, 7), true, true},
+		{image.Pt(7, 0), true, false},
+		{image.Pt(16, 0), true, false},
+		{image.Pt(8, 8), true, false},
+		{image.Pt(16, 8), true, false},
+		{image.Pt(1, 31), true, false},
+		{image.Pt(-1, 0), false, false},
+		{image.Pt(32, 0), false, false},
+		{image.Pt(0, -1), false, false},
+		{image.Pt(0, 32), false, false},
 	}
 
 	// coordinate of reference node
-	refPt := image.Point{8, 0}
+	refPt := image.Pt(8, 0)
 	var (
 		err     error
 		bm      image.Image
@@ -218,10 +218,10 @@ func TestBUQuadtreeChildren(t *testing.T) {
 		white int         // num white children
 		black int         // num black children
 	}{
-		{8, image.Point{8, 8}, north, 2, 0},
-		{8, image.Point{8, 8}, south, 1, 1},
-		{8, image.Point{8, 8}, east, 2, 0},
-		{8, image.Point{8, 8}, west, 1, 1},
+		{8, image.Pt(8, 8), north, 2, 0},
+		{8, image.Pt(8, 8), south, 1, 1},
+		{8, image.Pt(8, 8), east, 2, 0},
+		{8, image.Pt(8, 8), west, 1, 1},
 	}
 
 	for _, tt := range testTbl {
