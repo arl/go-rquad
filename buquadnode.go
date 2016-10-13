@@ -107,17 +107,3 @@ func (n *BUQNode) Neighbours(nodes *QNodeList) {
 	n.neighbours(east, nodes)
 	n.neighbours(west, nodes)
 }
-
-// quadrant obtains this node's quadrant relative to its parent.
-//
-// must not be called on the root node
-func (n *BUQNode) quadrant() quadrant {
-	if n.parent.NorthWest() == n {
-		return northWest
-	} else if n.parent.SouthWest() == n {
-		return southWest
-	} else if n.parent.NorthEast() == n {
-		return northEast
-	}
-	return southEast
-}
