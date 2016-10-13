@@ -99,11 +99,15 @@ func (n *BUQNode) neighbours(dir side, nodes *QNodeList) {
 	}
 }
 
-// Neighbours returns the node neighbours. n should be
-// a leaf node, or the returned slice will be empty.
-func (n *BUQNode) Neighbours(nodes *QNodeList) {
-	n.neighbours(north, nodes)
-	n.neighbours(south, nodes)
-	n.neighbours(east, nodes)
-	n.neighbours(west, nodes)
+// ForEachNeighbour calls the given function for each neighbour of current
+// node.
+func (n *BUQNode) ForEachNeighbour(fn func(QNode)) {
+	var nodes QNodeList
+	n.neighbours(north, &nodes)
+	n.neighbours(south, &nodes)
+	n.neighbours(east, &nodes)
+	n.neighbours(west, &nodes)
+	for _, nb := range nodes {
+		fn(nb)
+	}
 }

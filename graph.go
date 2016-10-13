@@ -66,8 +66,6 @@ func NewGraphFromQuadtree(q Quadtree, genEdgeFunc GenEdgeFunc) *Graph {
 		return nb
 	}
 
-	var nbours QNodeList
-
 	// range over the quadtree nodes
 	for i, qn := range whites {
 
@@ -77,22 +75,14 @@ func NewGraphFromQuadtree(q Quadtree, genEdgeFunc GenEdgeFunc) *Graph {
 		// save node into the graph
 		g.nodes[i] = n
 
-		nbours = nil
-		qn.Neighbours(&nbours)
-
-		// allocate the edges and links slices
-		n.links = make([]*Node, len(nbours), len(nbours))
-		n.edges = make([]*Edge, len(nbours), len(nbours))
-
-		for j, qnb := range nbours {
-
+		qn.ForEachNeighbour(func(qnb QNode) {
 			// get neighbour from lut or create a new one
 			nb := newOrGet(qnb)
-			n.links[j] = nb
+			n.links = append(n.links, nb)
 			if genEdgeFunc != nil {
-				n.edges[j] = genEdgeFunc(qn, qnb)
+				n.edges = append(n.edges, genEdgeFunc(qn, qnb))
 			}
-		}
+		})
 	}
 	return g
 }

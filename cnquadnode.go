@@ -292,18 +292,17 @@ func (n *CNQNode) neighbours(dir side, nodes *QNodeList) {
 	}
 }
 
-// Neighbours returns the node neighbours. n should be
-// a leaf node, or the returned slice will be empty.
-func (n *CNQNode) Neighbours(nodes *QNodeList) {
-	var _n, _s, _e, _w QNodeList
-	n.neighbours(north, &_n)
-	n.neighbours(south, &_s)
-	n.neighbours(east, &_e)
-	n.neighbours(west, &_w)
-	*nodes = append(*nodes, _n...)
-	*nodes = append(*nodes, _s...)
-	*nodes = append(*nodes, _e...)
-	*nodes = append(*nodes, _w...)
+// ForEachNeighbour calls the given function for each neighbour of current
+// node.
+func (n *CNQNode) ForEachNeighbour(fn func(QNode)) {
+	var nodes QNodeList
+	n.neighbours(north, &nodes)
+	n.neighbours(south, &nodes)
+	n.neighbours(east, &nodes)
+	n.neighbours(west, &nodes)
+	for _, nb := range nodes {
+		fn(nb)
+	}
 }
 
 func (n *CNQNode) String() string {

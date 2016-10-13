@@ -34,9 +34,9 @@ type QNode interface {
 	Bounds() image.Rectangle
 	Color() QNodeColor
 
-	// Neighbours obtains the node neighbours. n should be
-	// a leaf node, or the returned slice will be empty.
-	Neighbours(*QNodeList)
+	// ForEachNeighbour calls the given function for each neighbour of current
+	// node.
+	ForEachNeighbour(func(QNode))
 }
 
 // qnode is a basic implementation of the QNode interface and serves as
