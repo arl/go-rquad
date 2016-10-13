@@ -57,7 +57,7 @@ func (n *CNQNode) updateNECardinalNeighbours() {
 			cumsize := 0 // cumulative size of traversed cardinal neighbours
 			for cumsize < C0.size {
 				cumsize += cur.size
-				tmp := cur.cardinalNeighbour(east)
+				tmp := cur.cn[east]
 				if tmp == nil {
 					break
 				}
@@ -89,7 +89,7 @@ func (n *CNQNode) updateSWCardinalNeighbours() {
 			cumsize := 0 // cumulative size of traversed cardinal neighbours
 			for cumsize < C0.size {
 				cumsize += cur.size
-				tmp := cur.cardinalNeighbour(south)
+				tmp := cur.cn[south]
 				if tmp == nil {
 					break
 				}
@@ -184,37 +184,20 @@ func (n *CNQNode) isLeaf() bool {
 	return n.color != Gray
 }
 
-func (n *CNQNode) cardinalNeighbour(dir side) *CNQNode {
-	// TODO: should use an array for cardinal neighbours so we can index them
-	//       so we won't need this function but just to do n.cn[0]
-	switch dir {
-	case west:
-		return n.cn[0]
-	case north:
-		return n.cn[1]
-	case east:
-		return n.cn[2]
-	default:
-		fallthrough
-	case south:
-		return n.cn[3]
-	}
-}
-
 // neighbours locates all leaf neighbours of the current node in the given
 // direction, appending them to a slice.
 func (n *CNQNode) neighbours(dir side, nodes *QNodeList) {
 	switch dir {
 
 	case north:
-		N := n.cardinalNeighbour(north)
+		N := n.cn[north]
 		if N != nil {
 			*nodes = append(*nodes, N)
 			if N.size < n.size {
 				// perform west to east traversal
 				for {
-					N = N.cardinalNeighbour(east)
-					if N != nil && N.cn[3] == n {
+					N = N.cn[2]
+					if N != nil && N.cn[south] == n {
 						*nodes = append(*nodes, N)
 					} else {
 						break
@@ -226,13 +209,13 @@ func (n *CNQNode) neighbours(dir side, nodes *QNodeList) {
 	case west:
 		// On the western side, the neighbors are found starting
 		// from the western CN and moving to the south.
-		N := n.cardinalNeighbour(west)
+		N := n.cn[west]
 		if N != nil {
 			*nodes = append(*nodes, N)
 			if N.size < n.size {
 				// perform north to south traversal
 				for {
-					N = N.cardinalNeighbour(south)
+					N = N.cn[south]
 					if N != nil && N.cn[2] == n {
 						*nodes = append(*nodes, N)
 					} else {
@@ -245,13 +228,13 @@ func (n *CNQNode) neighbours(dir side, nodes *QNodeList) {
 	case south:
 		// for the southern side, the neighbors are identified
 		// starting from the southern CN and moving to the west
-		N := n.cardinalNeighbour(south)
+		N := n.cn[south]
 		if N != nil {
 			*nodes = append(*nodes, N)
 			if N.size < n.size {
 				// perform east to west traversal
 				for {
-					N = N.cardinalNeighbour(west)
+					N = N.cn[west]
 					if N != nil && N.cn[1] == n {
 						*nodes = append(*nodes, N)
 					} else {
@@ -264,13 +247,13 @@ func (n *CNQNode) neighbours(dir side, nodes *QNodeList) {
 	case east:
 		// For the eastern side, the neighbors are identified
 		// starting from the Eastern CN and moving north
-		N := n.cardinalNeighbour(east)
+		N := n.cn[east]
 		if N != nil {
 			*nodes = append(*nodes, N)
 			if N.size < n.size {
 				// perform south to north traversal
 				for {
-					N = N.cardinalNeighbour(north)
+					N = N.cn[north]
 					if N != nil && N.cn[0] == n {
 						*nodes = append(*nodes, N)
 					} else {
