@@ -1,7 +1,6 @@
 package quadtree
 
 import (
-	"fmt"
 	"image"
 	"testing"
 
@@ -16,6 +15,26 @@ func newBUQuadtree(scanner binimg.Scanner, resolution int) (Quadtree, error) {
 
 func newCNQuadtree(scanner binimg.Scanner, resolution int) (Quadtree, error) {
 	return NewCNQuadtree(scanner, resolution)
+}
+
+func appendNode(nl *QNodeList) func(QNode) {
+	return func(n QNode) {
+		*nl = append(*nl, n)
+	}
+}
+
+func neighbourColors(n QNode) (white, black int) {
+	var nodes QNodeList
+	n.Neighbours(&nodes)
+	for _, nb := range nodes {
+		switch nb.Color() {
+		case Black:
+			black++
+		case White:
+			white++
+		}
+	}
+	return
 }
 
 func testQuadtreeWhiteNodes(t *testing.T, fn newQuadtreeFunc) {
@@ -49,7 +68,8 @@ func testQuadtreeWhiteNodes(t *testing.T, fn newQuadtreeFunc) {
 			q, err := fn(scanner, res)
 			check(t, err)
 
-			whiteNodes := q.WhiteNodes()
+			var whiteNodes QNodeList
+			q.ForEachLeaf(White, appendNode(&whiteNodes))
 			if len(whiteNodes) != tt.expected {
 				t.Errorf("on %s resolution:%d, expected %d white nodes, got %d",
 					tt.fn, res, tt.expected, len(whiteNodes))
@@ -119,23 +139,7 @@ func testQuadtreeNeighbours(t *testing.T, fn newQuadtreeFunc) {
 				imgAlias[tt.img], tt.res, tt.pt)
 		}
 
-		var (
-			black, white int
-			nodes        QNodeList
-			strW, strB   string
-		)
-		node.Neighbours(&nodes)
-		for _, nb := range nodes {
-			switch nb.Color() {
-			case Black:
-				strB += fmt.Sprintln(nb)
-				black++
-			case White:
-				strW += fmt.Sprintln(nb)
-				white++
-			}
-		}
-
+		white, black := neighbourColors(node)
 		if tt.white != white {
 			t.Errorf("%s, resolution %d, expected pt %v to have %d white neighbours, got %d",
 				imgAlias[tt.img], tt.res, tt.pt, tt.white, white)
@@ -198,20 +202,7 @@ func testDebugQuadtreeNeighboursExample(t *testing.T, fn newQuadtreeFunc) {
 				pngfile, 1, tt.pt)
 		}
 
-		var black, white int
-		var nodes QNodeList
-		node.Neighbours(&nodes)
-		var strW, strB string
-		for _, nb := range nodes {
-			switch nb.Color() {
-			case Black:
-				strB += fmt.Sprintln(nb.(*CNQNode))
-				black++
-			case White:
-				strW += fmt.Sprintln(nb.(*CNQNode))
-				white++
-			}
-		}
+		white, black := neighbourColors(node)
 		if tt.white != white {
 
 			t.Errorf("%s, resolution %d, expected pt %v to have %d white neighbours, got %d",
@@ -262,17 +253,7 @@ func testDebugQuadtreeNeighboursSmall(t *testing.T, fn newQuadtreeFunc) {
 				pngfile, tt.res, tt.pt)
 		}
 
-		var black, white int
-		var nodes QNodeList
-		node.Neighbours(&nodes)
-		for _, nb := range nodes {
-			switch nb.Color() {
-			case Black:
-				black++
-			case White:
-				white++
-			}
-		}
+		white, black := neighbourColors(node)
 		if tt.white != white {
 			t.Errorf("%s, resolution %d, expected pt %v to have %d white neighbours, got %d",
 				pngfile, tt.res, tt.pt, tt.white, white)
