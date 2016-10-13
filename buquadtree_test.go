@@ -62,10 +62,11 @@ func TestBUQuadtreeSubdivisions(t *testing.T) {
 		q, err := NewBUQuadtree(scanner, res)
 		check(t, err)
 
-		nodes := listNodes(q.root)
-		if len(nodes) != 7 {
+		var whiteNodes QNodeList
+		q.ForEachLeaf(White, appendNode(&whiteNodes))
+		if len(whiteNodes) != 7 {
 			t.Errorf("resolution:%d, expected 7 nodes, got %d",
-				res, len(nodes))
+				res, len(whiteNodes))
 		}
 	}
 
@@ -73,10 +74,11 @@ func TestBUQuadtreeSubdivisions(t *testing.T) {
 		q, err := NewBUQuadtree(scanner, res)
 		check(t, err)
 
-		nodes := listNodes(q.root)
-		if len(nodes) != 1 {
+		var whiteNodes QNodeList
+		q.ForEachLeaf(White, appendNode(&whiteNodes))
+		if len(whiteNodes) != 1 {
 			t.Errorf("resolution:%d, expected 1 nodes, got %d",
-				res, len(nodes))
+				res, len(whiteNodes))
 		}
 	}
 }

@@ -59,24 +59,6 @@ func savePNG(img image.Image, filename string) error {
 	return nil
 }
 
-func listNodes(n QNode) QNodeList {
-	var _listNodes func(n QNode, nodes *QNodeList)
-	_listNodes = func(n QNode, nodes *QNodeList) {
-		switch n.Color() {
-		case Gray:
-			_listNodes(n.NorthWest(), nodes)
-			_listNodes(n.NorthEast(), nodes)
-			_listNodes(n.SouthWest(), nodes)
-			_listNodes(n.SouthEast(), nodes)
-		case White:
-			*nodes = append(*nodes, n)
-		}
-	}
-	nodes := QNodeList{}
-	_listNodes(n, &nodes)
-	return nodes
-}
-
 type newQuadtreeFunc func(binimg.Scanner, int) (Quadtree, error)
 
 func newBUQuadtree(scanner binimg.Scanner, resolution int) (Quadtree, error) {
