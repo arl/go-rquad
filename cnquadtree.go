@@ -164,18 +164,7 @@ func (q *CNQuadtree) subdivide(p *CNQNode) {
 	// parent quadrant is stored as the Cardinal Neighbor, it
 	// should be replaced by one of its children created after the
 	// decomposition
-	if p.cn[west] != nil {
-		p.Step3UpdateWest()
-	}
-	if p.cn[north] != nil {
-		p.Step3UpdateNorth()
-	}
-	if p.cn[east] != nil {
-		p.Step3UpdateEast()
-	}
-	if p.cn[south] != nil {
-		p.Step3UpdateSouth()
-	}
+	p.updateNeighbours()
 
 	if !nw.isLeaf() {
 		q.subdivide(nw)

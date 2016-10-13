@@ -91,70 +91,61 @@ func (n *CNQNode) updateSWCardinalNeighbours() {
 	}
 }
 
-// Step3UpdateWest updates the western neighbours of current quadrant.
-func (n *CNQNode) Step3UpdateWest() {
-	n.forEachNeighbour(west, func(qn QNode) {
-		western := qn.(*CNQNode)
-		if western.cn[east] == n {
-			if western.bounds.Max.Y > n.southWest.(*CNQNode).bounds.Min.Y {
-				// choose SW
-				western.cn[east] = n.southWest.(*CNQNode)
-			} else {
-				// choose NW
-				western.cn[east] = n.northWest.(*CNQNode)
+// updateNeighbours updates all neighbours according to the current
+// decomposition.
+func (n *CNQNode) updateNeighbours() {
+	if n.cn[west] != nil {
+		n.forEachNeighbour(west, func(qn QNode) {
+			western := qn.(*CNQNode)
+			if western.cn[east] == n {
+				if western.bounds.Max.Y > n.southWest.(*CNQNode).bounds.Min.Y {
+					// choose SW
+					western.cn[east] = n.southWest.(*CNQNode)
+				} else {
+					// choose NW
+					western.cn[east] = n.northWest.(*CNQNode)
+				}
+				if western.cn[east].bounds.Min.Y == western.bounds.Min.Y {
+					western.cn[east].cn[west] = western
+				}
 			}
-			if western.cn[east].bounds.Min.Y == western.bounds.Min.Y {
-				western.cn[east].cn[west] = western
-			}
-		}
-	})
-}
-
-// Step3UpdateNorth updates the northern neighbours of current quadrant.
-func (n *CNQNode) Step3UpdateNorth() {
-	n.forEachNeighbour(north, func(qn QNode) {
-		northern := qn.(*CNQNode)
-		if northern.cn[south] == n {
-			if northern.bounds.Max.X > n.northEast.(*CNQNode).bounds.Min.X {
-				// choose NE
-				northern.cn[south] = n.northEast.(*CNQNode)
-			} else {
-				// choose NW
-				northern.cn[south] = n.northWest.(*CNQNode)
-			}
-			if northern.cn[south].bounds.Min.X == northern.bounds.Min.X {
-				northern.cn[south].cn[north] = northern
-			}
-		}
-	})
-}
-
-// Step3UpdateEast updates the eastern neighbours of current quadrant.
-func (n *CNQNode) Step3UpdateEast() {
-	// To update the eastern CN of a quadrant Q that is being
-	// decomposed: Q.CN2.CN0=Q.Ch[NE]
-
-	// On each direction, a full traversal of the neighbors should
-	// be performed. In every quadrant where a reference to the
-	// parent quadrant is stored as the Cardinal Neighbor, it
-	// should be replaced by one of its children created after the
-	// decomposition.To minimize the effort, the step 3 and step
-	// 2 will be performed in a single traversal on each side.
-
-	if n.cn[east] != nil && n.cn[east].cn[west] == n {
-		// parent is stored as the cn
-		n.cn[east].cn[west] = n.northEast.(*CNQNode)
+		})
 	}
-}
 
-// Step3UpdateSouth updates the southern neighbours of current quadrant.
-func (n *CNQNode) Step3UpdateSouth() {
-	// To update the southern CN of a quadrant Q that is being
-	// decomposed: Q.CN3.CN1=Q.Ch[SE]
-	// TODO: could the paper be wrong about that?
-	// and mean this instead: Q.CN3.CN1=Q.Ch[SW]
-	if n.cn[south] != nil && n.cn[south].cn[north] == n {
-		n.cn[south].cn[north] = n.southWest.(*CNQNode)
+	if n.cn[north] != nil {
+		n.forEachNeighbour(north, func(qn QNode) {
+			northern := qn.(*CNQNode)
+			if northern.cn[south] == n {
+				if northern.bounds.Max.X > n.northEast.(*CNQNode).bounds.Min.X {
+					// choose NE
+					northern.cn[south] = n.northEast.(*CNQNode)
+				} else {
+					// choose NW
+					northern.cn[south] = n.northWest.(*CNQNode)
+				}
+				if northern.cn[south].bounds.Min.X == northern.bounds.Min.X {
+					northern.cn[south].cn[north] = northern
+				}
+			}
+		})
+	}
+
+	if n.cn[east] != nil {
+		if n.cn[east] != nil && n.cn[east].cn[west] == n {
+			// To update the eastern CN of a quadrant Q that is being
+			// decomposed: Q.CN2.CN0=Q.Ch[NE]
+			n.cn[east].cn[west] = n.northEast.(*CNQNode)
+		}
+	}
+
+	if n.cn[south] != nil {
+		// To update the southern CN of a quadrant Q that is being
+		// decomposed: Q.CN3.CN1=Q.Ch[SE]
+		// TODO: this seems a typo in the paper.
+		// should have read this instead: Q.CN3.CN1=Q.Ch[SW]
+		if n.cn[south] != nil && n.cn[south].cn[north] == n {
+			n.cn[south].cn[north] = n.southWest.(*CNQNode)
+		}
 	}
 }
 
