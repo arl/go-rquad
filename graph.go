@@ -89,14 +89,6 @@ func NewGraphFromQuadtree(q Quadtree, genEdgeFunc GenEdgeFunc) *Graph {
 
 func newNode(qn QNode) *Node { return &Node{QNode: qn} }
 
-func (n *Node) width() float64 {
-	return float64(n.Bounds().Dx())
-}
-
-func (n *Node) height() float64 {
-	return float64(n.Bounds().Dy())
-}
-
 func (n *Node) center() (x, y float64) {
 	sum := n.Bounds().Min.Add(n.Bounds().Max)
 	return float64(sum.X) / 2, float64(sum.Y) / 2
@@ -143,11 +135,14 @@ func (n *Node) squaredDistance(to *Node) float64 {
 	//    '-'
 	// (x2, y2)
 
-	x1 := float64(n.Bounds().Min.X) + n.width()/2
-	y1 := float64(n.Bounds().Min.Y) + n.height()/2
+	nb := n.Bounds()
+	tob := to.Bounds()
 
-	x2 := float64(to.Bounds().Min.X) + to.width()/2
-	y2 := float64(to.Bounds().Min.Y) + to.height()/2
+	x1 := float64(nb.Min.X) + float64(nb.Dx()/2)
+	y1 := float64(nb.Min.Y) + float64(nb.Dy()/2)
+
+	x2 := float64(tob.Min.X) + float64(tob.Dx()/2)
+	y2 := float64(tob.Min.Y) + float64(tob.Dy()/2)
 
 	a := math.Abs(x1 - x2)
 	b := math.Abs(y1 - y2)
