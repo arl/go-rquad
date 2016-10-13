@@ -1,9 +1,6 @@
 package quadtree
 
-import (
-	"fmt"
-	"image"
-)
+import "image"
 
 // QNodeColor is the set of colors that can take a QNode.
 type QNodeColor byte
@@ -99,8 +96,4 @@ func (n *qnode) child(q quadrant) QNode {
 	default:
 		return n.southEast
 	}
-}
-
-func (n *qnode) String() string {
-	return fmt.Sprintf("(%v %s)", n.bounds, n.color)
 }

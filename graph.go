@@ -1,7 +1,6 @@
 package quadtree
 
 import (
-	"fmt"
 	"math"
 
 	astar "github.com/beefsack/go-astar"
@@ -148,9 +147,4 @@ func (n *Node) squaredDistance(to *Node) float64 {
 	b := math.Abs(y1 - y2)
 
 	return a*a + b*b
-}
-
-func (n *Node) String() string {
-	return fmt.Sprintf("Node {%v|%d links}",
-		n.Bounds(), len(n.links))
 }

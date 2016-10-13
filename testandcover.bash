@@ -17,7 +17,7 @@ github.com/aurelien-rainone/go-quadtrees
 '
 
 # exclude files from coverage report/count (regex)
-readonly COVEREXCLUDES='test_helper.go|*_string.go'
+readonly COVEREXCLUDES='dbg_helper.go|test_helper.go|*_string.go'
 
 export GOPATH=`pwd`:$GOPATH
 
