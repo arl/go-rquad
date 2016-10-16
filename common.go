@@ -48,17 +48,24 @@ func initPackage() {
 
 	// initialize the opposite sides array
 	arrOpposite = [4]side{
-		/* N     E      S     W  */
+		/* W     N      E     S  */
 		east, south, west, north,
+	}
+
+	// For Cardinal Neighbour Quadtrees
+	arrTraversal = [4]side{
+		/* W     N      E     S  */
+		south, east, north, west,
 	}
 
 	initDone = true
 }
 
 var (
-	arrAdjacent [4][4]bool
-	arrReflect  [4][4]quadrant
-	arrOpposite [4]side
+	arrAdjacent  [4][4]bool
+	arrReflect   [4][4]quadrant
+	arrOpposite  [4]side
+	arrTraversal [4]side
 )
 
 // adjacent checks if a quadrant is adjacent to a given side of this node.
@@ -74,4 +81,10 @@ func reflect(s side, q quadrant) quadrant {
 // opposite returns, given a side, its opposite
 func opposite(s side) side {
 	return arrOpposite[s]
+}
+
+// traversal returns for a given cardinal neighbour direction, the direction of
+// the neighbour traversal.
+func traversal(s side) side {
+	return arrTraversal[s]
 }

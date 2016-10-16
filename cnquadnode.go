@@ -167,50 +167,15 @@ func (n *CNQNode) forEachNeighbour(dir side, fn func(QNode)) {
 		return
 	}
 
-	switch dir {
-
-	case west:
-		// perform north to south traversal
-		for {
-			N = N.cn[south]
-			if N != nil && N.cn[east] == n {
-				fn(N)
-			} else {
-				return
-			}
-		}
-
-	case north:
-		// perform west to east traversal
-		for {
-			N = N.cn[east]
-			if N != nil && N.cn[south] == n {
-				fn(N)
-			} else {
-				break
-			}
-		}
-
-	case east:
-		// perform south to north traversal
-		for {
-			N = N.cn[north]
-			if N != nil && N.cn[west] == n {
-				fn(N)
-			} else {
-				return
-			}
-		}
-
-	case south:
-		// perform east to west traversal
-		for {
-			N = N.cn[west]
-			if N != nil && N.cn[north] == n {
-				fn(N)
-			} else {
-				return
-			}
+	traversal := traversal(dir)
+	opposite := opposite(dir)
+	// perform cardinal neighbour traversal
+	for {
+		N = N.cn[traversal]
+		if N != nil && N.cn[opposite] == n {
+			fn(N)
+		} else {
+			return
 		}
 	}
 }
