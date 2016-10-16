@@ -98,6 +98,8 @@ func (n *BUQNode) neighbours(dir side, nodes *QNodeList) {
 // ForEachNeighbour calls the given function for each neighbour of current
 // node.
 func (n *BUQNode) ForEachNeighbour(fn func(QNode)) {
+	// TODO; fn should be passed to individual neighbours functions to remove
+	// the need to fill a temporary slice.
 	var nodes QNodeList
 	n.neighbours(north, &nodes)
 	n.neighbours(south, &nodes)
