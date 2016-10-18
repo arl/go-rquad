@@ -21,9 +21,10 @@ func drawPath(ctx *gg.Context, path []astar.Pather) {
 func drawNode(ctx *gg.Context, node *Node) {
 	ctx.SetRGB(1, 0, 0)
 	ctx.SetLineWidth(1)
+	b := node.Bounds()
 	ctx.DrawRectangle(
-		float64(node.TopLeft().X), float64(node.TopLeft().Y),
-		node.width(), node.height())
+		float64(b.Min.X), float64(b.Min.Y),
+		float64(b.Dx()), float64(b.Dy()))
 	ctx.Stroke()
 }
 
@@ -62,7 +63,6 @@ func TestAStar(t *testing.T) {
 }
 
 func benchmarkAStar(b *testing.B, pngfile string, resolution int, orgidx, dstidx int) {
-
 	var (
 		g       *Graph
 		err     error

@@ -1,7 +1,6 @@
 package quadtree
 
 import (
-	"fmt"
 	"math"
 
 	astar "github.com/beefsack/go-astar"
@@ -38,14 +37,18 @@ type GenEdgeFunc func(n1 QNode, n2 QNode) *Edge
 // the given quadtree, and edges exist where 2 white nodes are neighbours in 2D
 // space (their underlying rectangle share a segment)
 func NewGraphFromQuadtree(q Quadtree, genEdgeFunc GenEdgeFunc) *Graph {
-	whiteNodes := q.WhiteNodes()
+	var whites QNodeList
+	q.ForEachLeaf(White, func(n QNode) {
+		whites = append(whites, n)
+	})
+
 	g := &Graph{
-		nodes: make([]*Node, len(whiteNodes), len(whiteNodes)),
+		nodes: make([]*Node, len(whites), len(whites)),
 	}
 
 	// lookup table for fast retrieving of the Node's we
 	// created from the QNode coming from the Quadtree
-	nodesLut := make(map[QNode]*Node, len(whiteNodes))
+	nodesLut := make(map[QNode]*Node, len(whites))
 
 	// get from the lookup table or create the node
 	newOrGet := func(qn QNode) *Node {
@@ -62,10 +65,8 @@ func NewGraphFromQuadtree(q Quadtree, genEdgeFunc GenEdgeFunc) *Graph {
 		return nb
 	}
 
-	var nbours QNodeList
-
 	// range over the quadtree nodes
-	for i, qn := range whiteNodes {
+	for i, qn := range whites {
 
 		// get node from lut or create a new one
 		n := newOrGet(qn)
@@ -73,38 +74,22 @@ func NewGraphFromQuadtree(q Quadtree, genEdgeFunc GenEdgeFunc) *Graph {
 		// save node into the graph
 		g.nodes[i] = n
 
-		nbours = nil
-		qn.Neighbours(&nbours)
-
-		// allocate the edges and links slices
-		n.links = make([]*Node, len(nbours), len(nbours))
-		n.edges = make([]*Edge, len(nbours), len(nbours))
-
-		for j, qnb := range nbours {
-
+		qn.ForEachNeighbour(func(qnb QNode) {
 			// get neighbour from lut or create a new one
 			nb := newOrGet(qnb)
-			n.links[j] = nb
+			n.links = append(n.links, nb)
 			if genEdgeFunc != nil {
-				n.edges[j] = genEdgeFunc(qn, qnb)
+				n.edges = append(n.edges, genEdgeFunc(qn, qnb))
 			}
-		}
+		})
 	}
 	return g
 }
 
 func newNode(qn QNode) *Node { return &Node{QNode: qn} }
 
-func (n *Node) width() float64 {
-	return float64(n.BottomRight().X) - float64(n.TopLeft().X)
-}
-
-func (n *Node) height() float64 {
-	return float64(n.BottomRight().Y) - float64(n.TopLeft().Y)
-}
-
 func (n *Node) center() (x, y float64) {
-	sum := n.TopLeft().Add(n.BottomRight())
+	sum := n.Bounds().Min.Add(n.Bounds().Max)
 	return float64(sum.X) / 2, float64(sum.Y) / 2
 }
 
@@ -149,19 +134,17 @@ func (n *Node) squaredDistance(to *Node) float64 {
 	//    '-'
 	// (x2, y2)
 
-	x1 := float64(n.TopLeft().X) + n.width()/2
-	y1 := float64(n.TopLeft().Y) + n.height()/2
+	nb := n.Bounds()
+	tob := to.Bounds()
 
-	x2 := float64(to.TopLeft().X) + to.width()/2
-	y2 := float64(to.TopLeft().Y) + to.height()/2
+	x1 := float64(nb.Min.X) + float64(nb.Dx()/2)
+	y1 := float64(nb.Min.Y) + float64(nb.Dy()/2)
+
+	x2 := float64(tob.Min.X) + float64(tob.Dx()/2)
+	y2 := float64(tob.Min.Y) + float64(tob.Dy()/2)
 
 	a := math.Abs(x1 - x2)
 	b := math.Abs(y1 - y2)
 
 	return a*a + b*b
-}
-
-func (n *Node) String() string {
-	return fmt.Sprintf("Node {%s,%s|%d links}",
-		n.TopLeft(), n.BottomRight(), len(n.links))
 }

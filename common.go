@@ -7,15 +7,16 @@ const (
 	northEast
 	southWest
 	southEast
+	rootQuadrant
 )
 
 type side int
 
 const (
-	north side = iota
+	west side = iota
+	north
 	east
 	south
-	west
 )
 
 var initDone bool
@@ -30,34 +31,41 @@ func initPackage() {
 	// initialize the quadrant-side adjacency array
 	arrAdjacent = [4][4]bool{
 		/*       NW     NE     SW     SE  */
+		/* W */ {true, false, true, false},
 		/* N */ {true, true, false, false},
 		/* E */ {false, true, false, true},
 		/* S */ {false, false, true, true},
-		/* W */ {true, false, true, false},
 	}
 
 	// initialize the mirror-quadrant array
 	arrReflect = [4][4]quadrant{
 		/*           NW         NE         SW         SE    */
+		/* W */ {northEast, northWest, southEast, southWest},
 		/* N */ {southWest, southEast, northWest, northEast},
 		/* E */ {northEast, northWest, southEast, southWest},
 		/* S */ {southWest, southEast, northWest, northEast},
-		/* W */ {northEast, northWest, southEast, southWest},
 	}
 
 	// initialize the opposite sides array
 	arrOpposite = [4]side{
-		/* N     E      S     W  */
-		south, west, north, east,
+		/* W     N      E     S  */
+		east, south, west, north,
+	}
+
+	// For Cardinal Neighbour Quadtrees
+	arrTraversal = [4]side{
+		/* W     N      E     S  */
+		south, east, north, west,
 	}
 
 	initDone = true
 }
 
 var (
-	arrAdjacent [4][4]bool
-	arrReflect  [4][4]quadrant
-	arrOpposite [4]side
+	arrAdjacent  [4][4]bool
+	arrReflect   [4][4]quadrant
+	arrOpposite  [4]side
+	arrTraversal [4]side
 )
 
 // adjacent checks if a quadrant is adjacent to a given side of this node.
@@ -73,4 +81,10 @@ func reflect(s side, q quadrant) quadrant {
 // opposite returns, given a side, its opposite
 func opposite(s side) side {
 	return arrOpposite[s]
+}
+
+// traversal returns for a given cardinal neighbour direction, the direction of
+// the neighbour traversal.
+func traversal(s side) side {
+	return arrTraversal[s]
 }

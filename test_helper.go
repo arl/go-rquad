@@ -59,20 +59,30 @@ func savePNG(img image.Image, filename string) error {
 	return nil
 }
 
-func listNodes(n QNode) QNodeList {
-	var _listNodes func(n QNode, nodes *QNodeList)
-	_listNodes = func(n QNode, nodes *QNodeList) {
-		switch n.Color() {
-		case Gray:
-			_listNodes(n.NorthWest(), nodes)
-			_listNodes(n.NorthEast(), nodes)
-			_listNodes(n.SouthWest(), nodes)
-			_listNodes(n.SouthEast(), nodes)
-		case White:
-			*nodes = append(*nodes, n)
-		}
+type newQuadtreeFunc func(binimg.Scanner, int) (Quadtree, error)
+
+func newBUQuadtree(scanner binimg.Scanner, resolution int) (Quadtree, error) {
+	return NewBUQuadtree(scanner, resolution)
+}
+
+func newCNQuadtree(scanner binimg.Scanner, resolution int) (Quadtree, error) {
+	return NewCNQuadtree(scanner, resolution)
+}
+
+func appendNode(nl *QNodeList) func(QNode) {
+	return func(n QNode) {
+		*nl = append(*nl, n)
 	}
-	nodes := QNodeList{}
-	_listNodes(n, &nodes)
-	return nodes
+}
+
+func neighbourColors(n QNode) (white, black int) {
+	n.ForEachNeighbour(func(nb QNode) {
+		switch nb.Color() {
+		case Black:
+			black++
+		case White:
+			white++
+		}
+	})
+	return
 }

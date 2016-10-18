@@ -3,10 +3,10 @@
 	"ignore": "test",
 	"package": [
 		{
-			"checksumSHA1": "S8iFvTK7JkQkv49DYqALAaG8cnA=",
+			"checksumSHA1": "Rqw7Rkm/5CAiys9vJZQxmU55x3A=",
 			"path": "github.com/aurelien-rainone/binimg",
-			"revision": "05a575892de848aa0a6f2cb21cfb359c851fad2b",
-			"revisionTime": "2016-09-19T15:30:00Z"
+			"revision": "ded6398a8ca0494d6e5ea57a2084d0ccebbe1346",
+			"revisionTime": "2016-09-25T15:12:33Z"
 		}
 	],
 	"rootPath": "github.com/aurelien-rainone/go-quadtrees"

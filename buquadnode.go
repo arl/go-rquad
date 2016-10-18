@@ -5,7 +5,7 @@ package quadtree
 // It is a basic implementation of the QNode interface, augmented with
 // methods implementing the bottom-up neighbor finding techniques.
 type BUQNode struct {
-	quadnode
+	qnode
 }
 
 // isLeaf checks if this node is a leaf, i.e. is either black or white.
@@ -16,11 +16,6 @@ func (n *BUQNode) isLeaf() bool {
 // children fills the given slice with all the leaf children of this node (i.e
 // either black or white), that can be found in a given direction.
 func (n *BUQNode) children(dir side, nodes *QNodeList) {
-
-	if n.isLeaf() {
-		return
-	}
-
 	var (
 		s1, s2 *BUQNode
 	)
@@ -59,7 +54,7 @@ func (n *BUQNode) children(dir side, nodes *QNodeList) {
 // equalSizeNeighbor locates an equal-sized neighbor of the current node in the
 // vertical or horizontal direction.
 //
-//  cf. Hanan Samet 1981 article Neighbor Finding in Quadtrees.
+// cf. Hanan Samet 1981 article Neighbor Finding in Quadtrees.
 // It can return nil if the neighbor can't be found.
 func (n *BUQNode) equalSizeNeighbor(dir side) *BUQNode {
 	var neighbor *BUQNode
@@ -67,7 +62,7 @@ func (n *BUQNode) equalSizeNeighbor(dir side) *BUQNode {
 	// Ascent the tree up to a common ancestor.
 	if n.parent != nil {
 		buparent := n.parent.(*BUQNode)
-		if adjacent(dir, n.quadrant()) {
+		if adjacent(dir, n.location) {
 			neighbor = buparent.equalSizeNeighbor(dir)
 		} else {
 			neighbor = buparent
@@ -76,7 +71,7 @@ func (n *BUQNode) equalSizeNeighbor(dir side) *BUQNode {
 
 	// Backtrack mirroring the ascending moves.
 	if neighbor != nil && !neighbor.isLeaf() {
-		return neighbor.child(reflect(dir, n.quadrant())).(*BUQNode)
+		return neighbor.child(reflect(dir, n.location)).(*BUQNode)
 	}
 	return neighbor
 }
@@ -84,7 +79,6 @@ func (n *BUQNode) equalSizeNeighbor(dir side) *BUQNode {
 // neighbours locates all leaf neighbours of the current node in the given
 // direction, appending them to a slice.
 func (n *BUQNode) neighbours(dir side, nodes *QNodeList) {
-
 	// If no neighbor can be found in the given
 	// direction, node will be null.
 	node := n.equalSizeNeighbor(dir)
@@ -101,25 +95,17 @@ func (n *BUQNode) neighbours(dir side, nodes *QNodeList) {
 	}
 }
 
-// Neighbours returns the node neighbours. n should be
-// a leaf node, or the returned slice will be empty.
-func (n *BUQNode) Neighbours(nodes *QNodeList) {
-	n.neighbours(north, nodes)
-	n.neighbours(south, nodes)
-	n.neighbours(east, nodes)
-	n.neighbours(west, nodes)
-}
-
-// quadrant obtains this node's quadrant relative to its parent.
-//
-// must not be called on the root node
-func (n *BUQNode) quadrant() quadrant {
-	if n.parent.NorthWest() == n {
-		return northWest
-	} else if n.parent.SouthWest() == n {
-		return southWest
-	} else if n.parent.NorthEast() == n {
-		return northEast
+// ForEachNeighbour calls the given function for each neighbour of current
+// node.
+func (n *BUQNode) ForEachNeighbour(fn func(QNode)) {
+	// TODO; fn should be passed to individual neighbours functions to remove
+	// the need to fill a temporary slice.
+	var nodes QNodeList
+	n.neighbours(north, &nodes)
+	n.neighbours(south, &nodes)
+	n.neighbours(east, &nodes)
+	n.neighbours(west, &nodes)
+	for _, nb := range nodes {
+		fn(nb)
 	}
-	return southEast
 }

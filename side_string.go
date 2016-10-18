@@ -4,9 +4,9 @@ package quadtree
 
 import "fmt"
 
-const _side_name = "northeastsouthwest"
+const _side_name = "westnortheastsouth"
 
-var _side_index = [...]uint8{0, 5, 9, 14, 18}
+var _side_index = [...]uint8{0, 4, 9, 13, 18}
 
 func (i side) String() string {
 	if i < 0 || i >= side(len(_side_index)-1) {
