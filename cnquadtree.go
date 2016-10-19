@@ -35,9 +35,6 @@ type CNQuadtree struct {
 // subdivisions will be performed on a node if its width or height is equal to
 // this value.
 func NewCNQuadtree(scanner binimg.Scanner, resolution int) (*CNQuadtree, error) {
-	// initialize package level variables
-	initPackage()
-
 	if !binimg.IsPowerOf2Image(scanner) {
 		return nil, errors.New("image must be a square with power-of-2 dimensions")
 	}

@@ -19,14 +19,8 @@ const (
 	south
 )
 
-var initDone bool
-
-// initPackage initializes package level variables. This is automatically
-// called when first needed.
-func initPackage() {
-	if initDone {
-		return
-	}
+// init() initializes package level variables.
+func init() {
 
 	// initialize the quadrant-side adjacency array
 	arrAdjacent = [4][4]bool{
@@ -57,8 +51,6 @@ func initPackage() {
 		/* W     N      E     S  */
 		south, east, north, west,
 	}
-
-	initDone = true
 }
 
 var (
@@ -78,13 +70,13 @@ func reflect(s side, q quadrant) quadrant {
 	return arrReflect[s][q]
 }
 
-// opposite returns, given a side, its opposite
+// opposite returns the opposite of a side.
 func opposite(s side) side {
 	return arrOpposite[s]
 }
 
-// traversal returns for a given cardinal neighbour direction, the direction of
-// the neighbour traversal.
+// traversal returns for a given cardinal neighbour direction,
+// the direction of the neighbour traversal.
 func traversal(s side) side {
 	return arrTraversal[s]
 }

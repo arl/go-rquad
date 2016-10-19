@@ -27,9 +27,6 @@ type BUQuadtree struct {
 // subdivisions will be performed on a node if its width or height is equal to
 // this value.
 func NewBUQuadtree(scanner binimg.Scanner, resolution int) (*BUQuadtree, error) {
-	// initialize package level variables
-	initPackage()
-
 	if resolution < 1 {
 		return nil, errors.New("resolution must be greater than 0")
 	}
