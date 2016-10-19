@@ -190,7 +190,7 @@ func (q *CNQuadtree) Root() QNode {
 // color, Black or White.
 // NOTE: As by definition, Gray leaves do not exist, passing Gray to
 // ForEachLeaf should return all leaves, independently of their color.
-func (q *CNQuadtree) ForEachLeaf(color QNodeColor, fn func(QNode)) {
+func (q *CNQuadtree) ForEachLeaf(color Color, fn func(QNode)) {
 	for _, n := range q.leaves {
 		if color == Gray || n.Color() == color {
 			fn(n)

@@ -2,13 +2,13 @@ package quadtree
 
 import "image"
 
-// QNodeColor is the set of colors that can take a QNode.
-type QNodeColor byte
+// Color is the set of colors that can take a QNode.
+type Color byte
 
 const (
 	// Black is the color of leaf nodes
 	// that are considered as obstructed.
-	Black QNodeColor = 0 + iota
+	Black Color = 0 + iota
 
 	// White is the color of leaf nodes
 	// that are considered as free.
@@ -24,7 +24,7 @@ type QNode interface {
 	Parent() QNode
 
 	Bounds() image.Rectangle
-	Color() QNodeColor
+	Color() Color
 
 	// ForEachNeighbour calls the given function for each neighbour of current
 	// node.

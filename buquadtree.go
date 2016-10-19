@@ -62,7 +62,7 @@ func NewBUQuadtree(scanner binimg.Scanner, resolution int) (*BUQuadtree, error) 
 // color, Black or White.
 // NOTE: As by definition, Gray leaves do not exist, passing Gray to
 // ForEachLeaf should return all leaves, independently of their color.
-func (q *BUQuadtree) ForEachLeaf(color QNodeColor, fn func(QNode)) {
+func (q *BUQuadtree) ForEachLeaf(color Color, fn func(QNode)) {
 	for _, n := range q.leaves {
 		if color == Gray || n.Color() == color {
 			fn(n)

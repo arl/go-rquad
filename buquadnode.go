@@ -13,7 +13,7 @@ type BUQNode struct {
 	southWest *BUQNode        // pointer to the southwest child
 	southEast *BUQNode        // pointer to the southeast child
 	bounds    image.Rectangle // node bounds
-	color     QNodeColor      // node color
+	color     Color           // node color
 	location  quadrant        // node location inside its parent
 }
 
@@ -21,7 +21,7 @@ func (n *BUQNode) Bounds() image.Rectangle {
 	return n.bounds
 }
 
-func (n *BUQNode) Color() QNodeColor {
+func (n *BUQNode) Color() Color {
 	return n.color
 }
 

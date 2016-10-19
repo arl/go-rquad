@@ -37,7 +37,7 @@ type CNQNode struct {
 	southWest *CNQNode        // pointer to the southwest child
 	southEast *CNQNode        // pointer to the southeast child
 	bounds    image.Rectangle // node bounds
-	color     QNodeColor      // node color
+	color     Color           // node color
 	cn        [4]*CNQNode     // cardinal neighbours
 	location  quadrant        // node location inside its parent
 	size      int             // size of a quadrant side
@@ -47,7 +47,7 @@ func (n *CNQNode) Bounds() image.Rectangle {
 	return n.bounds
 }
 
-func (n *CNQNode) Color() QNodeColor {
+func (n *CNQNode) Color() Color {
 	return n.color
 }
 
