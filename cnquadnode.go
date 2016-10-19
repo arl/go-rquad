@@ -1,5 +1,7 @@
 package quadtree
 
+import "image"
+
 // CNQNode is a node of a CNQuadtree.
 //
 // It is an implementation of the QNode interface, with additional fields and
@@ -29,10 +31,28 @@ package quadtree
 //   Node D for 𝑖 ∈ 0,1,2,3 where 0,1,2,3 represent respectively the directions
 //   West, North, East and South and where 𝜑 𝑖°(𝐷)=𝐷. 𝜑 𝑖²(𝐷) = 𝜑 𝑖(𝜑 𝑖(𝐷 ))
 type CNQNode struct {
-	qnode                // base quadnode
-	cn       [4]*CNQNode // cardinal neighbours
-	location quadrant    // node location
-	size     int         // size of quadrant sides
+	parent    *CNQNode        // pointer to the parent node
+	northWest *CNQNode        // pointer to the northwest child
+	northEast *CNQNode        // pointer to the northeast child
+	southWest *CNQNode        // pointer to the southwest child
+	southEast *CNQNode        // pointer to the southeast child
+	bounds    image.Rectangle // node bounds
+	color     QNodeColor      // node color
+	cn        [4]*CNQNode     // cardinal neighbours
+	location  quadrant        // node location inside its parent
+	size      int             // size of a quadrant side
+}
+
+func (n *CNQNode) Bounds() image.Rectangle {
+	return n.bounds
+}
+
+func (n *CNQNode) Color() QNodeColor {
+	return n.color
+}
+
+func (n *CNQNode) Parent() QNode {
+	return n.parent
 }
 
 func (n *CNQNode) updateNECardinalNeighbours() {
@@ -43,8 +63,8 @@ func (n *CNQNode) updateNECardinalNeighbours() {
 	// step 2.2: Updating Cardinal Neighbors of NE sub-Quadrant.
 	if n.cn[north] != nil {
 		if n.cn[north].size < n.size {
-			C0 := n.northWest.(*CNQNode)
-			C1 := n.northEast.(*CNQNode)
+			C0 := n.northWest
+			C1 := n.northEast
 			C0.cn[north] = n.cn[north]
 			// to update C1, we perform a west-east traversal
 			// recording the cumulative size of traversed nodes
@@ -71,8 +91,8 @@ func (n *CNQNode) updateSWCardinalNeighbours() {
 	// step 2.1: Updating Cardinal Neighbors of SW sub-Quadrant.
 	if n.cn[north] != nil {
 		if n.cn[north].size < n.size {
-			C0 := n.northWest.(*CNQNode)
-			C2 := n.southWest.(*CNQNode)
+			C0 := n.northWest
+			C2 := n.southWest
 			C0.cn[north] = n.cn[north]
 			// to update C2, we perform a north-south traversal
 			// recording the cumulative size of traversed nodes
@@ -98,12 +118,12 @@ func (n *CNQNode) updateNeighbours() {
 		n.forEachNeighbour(west, func(qn QNode) {
 			western := qn.(*CNQNode)
 			if western.cn[east] == n {
-				if western.bounds.Max.Y > n.southWest.(*CNQNode).bounds.Min.Y {
+				if western.bounds.Max.Y > n.southWest.bounds.Min.Y {
 					// choose SW
-					western.cn[east] = n.southWest.(*CNQNode)
+					western.cn[east] = n.southWest
 				} else {
 					// choose NW
-					western.cn[east] = n.northWest.(*CNQNode)
+					western.cn[east] = n.northWest
 				}
 				if western.cn[east].bounds.Min.Y == western.bounds.Min.Y {
 					western.cn[east].cn[west] = western
@@ -116,12 +136,12 @@ func (n *CNQNode) updateNeighbours() {
 		n.forEachNeighbour(north, func(qn QNode) {
 			northern := qn.(*CNQNode)
 			if northern.cn[south] == n {
-				if northern.bounds.Max.X > n.northEast.(*CNQNode).bounds.Min.X {
+				if northern.bounds.Max.X > n.northEast.bounds.Min.X {
 					// choose NE
-					northern.cn[south] = n.northEast.(*CNQNode)
+					northern.cn[south] = n.northEast
 				} else {
 					// choose NW
-					northern.cn[south] = n.northWest.(*CNQNode)
+					northern.cn[south] = n.northWest
 				}
 				if northern.cn[south].bounds.Min.X == northern.bounds.Min.X {
 					northern.cn[south].cn[north] = northern
@@ -134,7 +154,7 @@ func (n *CNQNode) updateNeighbours() {
 		if n.cn[east] != nil && n.cn[east].cn[west] == n {
 			// To update the eastern CN of a quadrant Q that is being
 			// decomposed: Q.CN2.CN0=Q.Ch[NE]
-			n.cn[east].cn[west] = n.northEast.(*CNQNode)
+			n.cn[east].cn[west] = n.northEast
 		}
 	}
 
@@ -144,7 +164,7 @@ func (n *CNQNode) updateNeighbours() {
 		// TODO: this seems a typo in the paper.
 		// should have read this instead: Q.CN3.CN1=Q.Ch[SW]
 		if n.cn[south] != nil && n.cn[south].cn[north] == n {
-			n.cn[south].cn[north] = n.southWest.(*CNQNode)
+			n.cn[south].cn[north] = n.southWest
 		}
 	}
 }

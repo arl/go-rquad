@@ -72,10 +72,8 @@ func (q *BUQuadtree) ForEachLeaf(color QNodeColor, fn func(QNode)) {
 
 func (q *BUQuadtree) createRootNode() *BUQNode {
 	n := &BUQNode{
-		qnode: qnode{
-			color:  Gray,
-			bounds: q.scanner.Bounds(),
-		},
+		color:  Gray,
+		bounds: q.scanner.Bounds(),
 	}
 	q.subdivide(n)
 	return n
@@ -83,12 +81,10 @@ func (q *BUQuadtree) createRootNode() *BUQNode {
 
 func (q *BUQuadtree) createInnerNode(bounds image.Rectangle, parent *BUQNode, location quadrant) *BUQNode {
 	n := &BUQNode{
-		qnode: qnode{
-			color:    Gray,
-			bounds:   bounds,
-			parent:   parent,
-			location: location,
-		},
+		color:    Gray,
+		bounds:   bounds,
+		parent:   parent,
+		location: location,
 	}
 
 	uniform, col := q.scanner.Uniform(bounds)

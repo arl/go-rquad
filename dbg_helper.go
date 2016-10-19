@@ -7,10 +7,6 @@ func (n *Node) String() string {
 		n.Bounds(), len(n.links))
 }
 
-func (n *qnode) String() string {
-	return fmt.Sprintf("(%v %s)", n.bounds, n.color)
-}
-
 func (n *CNQNode) String() string {
 	var scn0, scn1, scn2, scn3 string
 	if n.cn[west] != nil {

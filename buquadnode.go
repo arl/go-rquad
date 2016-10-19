@@ -1,11 +1,32 @@
 package quadtree
 
+import "image"
+
 // BUQNode is a node of a BUQuadtree.
 //
 // It is a basic implementation of the QNode interface, augmented with
 // methods implementing the bottom-up neighbor finding techniques.
 type BUQNode struct {
-	qnode
+	parent    *BUQNode        // pointer to the parent node
+	northWest *BUQNode        // pointer to the northwest child
+	northEast *BUQNode        // pointer to the northeast child
+	southWest *BUQNode        // pointer to the southwest child
+	southEast *BUQNode        // pointer to the southeast child
+	bounds    image.Rectangle // node bounds
+	color     QNodeColor      // node color
+	location  quadrant        // node location inside its parent
+}
+
+func (n *BUQNode) Bounds() image.Rectangle {
+	return n.bounds
+}
+
+func (n *BUQNode) Color() QNodeColor {
+	return n.color
+}
+
+func (n *BUQNode) Parent() QNode {
+	return n.parent
 }
 
 // isLeaf checks if this node is a leaf, i.e. is either black or white.
@@ -22,20 +43,20 @@ func (n *BUQNode) children(dir side, nodes *QNodeList) {
 
 	switch dir {
 	case north:
-		s1 = n.northEast.(*BUQNode)
-		s2 = n.northWest.(*BUQNode)
+		s1 = n.northEast
+		s2 = n.northWest
 		break
 	case east:
-		s1 = n.northEast.(*BUQNode)
-		s2 = n.southEast.(*BUQNode)
+		s1 = n.northEast
+		s2 = n.southEast
 		break
 	case south:
-		s1 = n.southEast.(*BUQNode)
-		s2 = n.southWest.(*BUQNode)
+		s1 = n.southEast
+		s2 = n.southWest
 		break
 	case west:
-		s1 = n.northWest.(*BUQNode)
-		s2 = n.southWest.(*BUQNode)
+		s1 = n.northWest
+		s2 = n.southWest
 	}
 
 	if s1.isLeaf() {
@@ -61,7 +82,7 @@ func (n *BUQNode) equalSizeNeighbor(dir side) *BUQNode {
 
 	// Ascent the tree up to a common ancestor.
 	if n.parent != nil {
-		buparent := n.parent.(*BUQNode)
+		buparent := n.parent
 		if adjacent(dir, n.location) {
 			neighbor = buparent.equalSizeNeighbor(dir)
 		} else {
@@ -71,9 +92,25 @@ func (n *BUQNode) equalSizeNeighbor(dir side) *BUQNode {
 
 	// Backtrack mirroring the ascending moves.
 	if neighbor != nil && !neighbor.isLeaf() {
-		return neighbor.child(reflect(dir, n.location)).(*BUQNode)
+		return neighbor.child(reflect(dir, n.location))
 	}
 	return neighbor
+}
+
+// child returns a pointer to the child node at the given quadrant
+// TODO: this could easily be replaced with an array of children, and save us a
+// function call by retrieving the child at index q of the array
+func (n *BUQNode) child(q quadrant) *BUQNode {
+	switch q {
+	case northWest:
+		return n.northWest
+	case southWest:
+		return n.southWest
+	case northEast:
+		return n.northEast
+	default:
+		return n.southEast
+	}
 }
 
 // neighbours locates all leaf neighbours of the current node in the given

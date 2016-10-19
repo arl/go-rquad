@@ -66,11 +66,9 @@ func NewCNQuadtree(scanner binimg.Scanner, resolution int) (*CNQuadtree, error) 
 
 func (q *CNQuadtree) newNode(bounds image.Rectangle, parent *CNQNode, location quadrant) *CNQNode {
 	n := &CNQNode{
-		qnode: qnode{
-			color:  Gray,
-			bounds: bounds,
-			parent: parent,
-		},
+		color:    Gray,
+		bounds:   bounds,
+		parent:   parent,
 		location: location,
 		size:     bounds.Dx(),
 	}
@@ -193,7 +191,6 @@ func (q *CNQuadtree) Root() QNode {
 // NOTE: As by definition, Gray leaves do not exist, passing Gray to
 // ForEachLeaf should return all leaves, independently of their color.
 func (q *CNQuadtree) ForEachLeaf(color QNodeColor, fn func(QNode)) {
-	//panic(" TEST if its workingq.leaves not implemented yet for CNQuadtree")
 	for _, n := range q.leaves {
 		if color == Gray || n.Color() == color {
 			fn(n)
