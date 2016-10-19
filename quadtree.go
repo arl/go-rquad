@@ -7,7 +7,6 @@ type QNodeList []QNode
 
 // Quadtree defines the interface for a quadtree type.
 type Quadtree interface {
-
 	// ForEachLeaf calls the given function for each leaf node of the quadtree.
 	//
 	// Successive calls to the provided function are performed in no particular
@@ -29,7 +28,6 @@ type PointLocator interface {
 
 // CodeLocator is the interface implemented by objects having a CodeLocation method.
 type CodeLocator interface {
-
 	// CodeLocation returns the quadtree node corresponding to a given location code.
 	CodeLocation(uint64) QNode
 }
