@@ -7,14 +7,11 @@ import "image"
 // It is a basic implementation of the QNode interface, augmented with
 // methods implementing the bottom-up neighbor finding techniques.
 type BUQNode struct {
-	parent    *BUQNode        // pointer to the parent node
-	northWest *BUQNode        // pointer to the northwest child
-	northEast *BUQNode        // pointer to the northeast child
-	southWest *BUQNode        // pointer to the southwest child
-	southEast *BUQNode        // pointer to the southeast child
-	bounds    image.Rectangle // node bounds
-	color     Color           // node color
-	location  quadrant        // node location inside its parent
+	parent   *BUQNode        // pointer to the parent node
+	c        [4]*BUQNode     // children nodes
+	bounds   image.Rectangle // node bounds
+	color    Color           // node color
+	location quadrant        // node location inside its parent
 }
 
 func (n *BUQNode) Bounds() image.Rectangle {
@@ -43,20 +40,20 @@ func (n *BUQNode) children(dir side, nodes *QNodeList) {
 
 	switch dir {
 	case north:
-		s1 = n.northEast
-		s2 = n.northWest
+		s1 = n.c[northEast]
+		s2 = n.c[northWest]
 		break
 	case east:
-		s1 = n.northEast
-		s2 = n.southEast
+		s1 = n.c[northEast]
+		s2 = n.c[southEast]
 		break
 	case south:
-		s1 = n.southEast
-		s2 = n.southWest
+		s1 = n.c[southEast]
+		s2 = n.c[southWest]
 		break
 	case west:
-		s1 = n.northWest
-		s2 = n.southWest
+		s1 = n.c[northWest]
+		s2 = n.c[southWest]
 	}
 
 	if s1.isLeaf() {
@@ -92,25 +89,9 @@ func (n *BUQNode) equalSizeNeighbor(dir side) *BUQNode {
 
 	// Backtrack mirroring the ascending moves.
 	if neighbor != nil && !neighbor.isLeaf() {
-		return neighbor.child(reflect(dir, n.location))
+		return neighbor.c[reflect(dir, n.location)]
 	}
 	return neighbor
-}
-
-// child returns a pointer to the child node at the given quadrant
-// TODO: this could easily be replaced with an array of children, and save us a
-// function call by retrieving the child at index q of the array
-func (n *BUQNode) child(q quadrant) *BUQNode {
-	switch q {
-	case northWest:
-		return n.northWest
-	case southWest:
-		return n.southWest
-	case northEast:
-		return n.northEast
-	default:
-		return n.southEast
-	}
 }
 
 // neighbours locates all leaf neighbours of the current node in the given

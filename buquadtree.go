@@ -132,10 +132,10 @@ func (q *BUQuadtree) subdivide(n *BUQNode) {
 	y2 := n.bounds.Max.Y
 
 	// create the 4 children nodes, one per quadrant
-	n.northWest = q.createInnerNode(image.Rect(x0, y0, x1, y1), n, northWest)
-	n.southWest = q.createInnerNode(image.Rect(x0, y1, x1, y2), n, southWest)
-	n.northEast = q.createInnerNode(image.Rect(x1, y0, x2, y1), n, northEast)
-	n.southEast = q.createInnerNode(image.Rect(x1, y1, x2, y2), n, southEast)
+	n.c[northWest] = q.createInnerNode(image.Rect(x0, y0, x1, y1), n, northWest)
+	n.c[southWest] = q.createInnerNode(image.Rect(x0, y1, x1, y2), n, southWest)
+	n.c[northEast] = q.createInnerNode(image.Rect(x1, y0, x2, y1), n, northEast)
+	n.c[southEast] = q.createInnerNode(image.Rect(x1, y1, x2, y2), n, southEast)
 }
 
 // Root returns the quadtree root node.
@@ -154,14 +154,14 @@ func (q *BUQuadtree) PointLocation(pt image.Point) QNode {
 			return n
 		}
 
-		if pt.In(n.northWest.bounds) {
-			return query(n.northWest)
-		} else if pt.In(n.northEast.bounds) {
-			return query(n.northEast)
-		} else if pt.In(n.southWest.bounds) {
-			return query(n.southWest)
+		if pt.In(n.c[northWest].bounds) {
+			return query(n.c[northWest])
+		} else if pt.In(n.c[northEast].bounds) {
+			return query(n.c[northEast])
+		} else if pt.In(n.c[southWest].bounds) {
+			return query(n.c[southWest])
 		}
-		return query(n.southEast)
+		return query(n.c[southEast])
 	}
 	return query(q.root)
 }
