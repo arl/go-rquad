@@ -103,7 +103,8 @@ func testQuadtreeNeighbours(t *testing.T, fn newQuadtreeFunc) {
 		q, err := fn(scanner, tt.res)
 		check(t, err)
 
-		node, exists := Query(q, tt.pt)
+		node := q.(PointLocator).PointLocation(tt.pt)
+		exists := node != nil
 		if !exists {
 			t.Fatalf("%s, resolution %d, expected exists to be true for point %v, got false instead",
 				imgAlias[tt.img], tt.res, tt.pt)
@@ -166,7 +167,8 @@ func testDebugQuadtreeNeighboursExample(t *testing.T, fn newQuadtreeFunc) {
 	check(t, err)
 
 	for _, tt := range testTbl {
-		node, exists := Query(q, tt.pt)
+		node := q.(PointLocator).PointLocation(tt.pt)
+		exists := node != nil
 		if !exists {
 			t.Fatalf("%s, resolution %d, expected exists to be true for point %v, got false instead",
 				pngfile, 1, tt.pt)
@@ -217,7 +219,8 @@ func testDebugQuadtreeNeighboursSmall(t *testing.T, fn newQuadtreeFunc) {
 		q, err := fn(scanner, tt.res)
 		check(t, err)
 
-		node, exists := Query(q, tt.pt)
+		node := q.(PointLocator).PointLocation(tt.pt)
+		exists := node != nil
 		if !exists {
 			t.Fatalf("%s, resolution %d, expected exists to be true for point %v, got false instead",
 				pngfile, tt.res, tt.pt)

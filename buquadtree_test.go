@@ -121,14 +121,15 @@ func TestBUQuadtreeQuery(t *testing.T) {
 		check(t, err)
 
 		for _, tt := range testTbl {
-			node, exists := Query(q, tt.pt)
+			node := q.PointLocation(tt.pt)
+			exists := node != nil
 			if exists != tt.exists {
 				t.Fatalf("resolution %d, expected exists to be %t for point %v, got %t instead",
 					res, tt.exists, tt.pt, exists)
 			}
 			// obtain the refNode
-			refNode, refExists := Query(q, refPt)
-			if !refExists {
+			refNode := q.PointLocation(refPt)
+			if refNode == nil {
 				t.Fatalf("reference node should exist")
 			}
 
@@ -228,7 +229,8 @@ func TestBUQuadtreeChildren(t *testing.T) {
 		q, err := NewBUQuadtree(scanner, tt.res)
 		check(t, err)
 
-		node, exists := Query(q, tt.pt)
+		node := q.PointLocation(tt.pt)
+		exists := node != nil
 		if !exists {
 			t.Fatalf("resolution %d, expected exists to be true for point %v, got false instead",
 				tt.res, tt.pt)

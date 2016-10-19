@@ -142,3 +142,26 @@ func (q *BUQuadtree) subdivide(n *BUQNode) {
 func (q *BUQuadtree) Root() QNode {
 	return q.root
 }
+
+// PointLocation returns the quadtree node containing the given point.
+func (q *BUQuadtree) PointLocation(pt image.Point) QNode {
+	var query func(n *BUQNode) QNode
+	query = func(n *BUQNode) QNode {
+		if !pt.In(n.bounds) {
+			return nil
+		}
+		if n.color != Gray {
+			return n
+		}
+
+		if pt.In(n.northWest.bounds) {
+			return query(n.northWest)
+		} else if pt.In(n.northEast.bounds) {
+			return query(n.northEast)
+		} else if pt.In(n.southWest.bounds) {
+			return query(n.southWest)
+		}
+		return query(n.southEast)
+	}
+	return query(q.root)
+}

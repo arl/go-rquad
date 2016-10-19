@@ -21,25 +21,15 @@ type Quadtree interface {
 	Root() QNode
 }
 
-// Query returns the leaf node that contains a given point.
-func Query(q Quadtree, pt image.Point) (n QNode, exists bool) {
-	return query(q.Root(), pt)
+// PointLocator is the interface implemented by objects having a PointLocation method.
+type PointLocator interface {
+	// PointLocation returns the quadtree node containing the given point.
+	PointLocation(image.Point) QNode
 }
 
-func query(n QNode, pt image.Point) (QNode, bool) {
-	if !pt.In(n.Bounds()) {
-		return nil, false
-	}
-	if n.Color() != Gray {
-		return n, true
-	}
+// CodeLocator is the interface implemented by objects having a CodeLocation method.
+type CodeLocator interface {
 
-	if pt.In(n.NorthWest().Bounds()) {
-		return query(n.NorthWest(), pt)
-	} else if pt.In(n.NorthEast().Bounds()) {
-		return query(n.NorthEast(), pt)
-	} else if pt.In(n.SouthWest().Bounds()) {
-		return query(n.SouthWest(), pt)
-	}
-	return query(n.SouthEast(), pt)
+	// CodeLocation returns the quadtree node corresponding to a given location code.
+	CodeLocation(uint64) QNode
 }

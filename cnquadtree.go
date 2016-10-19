@@ -197,3 +197,26 @@ func (q *CNQuadtree) ForEachLeaf(color QNodeColor, fn func(QNode)) {
 		}
 	}
 }
+
+// PointLocation returns the quadtree node containing the given point.
+func (q *CNQuadtree) PointLocation(pt image.Point) QNode {
+	var query func(n *CNQNode) QNode
+	query = func(n *CNQNode) QNode {
+		if !pt.In(n.bounds) {
+			return nil
+		}
+		if n.color != Gray {
+			return n
+		}
+
+		if pt.In(n.northWest.bounds) {
+			return query(n.northWest)
+		} else if pt.In(n.northEast.bounds) {
+			return query(n.northEast)
+		} else if pt.In(n.southWest.bounds) {
+			return query(n.southWest)
+		}
+		return query(n.southEast)
+	}
+	return query(q.root)
+}
