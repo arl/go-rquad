@@ -22,7 +22,11 @@ const (
 // QNode defines the interface for a quadtree node.
 type QNode interface {
 
+	// Bounds returns the bounds of the rectangular area represented by this
+	// quadtree node.
 	Bounds() image.Rectangle
+
+	// Color() returns the node Color.
 	Color() Color
 
 	// ForEachNeighbour calls the given function for each neighbour of current

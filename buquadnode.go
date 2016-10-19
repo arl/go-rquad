@@ -14,10 +14,13 @@ type BUQNode struct {
 	location quadrant        // node location inside its parent
 }
 
+// Bounds returns the bounds of the rectangular area represented by this
+// quadtree node.
 func (n *BUQNode) Bounds() image.Rectangle {
 	return n.bounds
 }
 
+// Color() returns the node Color.
 func (n *BUQNode) Color() Color {
 	return n.color
 }

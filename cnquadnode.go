@@ -43,10 +43,13 @@ type CNQNode struct {
 	size      int             // size of a quadrant side
 }
 
+// Bounds returns the bounds of the rectangular area represented by this
+// quadtree node.
 func (n *CNQNode) Bounds() image.Rectangle {
 	return n.bounds
 }
 
+// Color() returns the node Color.
 func (n *CNQNode) Color() Color {
 	return n.color
 }
