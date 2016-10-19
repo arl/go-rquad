@@ -21,7 +21,6 @@ const (
 
 // QNode defines the interface for a quadtree node.
 type QNode interface {
-	Parent() QNode
 
 	Bounds() image.Rectangle
 	Color() Color

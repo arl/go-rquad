@@ -51,10 +51,6 @@ func (n *CNQNode) Color() Color {
 	return n.color
 }
 
-func (n *CNQNode) Parent() QNode {
-	return n.parent
-}
-
 func (n *CNQNode) updateNECardinalNeighbours() {
 	if n.parent == nil || n.cn[north] == nil {
 		// nothing to update as this quadrant lies on the north border

@@ -22,10 +22,6 @@ func (n *BUQNode) Color() Color {
 	return n.color
 }
 
-func (n *BUQNode) Parent() QNode {
-	return n.parent
-}
-
 // isLeaf checks if this node is a leaf, i.e. is either black or white.
 func (n *BUQNode) isLeaf() bool {
 	return n.color != Gray

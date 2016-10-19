@@ -236,7 +236,7 @@ func TestBUQuadtreeChildren(t *testing.T) {
 				tt.res, tt.pt)
 		}
 
-		parent := node.Parent().(*BUQNode)
+		parent := node.(*BUQNode).parent
 		if parent == nil {
 			t.Fatalf("resolution %d, parent of %v is nil, expected not nil",
 				tt.res, tt.pt)
