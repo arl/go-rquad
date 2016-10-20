@@ -3,12 +3,11 @@
 
 **Quadtrees and efficient neighbour finding techniques in Go**
 
-Package quadtrees proposes various implementations of region quadtrees.
+Package `rquad` proposes various implementations of **region quadtrees**.
 The region quadtree is a special kind of quadtree that recursively
 subdivides a 2D dimensional space into 4, smaller and generally equal
 rectangular regions, until the wanted quadtree resolution has been reached,
 or no further subdivisions can be performed.
-area
 
 Region quadtree may be used for image processing, in this case a node
 represents a rectangular region of an image in which all pixels have the
@@ -19,7 +18,7 @@ of a data field. For example, the temperatures in an area may be stored as a
 quadtree, with each leaf node storing the average temperature over the
 subregion it represents.
 
-Quadtree implementations in this package use the binimg.Scanner interface to
+Quadtree implementations in this package use the `binimg.Scanner` interface to
 represent the complete area and provide the quadtree with a way to scan over
 regions of this area in order to perform the subdivisions.
 
@@ -27,11 +26,12 @@ regions of this area in order to perform the subdivisions.
 ## References
 
  - Bottom-up neighour finding techniques
-(cf Hanan Samet 1981, Neighbor Finding Techniques for Images Represented by
-Quadtrees)
+(cf Hanan Samet 1981, *Neighbor Finding Techniques for Images Represented by
+Quadtrees*)
+
  - Cardinal Neighbor Quadtree
-(cf Safwan Qasem 2015, Cardinal Neighbor Quadtree: a New Quadtree-based
-Structure for Constant-Time Neighbor Finding)
+(cf Safwan Qasem 2015, *Cardinal Neighbor Quadtree: a New Quadtree-based
+Structure for Constant-Time Neighbor Finding*)
 
 
 ## License
