@@ -2,8 +2,8 @@ package quadtree
 
 import "image"
 
-// QNodeList is a slice of QNode's
-type QNodeList []Node
+// NodeList is a slice of QNode's
+type NodeList []Node
 
 // Quadtree defines the interface for a quadtree type.
 type Quadtree interface {

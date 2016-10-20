@@ -5,7 +5,7 @@ package quadtree
 //
 // cf. Hanan Samet 1981 article Neighbour Finding in Quadtrees.
 // It can return nil if the neighbour can't be found.
-func equalSizeNeighbour(n Node, dir side) Node {
+func equalSizeNeighbour(n Node, dir Side) Node {
 	var neighbour Node
 
 	// Ascent the tree up to a common ancestor.
@@ -27,7 +27,7 @@ func equalSizeNeighbour(n Node, dir side) Node {
 
 // neighbours locates all leaf neighbours of the current node in the given
 // direction, appending them to a slice.
-func neighbours(n Node, dir side, nodes *QNodeList) {
+func neighbours(n Node, dir Side, nodes *NodeList) {
 	// If no neighbour can be found in the given
 	// direction, node will be null.
 	node := equalSizeNeighbour(n, dir)
@@ -46,27 +46,27 @@ func neighbours(n Node, dir side, nodes *QNodeList) {
 
 // children fills the given slice with all the leaf children of this node (i.e
 // either black or white), that can be found in a given direction.
-func children(n Node, dir side, nodes *QNodeList) {
+func children(n Node, dir Side, nodes *NodeList) {
 	var (
 		s1, s2 Node
 	)
 
 	switch dir {
-	case north:
-		s1 = n.Child(northEast)
-		s2 = n.Child(northWest)
+	case North:
+		s1 = n.Child(Northeast)
+		s2 = n.Child(Northwest)
 		break
-	case east:
-		s1 = n.Child(northEast)
-		s2 = n.Child(southEast)
+	case East:
+		s1 = n.Child(Northeast)
+		s2 = n.Child(Southeast)
 		break
-	case south:
-		s1 = n.Child(southEast)
-		s2 = n.Child(southWest)
+	case South:
+		s1 = n.Child(Southeast)
+		s2 = n.Child(Southwest)
 		break
-	case west:
-		s1 = n.Child(northWest)
-		s2 = n.Child(southWest)
+	case West:
+		s1 = n.Child(Northwest)
+		s2 = n.Child(Southwest)
 	}
 
 	if s1.Color() != Gray {
@@ -100,11 +100,11 @@ func ForEachNeighbour(n Node, fn func(Node)) {
 
 	// TODO; fn should be passed to individual neighbours functions to remove
 	// the need to fill a temporary slice.
-	var nodes QNodeList
-	neighbours(n, north, &nodes)
-	neighbours(n, south, &nodes)
-	neighbours(n, east, &nodes)
-	neighbours(n, west, &nodes)
+	var nodes NodeList
+	neighbours(n, North, &nodes)
+	neighbours(n, South, &nodes)
+	neighbours(n, East, &nodes)
+	neighbours(n, West, &nodes)
 	for _, nb := range nodes {
 		fn(nb)
 	}

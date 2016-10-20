@@ -1,22 +1,23 @@
 package quadtree
 
-type quadrant int
+// Quadrant indicates the position of a child Node inside its parent.
+type Quadrant int
 
 const (
-	northWest quadrant = iota
-	northEast
-	southWest
-	southEast
+	Northwest Quadrant = iota
+	Northeast
+	Southwest
+	Southeast
 	rootQuadrant
 )
 
-type side int
+type Side int
 
 const (
-	west side = iota
-	north
-	east
-	south
+	West Side = iota
+	North
+	East
+	South
 )
 
 // init() initializes package level variables.
@@ -32,51 +33,51 @@ func init() {
 	}
 
 	// initialize the mirror-quadrant array
-	arrReflect = [4][4]quadrant{
+	arrReflect = [4][4]Quadrant{
 		/*           NW         NE         SW         SE    */
-		/* W */ {northEast, northWest, southEast, southWest},
-		/* N */ {southWest, southEast, northWest, northEast},
-		/* E */ {northEast, northWest, southEast, southWest},
-		/* S */ {southWest, southEast, northWest, northEast},
+		/* W */ {Northeast, Northwest, Southeast, Southwest},
+		/* N */ {Southwest, Southeast, Northwest, Northeast},
+		/* E */ {Northeast, Northwest, Southeast, Southwest},
+		/* S */ {Southwest, Southeast, Northwest, Northeast},
 	}
 
 	// initialize the opposite sides array
-	arrOpposite = [4]side{
+	arrOpposite = [4]Side{
 		/* W     N      E     S  */
-		east, south, west, north,
+		East, South, West, North,
 	}
 
 	// For Cardinal Neighbour Quadtrees
-	arrTraversal = [4]side{
+	arrTraversal = [4]Side{
 		/* W     N      E     S  */
-		south, east, north, west,
+		South, East, North, West,
 	}
 }
 
 var (
 	arrAdjacent  [4][4]bool
-	arrReflect   [4][4]quadrant
-	arrOpposite  [4]side
-	arrTraversal [4]side
+	arrReflect   [4][4]Quadrant
+	arrOpposite  [4]Side
+	arrTraversal [4]Side
 )
 
 // adjacent checks if a quadrant is adjacent to a given side of this node.
-func adjacent(s side, q quadrant) bool {
+func adjacent(s Side, q Quadrant) bool {
 	return arrAdjacent[s][q]
 }
 
 // reflect obtains the mirror image of a quadrant on a given side.
-func reflect(s side, q quadrant) quadrant {
+func reflect(s Side, q Quadrant) Quadrant {
 	return arrReflect[s][q]
 }
 
 // opposite returns the opposite of a side.
-func opposite(s side) side {
+func opposite(s Side) Side {
 	return arrOpposite[s]
 }
 
 // traversal returns for a given cardinal neighbour direction,
 // the direction of the neighbour traversal.
-func traversal(s side) side {
+func traversal(s Side) Side {
 	return arrTraversal[s]
 }

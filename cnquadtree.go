@@ -23,7 +23,7 @@ type CNQuadtree struct {
 	resolution int            // maximal resolution
 	scanner    binimg.Scanner // reference image
 	root       *CNQNode       // root node
-	leaves     QNodeList      // leaf nodes (filled during creation)
+	leaves     NodeList       // leaf nodes (filled during creation)
 }
 
 // NewCNQuadtree creates a CNQuadtree and populates it with CNQNode's,
@@ -61,7 +61,7 @@ func NewCNQuadtree(scanner binimg.Scanner, resolution int) (*CNQuadtree, error) 
 	return q, nil
 }
 
-func (q *CNQuadtree) newNode(bounds image.Rectangle, parent *CNQNode, location quadrant) *CNQNode {
+func (q *CNQuadtree) newNode(bounds image.Rectangle, parent *CNQNode, location Quadrant) *CNQNode {
 	n := &CNQNode{
 		color:    Gray,
 		bounds:   bounds,
@@ -117,29 +117,29 @@ func (q *CNQuadtree) subdivide(p *CNQNode) {
 	y2 := p.bounds.Max.Y
 
 	// decompose current node in 4 sub-quadrants
-	nw := q.newNode(image.Rect(x0, y0, x1, y1), p, northWest)
-	ne := q.newNode(image.Rect(x1, y0, x2, y1), p, northEast)
-	sw := q.newNode(image.Rect(x0, y1, x1, y2), p, southWest)
-	se := q.newNode(image.Rect(x1, y1, x2, y2), p, southEast)
+	nw := q.newNode(image.Rect(x0, y0, x1, y1), p, Northwest)
+	ne := q.newNode(image.Rect(x1, y0, x2, y1), p, Northeast)
+	sw := q.newNode(image.Rect(x0, y1, x1, y2), p, Southwest)
+	se := q.newNode(image.Rect(x1, y1, x2, y2), p, Southeast)
 
 	// each sub-quadrant first inherit its parent external neighbours
 	// and then updates its internal neighbours.
-	nw.cn[west] = p.cn[west]   // inherited
-	nw.cn[north] = p.cn[north] // inherited
-	nw.cn[east] = ne           // set for decomposition, will need to be updated after
-	nw.cn[south] = sw          // set for decomposition, will need to be updated after
-	ne.cn[west] = nw           // set for decomposition, will need to be updated after
-	ne.cn[north] = p.cn[north] // inherited
-	ne.cn[east] = p.cn[east]   // inherited
-	ne.cn[south] = se          // set for decomposition, will need to be updated after
-	sw.cn[west] = p.cn[west]   // inherited
-	sw.cn[north] = nw          // set for decomposition, will need to be updated after
-	sw.cn[east] = se           // set for decomposition, will need to be updated after
-	sw.cn[south] = p.cn[south] // inherited
-	se.cn[west] = sw           // set for decomposition, will need to be updated after
-	se.cn[north] = ne          // set for decomposition, will need to be updated after
-	se.cn[east] = p.cn[east]   // inherited
-	se.cn[south] = p.cn[south] // inherited
+	nw.cn[West] = p.cn[West]   // inherited
+	nw.cn[North] = p.cn[North] // inherited
+	nw.cn[East] = ne           // set for decomposition, will need to be updated after
+	nw.cn[South] = sw          // set for decomposition, will need to be updated after
+	ne.cn[West] = nw           // set for decomposition, will need to be updated after
+	ne.cn[North] = p.cn[North] // inherited
+	ne.cn[East] = p.cn[East]   // inherited
+	ne.cn[South] = se          // set for decomposition, will need to be updated after
+	sw.cn[West] = p.cn[West]   // inherited
+	sw.cn[North] = nw          // set for decomposition, will need to be updated after
+	sw.cn[East] = se           // set for decomposition, will need to be updated after
+	sw.cn[South] = p.cn[South] // inherited
+	se.cn[West] = sw           // set for decomposition, will need to be updated after
+	se.cn[North] = ne          // set for decomposition, will need to be updated after
+	se.cn[East] = p.cn[East]   // inherited
+	se.cn[South] = p.cn[South] // inherited
 
 	p.northWest = nw
 	p.northEast = ne

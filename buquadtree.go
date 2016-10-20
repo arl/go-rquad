@@ -12,12 +12,12 @@ import (
 //
 // BUQuadtree works on rectangles quadrants as well as squares; quadrants of
 // the same parent may have different dimensions due to the integer division.
-// It internally handles BUQNode's which implement the QNode interface.
+// It internally handles BUQNode's which implement the Node interface.
 type BUQuadtree struct {
 	resolution int            // maximal resolution
 	scanner    binimg.Scanner // reference image
 	root       *BUQNode       // root node
-	leaves     QNodeList      // leaf nodes (filled during creation)
+	leaves     NodeList       // leaf nodes (filled during creation)
 }
 
 // NewBUQuadtree creates a BUQuadtree and populates it with BUQNode's,
@@ -76,7 +76,7 @@ func (q *BUQuadtree) createRootNode() *BUQNode {
 	return n
 }
 
-func (q *BUQuadtree) createInnerNode(bounds image.Rectangle, parent *BUQNode, location quadrant) *BUQNode {
+func (q *BUQuadtree) createInnerNode(bounds image.Rectangle, parent *BUQNode, location Quadrant) *BUQNode {
 	n := &BUQNode{
 		color:    Gray,
 		bounds:   bounds,
@@ -129,10 +129,10 @@ func (q *BUQuadtree) subdivide(n *BUQNode) {
 	y2 := n.bounds.Max.Y
 
 	// create the 4 children nodes, one per quadrant
-	n.c[northWest] = q.createInnerNode(image.Rect(x0, y0, x1, y1), n, northWest)
-	n.c[southWest] = q.createInnerNode(image.Rect(x0, y1, x1, y2), n, southWest)
-	n.c[northEast] = q.createInnerNode(image.Rect(x1, y0, x2, y1), n, northEast)
-	n.c[southEast] = q.createInnerNode(image.Rect(x1, y1, x2, y2), n, southEast)
+	n.c[Northwest] = q.createInnerNode(image.Rect(x0, y0, x1, y1), n, Northwest)
+	n.c[Southwest] = q.createInnerNode(image.Rect(x0, y1, x1, y2), n, Southwest)
+	n.c[Northeast] = q.createInnerNode(image.Rect(x1, y0, x2, y1), n, Northeast)
+	n.c[Southeast] = q.createInnerNode(image.Rect(x1, y1, x2, y2), n, Southeast)
 }
 
 // Root returns the quadtree root node.
@@ -151,14 +151,14 @@ func (q *BUQuadtree) PointLocation(pt image.Point) Node {
 			return n
 		}
 
-		if pt.In(n.c[northWest].bounds) {
-			return query(n.c[northWest])
-		} else if pt.In(n.c[northEast].bounds) {
-			return query(n.c[northEast])
-		} else if pt.In(n.c[southWest].bounds) {
-			return query(n.c[southWest])
+		if pt.In(n.c[Northwest].bounds) {
+			return query(n.c[Northwest])
+		} else if pt.In(n.c[Northeast].bounds) {
+			return query(n.c[Northeast])
+		} else if pt.In(n.c[Southwest].bounds) {
+			return query(n.c[Southwest])
 		}
-		return query(n.c[southEast])
+		return query(n.c[Southeast])
 	}
 	return query(q.root)
 }

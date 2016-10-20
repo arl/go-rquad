@@ -26,7 +26,7 @@ type Node interface {
 	Parent() Node
 
 	// Child returns current node child at specified quadrant.
-	Child(quadrant) Node
+	Child(Quadrant) Node
 
 	// Bounds returns the bounds of the rectangular area represented by this
 	// quadtree node.
@@ -36,7 +36,7 @@ type Node interface {
 	Color() Color
 
 	// Location() returns the node inside its parent quadrant
-	Location() quadrant
+	Location() Quadrant
 }
 
 // AdjacencyNode is a Node that can find its adjacent nodes, or neighbours.

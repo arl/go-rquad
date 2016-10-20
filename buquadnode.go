@@ -4,14 +4,14 @@ import "image"
 
 // BUQNode is a node of a BUQuadtree.
 //
-// It is a basic implementation of the QNode interface, augmented with
+// It is a basic implementation of the Node interface, augmented with
 // methods implementing the bottom-up neighbour finding techniques.
 type BUQNode struct {
 	parent   *BUQNode        // pointer to the parent node
 	c        [4]*BUQNode     // children nodes
 	bounds   image.Rectangle // node bounds
 	color    Color           // node color
-	location quadrant        // node location inside its parent
+	location Quadrant        // node location inside its parent
 }
 
 // Bounds returns the bounds of the rectangular area represented by this
@@ -28,17 +28,17 @@ func (n *BUQNode) Parent() Node {
 	return n.parent
 }
 
-// Color() returns the node Color.
+// Color returns the node Color.
 func (n *BUQNode) Color() Color {
 	return n.color
 }
 
-// Location() returns the node inside its parent quadrant
-func (n *BUQNode) Location() quadrant {
+// Location returns the node inside its parent quadrant
+func (n *BUQNode) Location() Quadrant {
 	return n.location
 }
 
 // Child returns current node child at specified quadrant.
-func (n *BUQNode) Child(q quadrant) Node {
+func (n *BUQNode) Child(q Quadrant) Node {
 	return n.c[q]
 }
