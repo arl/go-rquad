@@ -1,7 +1,6 @@
 package quadtree
 
 import (
-	"fmt"
 	"image"
 	"testing"
 
@@ -32,7 +31,6 @@ func testQuadtreeCountLeaves(t *testing.T, fn newQuadtreeFunc) {
 	)
 
 	for _, tt := range testTbl {
-
 		bm, err = loadPNG(tt.fn)
 		check(t, err)
 		scanner, err = binimg.NewScanner(bm)
@@ -42,18 +40,24 @@ func testQuadtreeCountLeaves(t *testing.T, fn newQuadtreeFunc) {
 			q, err := fn(scanner, res)
 			check(t, err)
 
-			var white, black QNodeList
-			q.ForEachLeaf(White, appendNode(&white))
-			q.ForEachLeaf(Black, appendNode(&black))
-			if len(white) != tt.white {
-				fmt.Println(white[0].Color(), white[0])
+			var white, black int
+			q.ForEachLeaf(Gray, func(n QNode) {
+				switch n.Color() {
+				case White:
+					white++
+				case Black:
+					black++
+				case Gray:
+					t.Fatalf("got gray leaf node")
+				}
+			})
+			if white != tt.white {
 				t.Errorf("on %s resolution:%d, expected %d white nodes, got %d",
-					tt.fn, res, tt.white, len(white))
+					tt.fn, res, tt.white, white)
 			}
-			if len(black) != tt.black {
-				fmt.Println(black[0].Color(), black[0])
+			if black != tt.black {
 				t.Errorf("on %s resolution:%d, expected %d black nodes, got %d",
-					tt.fn, res, tt.black, len(black))
+					tt.fn, res, tt.black, black)
 			}
 		}
 	}
