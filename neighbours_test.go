@@ -16,7 +16,7 @@ func testQuadtreeNeighbours(t *testing.T, fn newQuadtreeFunc) {
 	// load both test images
 	laby1, err = loadPNG("./testdata/labyrinth1.32x32.png")
 	check(t, err)
-	laby2, err = loadPNG("./testdata/cn-8x8-3.png")
+	laby2, err = loadPNG("./testdata/labyrinth4-8x8.png")
 	check(t, err)
 
 	// for logging purposes
