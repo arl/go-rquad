@@ -21,7 +21,7 @@ func (n *BUQNode) Bounds() image.Rectangle {
 }
 
 // Parent returns the quadtree node that is the parent of current one.
-func (n *BUQNode) Parent() QNode {
+func (n *BUQNode) Parent() Node {
 	if n == nil || n.parent == nil {
 		return nil
 	}
@@ -39,6 +39,6 @@ func (n *BUQNode) Location() quadrant {
 }
 
 // Child returns current node child at specified quadrant.
-func (n *BUQNode) Child(q quadrant) QNode {
+func (n *BUQNode) Child(q quadrant) Node {
 	return n.c[q]
 }

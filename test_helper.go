@@ -69,14 +69,14 @@ func newCNQuadtree(scanner binimg.Scanner, resolution int) (Quadtree, error) {
 	return NewCNQuadtree(scanner, resolution)
 }
 
-func appendNode(nl *QNodeList) func(QNode) {
-	return func(n QNode) {
+func appendNode(nl *QNodeList) func(Node) {
+	return func(n Node) {
 		*nl = append(*nl, n)
 	}
 }
 
-func neighbourColors(n QNode) (white, black int) {
-	ForEachNeighbour(n, func(nb QNode) {
+func neighbourColors(n Node) (white, black int) {
+	ForEachNeighbour(n, func(nb Node) {
 		switch nb.Color() {
 		case Black:
 			black++

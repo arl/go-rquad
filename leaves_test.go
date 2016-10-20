@@ -41,7 +41,7 @@ func testQuadtreeCountLeaves(t *testing.T, fn newQuadtreeFunc) {
 			check(t, err)
 
 			var white, black int
-			q.ForEachLeaf(Gray, func(n QNode) {
+			q.ForEachLeaf(Gray, func(n Node) {
 				switch n.Color() {
 				case White:
 					white++

@@ -176,7 +176,7 @@ func (q *CNQuadtree) subdivide(p *CNQNode) {
 }
 
 // Root returns the quadtree root node.
-func (q *CNQuadtree) Root() QNode {
+func (q *CNQuadtree) Root() Node {
 	return q.root
 }
 
@@ -187,7 +187,7 @@ func (q *CNQuadtree) Root() QNode {
 // color, Black or White.
 // NOTE: As by definition, Gray leaves do not exist, passing Gray to
 // ForEachLeaf should return all leaves, independently of their color.
-func (q *CNQuadtree) ForEachLeaf(color Color, fn func(QNode)) {
+func (q *CNQuadtree) ForEachLeaf(color Color, fn func(Node)) {
 	for _, n := range q.leaves {
 		if color == Gray || n.Color() == color {
 			fn(n)
@@ -196,9 +196,9 @@ func (q *CNQuadtree) ForEachLeaf(color Color, fn func(QNode)) {
 }
 
 // PointLocation returns the quadtree node containing the given point.
-func (q *CNQuadtree) PointLocation(pt image.Point) QNode {
-	var query func(n *CNQNode) QNode
-	query = func(n *CNQNode) QNode {
+func (q *CNQuadtree) PointLocation(pt image.Point) Node {
+	var query func(n *CNQNode) Node
+	query = func(n *CNQNode) Node {
 		if !pt.In(n.bounds) {
 			return nil
 		}

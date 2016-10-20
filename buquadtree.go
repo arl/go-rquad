@@ -59,7 +59,7 @@ func NewBUQuadtree(scanner binimg.Scanner, resolution int) (*BUQuadtree, error) 
 // color, Black or White.
 // NOTE: As by definition, Gray leaves do not exist, passing Gray to
 // ForEachLeaf should return all leaves, independently of their color.
-func (q *BUQuadtree) ForEachLeaf(color Color, fn func(QNode)) {
+func (q *BUQuadtree) ForEachLeaf(color Color, fn func(Node)) {
 	for _, n := range q.leaves {
 		if color == Gray || n.Color() == color {
 			fn(n)
@@ -136,14 +136,14 @@ func (q *BUQuadtree) subdivide(n *BUQNode) {
 }
 
 // Root returns the quadtree root node.
-func (q *BUQuadtree) Root() QNode {
+func (q *BUQuadtree) Root() Node {
 	return q.root
 }
 
 // PointLocation returns the quadtree node containing the given point.
-func (q *BUQuadtree) PointLocation(pt image.Point) QNode {
-	var query func(n *BUQNode) QNode
-	query = func(n *BUQNode) QNode {
+func (q *BUQuadtree) PointLocation(pt image.Point) Node {
+	var query func(n *BUQNode) Node
+	query = func(n *BUQNode) Node {
 		if !pt.In(n.bounds) {
 			return nil
 		}

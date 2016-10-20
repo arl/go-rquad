@@ -5,8 +5,8 @@ package quadtree
 //
 // cf. Hanan Samet 1981 article Neighbour Finding in Quadtrees.
 // It can return nil if the neighbour can't be found.
-func equalSizeNeighbour(n QNode, dir side) QNode {
-	var neighbour QNode
+func equalSizeNeighbour(n Node, dir side) Node {
+	var neighbour Node
 
 	// Ascent the tree up to a common ancestor.
 	parent := n.Parent()
@@ -27,7 +27,7 @@ func equalSizeNeighbour(n QNode, dir side) QNode {
 
 // neighbours locates all leaf neighbours of the current node in the given
 // direction, appending them to a slice.
-func neighbours(n QNode, dir side, nodes *QNodeList) {
+func neighbours(n Node, dir side, nodes *QNodeList) {
 	// If no neighbour can be found in the given
 	// direction, node will be null.
 	node := equalSizeNeighbour(n, dir)
@@ -46,9 +46,9 @@ func neighbours(n QNode, dir side, nodes *QNodeList) {
 
 // children fills the given slice with all the leaf children of this node (i.e
 // either black or white), that can be found in a given direction.
-func children(n QNode, dir side, nodes *QNodeList) {
+func children(n Node, dir side, nodes *QNodeList) {
 	var (
-		s1, s2 QNode
+		s1, s2 Node
 	)
 
 	switch dir {
@@ -91,7 +91,7 @@ func children(n QNode, dir side, nodes *QNodeList) {
 // the neighbours are found by using the generic but slower "bottom-up
 // neighbour finding technique", cf. Hanan Samet 1981 article Neighbour Finding
 // in Quadtrees
-func ForEachNeighbour(n QNode, fn func(QNode)) {
+func ForEachNeighbour(n Node, fn func(Node)) {
 	if adjnode, ok := n.(AdjacencyNode); ok {
 		// use adjacency node specific implementation
 		adjnode.ForEachNeighbour(fn)

@@ -115,7 +115,7 @@ func (n *CNQNode) updateSWCardinalNeighbours() {
 // decomposition.
 func (n *CNQNode) updateNeighbours() {
 	if n.cn[west] != nil {
-		n.forEachNeighbour(west, func(qn QNode) {
+		n.forEachNeighbour(west, func(qn Node) {
 			western := qn.(*CNQNode)
 			if western.cn[east] == n {
 				if western.bounds.Max.Y > n.southWest.bounds.Min.Y {
@@ -133,7 +133,7 @@ func (n *CNQNode) updateNeighbours() {
 	}
 
 	if n.cn[north] != nil {
-		n.forEachNeighbour(north, func(qn QNode) {
+		n.forEachNeighbour(north, func(qn Node) {
 			northern := qn.(*CNQNode)
 			if northern.cn[south] == n {
 				if northern.bounds.Max.X > n.northEast.bounds.Min.X {
@@ -175,12 +175,12 @@ func (n *CNQNode) Location() quadrant {
 }
 
 // Parent returns the quadtree node that is the parent of current one.
-func (n *CNQNode) Parent() QNode {
+func (n *CNQNode) Parent() Node {
 	return n.parent
 }
 
 // Child returns current node child at specified quadrant.
-func (n *CNQNode) Child(q quadrant) QNode {
+func (n *CNQNode) Child(q quadrant) Node {
 	switch q {
 	case northWest:
 		return n.northWest
@@ -197,7 +197,7 @@ func (n *CNQNode) Child(q quadrant) QNode {
 
 // forEachNeighbour calls fn on every neighbour of the current node in the given
 // direction
-func (n *CNQNode) forEachNeighbour(dir side, fn func(QNode)) {
+func (n *CNQNode) forEachNeighbour(dir side, fn func(Node)) {
 	// start from the cardinal neighbour on the given direction
 	N := n.cn[dir]
 	if N == nil {
@@ -223,7 +223,7 @@ func (n *CNQNode) forEachNeighbour(dir side, fn func(QNode)) {
 
 // ForEachNeighbour calls the given function for each neighbour of current
 // node.
-func (n *CNQNode) ForEachNeighbour(fn func(QNode)) {
+func (n *CNQNode) ForEachNeighbour(fn func(Node)) {
 	n.forEachNeighbour(west, fn)
 	n.forEachNeighbour(north, fn)
 	n.forEachNeighbour(east, fn)

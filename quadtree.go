@@ -3,7 +3,7 @@ package quadtree
 import "image"
 
 // QNodeList is a slice of QNode's
-type QNodeList []QNode
+type QNodeList []Node
 
 // Quadtree defines the interface for a quadtree type.
 type Quadtree interface {
@@ -14,20 +14,20 @@ type Quadtree interface {
 	// color, Black or White.
 	// NOTE: As by definition, Gray leaves do not exist, passing Gray to
 	// ForEachLeaf should return all leaves, independently of their color.
-	ForEachLeaf(Color, func(QNode))
+	ForEachLeaf(Color, func(Node))
 
 	// Root returns the quadtree root node.
-	Root() QNode
+	Root() Node
 }
 
 // PointLocator is the interface implemented by objects having a PointLocation method.
 type PointLocator interface {
 	// PointLocation returns the quadtree node containing the given point.
-	PointLocation(image.Point) QNode
+	PointLocation(image.Point) Node
 }
 
 // CodeLocator is the interface implemented by objects having a CodeLocation method.
 type CodeLocator interface {
 	// CodeLocation returns the quadtree node corresponding to a given location code.
-	CodeLocation(uint64) QNode
+	CodeLocation(uint64) Node
 }
