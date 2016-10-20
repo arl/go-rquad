@@ -31,7 +31,8 @@ import "image"
 //   Node D for 𝑖 ∈ 0,1,2,3 where 0,1,2,3 represent respectively the directions
 //   West, North, East and South and where 𝜑 𝑖°(𝐷)=𝐷. 𝜑 𝑖²(𝐷) = 𝜑 𝑖(𝜑 𝑖(𝐷 ))
 type CNQNode struct {
-	parent    *CNQNode        // pointer to the parent node
+	parent *CNQNode // pointer to the parent node
+	// TODO: use an array for children
 	northWest *CNQNode        // pointer to the northwest child
 	northEast *CNQNode        // pointer to the northeast child
 	southWest *CNQNode        // pointer to the southwest child
@@ -168,9 +169,30 @@ func (n *CNQNode) updateNeighbours() {
 	}
 }
 
-// isLeaf checks if this node is a leaf, i.e. is either black or white.
-func (n *CNQNode) isLeaf() bool {
-	return n.color != Gray
+// Location() returns the node inside its parent quadrant
+func (n *CNQNode) Location() quadrant {
+	return n.location
+}
+
+// Parent returns the quadtree node that is the parent of current one.
+func (n *CNQNode) Parent() QNode {
+	return n.parent
+}
+
+// Child returns current node child at specified quadrant.
+func (n *CNQNode) Child(q quadrant) QNode {
+	switch q {
+	case northWest:
+		return n.northWest
+	case northEast:
+		return n.northEast
+	case southWest:
+		return n.southWest
+	default:
+		fallthrough
+	case southEast:
+		return n.southEast
+	}
 }
 
 // forEachNeighbour calls fn on every neighbour of the current node in the given

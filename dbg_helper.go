@@ -2,11 +2,6 @@ package quadtree
 
 import "fmt"
 
-func (n *Node) String() string {
-	return fmt.Sprintf("Node {%v|%d links}",
-		n.Bounds(), len(n.links))
-}
-
 func (n *CNQNode) String() string {
 	var scn0, scn1, scn2, scn3 string
 	if n.cn[west] != nil {

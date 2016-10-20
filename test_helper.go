@@ -76,7 +76,7 @@ func appendNode(nl *QNodeList) func(QNode) {
 }
 
 func neighbourColors(n QNode) (white, black int) {
-	n.ForEachNeighbour(func(nb QNode) {
+	ForEachNeighbour(n, func(nb QNode) {
 		switch nb.Color() {
 		case Black:
 			black++

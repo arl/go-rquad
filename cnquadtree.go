@@ -161,16 +161,16 @@ func (q *CNQuadtree) subdivide(p *CNQNode) {
 	// decomposition
 	p.updateNeighbours()
 
-	if !nw.isLeaf() {
+	if nw.color == Gray {
 		q.subdivide(nw)
 	}
-	if !ne.isLeaf() {
+	if ne.color == Gray {
 		q.subdivide(ne)
 	}
-	if !sw.isLeaf() {
+	if sw.color == Gray {
 		q.subdivide(sw)
 	}
-	if !se.isLeaf() {
+	if se.color == Gray {
 		q.subdivide(se)
 	}
 }

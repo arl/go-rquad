@@ -7,7 +7,7 @@ import (
 	"github.com/aurelien-rainone/binimg"
 )
 
-// BUQuadtree is a standard quadtree implementation with bottom-up neighbor
+// BUQuadtree is a standard quadtree implementation with bottom-up neighbour
 // finding technique.
 //
 // BUQuadtree works on rectangles quadrants as well as squares; quadrants of
