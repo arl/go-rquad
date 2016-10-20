@@ -42,47 +42,6 @@ func TestBUQuadtreeLogicalErrors(t *testing.T) {
 	}
 }
 
-func TestBUQuadtreeSubdivisions(t *testing.T) {
-	// this is a simple 32x32 image, white background with 3 black squares,
-	// located so that they fill a quadrant the biggest of which is 8x8 pixels,
-	// meaning that no nodes can ever be smaller than 8x8, that's why every
-	// resolutions lower or equal than 8 should produce the same number of
-	// nodes.
-	var (
-		err     error
-		bm      image.Image
-		scanner binimg.Scanner
-	)
-	bm, err = loadPNG("./testdata/labyrinth1.32x32.png")
-	check(t, err)
-	scanner, err = binimg.NewScanner(bm)
-	check(t, err)
-
-	for _, res := range []int{1, 2, 3, 4, 5, 6, 7, 8} {
-		q, err := NewBUQuadtree(scanner, res)
-		check(t, err)
-
-		var whiteNodes QNodeList
-		q.ForEachLeaf(White, appendNode(&whiteNodes))
-		if len(whiteNodes) != 7 {
-			t.Errorf("resolution:%d, expected 7 nodes, got %d",
-				res, len(whiteNodes))
-		}
-	}
-
-	for _, res := range []int{9, 15} {
-		q, err := NewBUQuadtree(scanner, res)
-		check(t, err)
-
-		var whiteNodes QNodeList
-		q.ForEachLeaf(White, appendNode(&whiteNodes))
-		if len(whiteNodes) != 1 {
-			t.Errorf("resolution:%d, expected 1 nodes, got %d",
-				res, len(whiteNodes))
-		}
-	}
-}
-
 func TestBUQuadtreeQuery(t *testing.T) {
 	var testTbl = []struct {
 		pt     image.Point // queried point
