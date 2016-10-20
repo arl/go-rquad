@@ -1,4 +1,4 @@
-# go-rquad: Region quadtree implementations in Go
+# go-rquas: region quadtrees in Go
 [![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](http://godoc.org/github.com/aurelien-rainone/go-rquad) [![Build Status](https://travis-ci.org/aurelien-rainone/go-rquad.svg?branch=master)](https://travis-ci.org/aurelien-rainone/go-rquad) [![Coverage Status](https://coveralls.io/repos/github/aurelien-rainone/go-rquad/badge.svg?branch=master)](https://coveralls.io/github/aurelien-rainone/go-rquad?branch=master)
 
 **Quadtrees and efficient neighbour finding techniques in Go**
@@ -25,11 +25,11 @@ regions of this area in order to perform the subdivisions.
 
 ## References
 
- - Bottom-up neighour finding techniques
+ - Bottom-up neighour finding techniques  
 (cf Hanan Samet 1981, *Neighbor Finding Techniques for Images Represented by
 Quadtrees*)
 
- - Cardinal Neighbor Quadtree
+ - Cardinal Neighbor Quadtree  
 (cf Safwan Qasem 2015, *Cardinal Neighbor Quadtree: a New Quadtree-based
 Structure for Constant-Time Neighbor Finding*)
 
