@@ -18,7 +18,7 @@
 // represent the complete area and provide the quadtree with a way to scan over
 // regions of this area in order to perform the subdivisions.
 
-package quadtree
+package rquad
 
 import "image"
 

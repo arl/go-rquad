@@ -1,4 +1,4 @@
-package quadtree
+package rquad
 
 import (
 	"image"

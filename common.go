@@ -1,4 +1,4 @@
-package quadtree
+package rquad
 
 // Quadrant indicates the position of a child Node inside its parent.
 type Quadrant int

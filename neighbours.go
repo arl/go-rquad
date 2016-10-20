@@ -1,4 +1,4 @@
-package quadtree
+package rquad
 
 // equalSizeNeighbour locates an equal-sized neighbour of the current node in the
 // vertical or horizontal direction.
