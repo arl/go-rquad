@@ -32,10 +32,10 @@ type Node interface {
 	// quadtree node.
 	Bounds() image.Rectangle
 
-	// Color() returns the node Color.
+	// Color returns the node Color.
 	Color() Color
 
-	// Location() returns the node inside its parent quadrant
+	// Location returns the node inside its parent quadrant
 	Location() Quadrant
 }
 

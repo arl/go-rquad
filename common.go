@@ -3,6 +3,7 @@ package quadtree
 // Quadrant indicates the position of a child Node inside its parent.
 type Quadrant int
 
+// Possible values for the Quadrant type.
 const (
 	Northwest Quadrant = iota
 	Northeast
@@ -11,8 +12,10 @@ const (
 	rootQuadrant
 )
 
+// Side is used to represent a direction according to a quadtree Node.
 type Side int
 
+// Possible values for the Side type.
 const (
 	West Side = iota
 	North
