@@ -63,8 +63,8 @@ func testQuadtreeCountLeaves(t *testing.T, fn newQuadtreeFunc) {
 	}
 }
 
-func TestBUQuadtreeCountLeaves(t *testing.T) {
-	testQuadtreeCountLeaves(t, newBUQuadtree)
+func TestBasicTreeCountLeaves(t *testing.T) {
+	testQuadtreeCountLeaves(t, newBasicTree)
 }
 
 func TestCNQuadtreeCountLeaves(t *testing.T) {

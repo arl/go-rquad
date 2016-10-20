@@ -7,26 +7,26 @@ import (
 	"github.com/aurelien-rainone/binimg"
 )
 
-// BUQuadtree is a standard quadtree implementation with bottom-up neighbour
+// BasicTree is a standard quadtree implementation with bottom-up neighbour
 // finding technique.
 //
-// BUQuadtree works on rectangles quadrants as well as squares; quadrants of
+// BasicTree works on rectangles quadrants as well as squares; quadrants of
 // the same parent may have different dimensions due to the integer division.
 // It internally handles BUQNode's which implement the Node interface.
-type BUQuadtree struct {
+type BasicTree struct {
 	resolution int            // maximal resolution
 	scanner    binimg.Scanner // reference image
-	root       *BUQNode       // root node
+	root       *BasicNode     // root node
 	leaves     NodeList       // leaf nodes (filled during creation)
 }
 
-// NewBUQuadtree creates a BUQuadtree and populates it with BUQNode's,
+// NewBasicTree creates a BasicTree and populates it with BUQNode's,
 // according to the content of the scanned image.
 //
 // resolution is the minimal dimension that can have a leaf node, no further
 // subdivisions will be performed on a node if its width or height is equal to
 // this value.
-func NewBUQuadtree(scanner binimg.Scanner, resolution int) (*BUQuadtree, error) {
+func NewBasicTree(scanner binimg.Scanner, resolution int) (*BasicTree, error) {
 	if resolution < 1 {
 		return nil, errors.New("resolution must be greater than 0")
 	}
@@ -43,7 +43,7 @@ func NewBUQuadtree(scanner binimg.Scanner, resolution int) (*BUQuadtree, error) 
 		return nil, errors.New("the image smaller dimension must be greater or equal to twice the resolution")
 	}
 
-	q := &BUQuadtree{
+	q := &BasicTree{
 		resolution: resolution,
 		scanner:    scanner,
 	}
@@ -59,7 +59,7 @@ func NewBUQuadtree(scanner binimg.Scanner, resolution int) (*BUQuadtree, error) 
 // color, Black or White.
 // NOTE: As by definition, Gray leaves do not exist, passing Gray to
 // ForEachLeaf should return all leaves, independently of their color.
-func (q *BUQuadtree) ForEachLeaf(color Color, fn func(Node)) {
+func (q *BasicTree) ForEachLeaf(color Color, fn func(Node)) {
 	for _, n := range q.leaves {
 		if color == Gray || n.Color() == color {
 			fn(n)
@@ -67,8 +67,8 @@ func (q *BUQuadtree) ForEachLeaf(color Color, fn func(Node)) {
 	}
 }
 
-func (q *BUQuadtree) createRootNode() *BUQNode {
-	n := &BUQNode{
+func (q *BasicTree) createRootNode() *BasicNode {
+	n := &BasicNode{
 		color:  Gray,
 		bounds: q.scanner.Bounds(),
 	}
@@ -76,8 +76,8 @@ func (q *BUQuadtree) createRootNode() *BUQNode {
 	return n
 }
 
-func (q *BUQuadtree) createInnerNode(bounds image.Rectangle, parent *BUQNode, location Quadrant) *BUQNode {
-	n := &BUQNode{
+func (q *BasicTree) createInnerNode(bounds image.Rectangle, parent *BasicNode, location Quadrant) *BasicNode {
+	n := &BasicNode{
 		color:    Gray,
 		bounds:   bounds,
 		parent:   parent,
@@ -110,7 +110,7 @@ func (q *BUQuadtree) createInnerNode(bounds image.Rectangle, parent *BUQNode, lo
 	return n
 }
 
-func (q *BUQuadtree) subdivide(n *BUQNode) {
+func (q *BasicTree) subdivide(n *BasicNode) {
 	//     x0   x1     x2
 	//  y0 .----.-------.
 	//     |    |       |
@@ -136,14 +136,14 @@ func (q *BUQuadtree) subdivide(n *BUQNode) {
 }
 
 // Root returns the quadtree root node.
-func (q *BUQuadtree) Root() Node {
+func (q *BasicTree) Root() Node {
 	return q.root
 }
 
 // PointLocation returns the quadtree node containing the given point.
-func (q *BUQuadtree) PointLocation(pt image.Point) Node {
-	var query func(n *BUQNode) Node
-	query = func(n *BUQNode) Node {
+func (q *BasicTree) PointLocation(pt image.Point) Node {
+	var query func(n *BasicNode) Node
+	query = func(n *BasicNode) Node {
 		if !pt.In(n.bounds) {
 			return nil
 		}

@@ -7,7 +7,7 @@ import (
 	"github.com/aurelien-rainone/binimg"
 )
 
-func TestBUQuadtreeLogicalErrors(t *testing.T) {
+func TestBasicTreeLogicalErrors(t *testing.T) {
 	var testTbl = []struct {
 		w, h     int  // bitmap dimensions
 		res      int  // resolution
@@ -33,7 +33,7 @@ func TestBUQuadtreeLogicalErrors(t *testing.T) {
 		bm = binimg.New(image.Rect(0, 0, tt.w, tt.h))
 		scanner, err = binimg.NewScanner(bm)
 		check(t, err)
-		_, err = NewBUQuadtree(scanner, tt.res)
+		_, err = NewBasicTree(scanner, tt.res)
 		actual := err == nil
 		if actual != tt.expected {
 			t.Errorf("(%d,%d,%d): expected %v, actual %v, err:'%v'",
@@ -42,7 +42,7 @@ func TestBUQuadtreeLogicalErrors(t *testing.T) {
 	}
 }
 
-func TestBUQuadtreeQuery(t *testing.T) {
+func TestBasicTreeQuery(t *testing.T) {
 	var testTbl = []struct {
 		pt     image.Point // queried point
 		exists bool        // node exists
@@ -76,7 +76,7 @@ func TestBUQuadtreeQuery(t *testing.T) {
 	check(t, err)
 
 	for _, res := range []int{1, 2, 3, 4, 5, 6, 7, 8} {
-		q, err := NewBUQuadtree(scanner, res)
+		q, err := NewBasicTree(scanner, res)
 		check(t, err)
 
 		for _, tt := range testTbl {

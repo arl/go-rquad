@@ -7,8 +7,8 @@ import (
 	"github.com/aurelien-rainone/binimg"
 )
 
-func TestBUQuadtreeNeighbours(t *testing.T) {
-	testQuadtreeNeighbours(t, newBUQuadtree)
+func TestBasicTreeNeighbours(t *testing.T) {
+	testQuadtreeNeighbours(t, newBasicTree)
 }
 
 func TestCNQuadtreeNeighbours(t *testing.T) {
@@ -137,20 +137,20 @@ func benchmarkQuadtreeCreation(b *testing.B, pngfile string, fn newQuadtreeFunc,
 	}
 }
 
-func BenchmarkBUQuadtreeCreationRes2(b *testing.B) {
-	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newBUQuadtree, 2)
+func BenchmarkBasicTreeCreationRes2(b *testing.B) {
+	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newBasicTree, 2)
 }
 
-func BenchmarkBUQuadtreeCreationRes4(b *testing.B) {
-	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newBUQuadtree, 4)
+func BenchmarkBasicTreeCreationRes4(b *testing.B) {
+	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newBasicTree, 4)
 }
 
-func BenchmarkBUQuadtreeCreationRes8(b *testing.B) {
-	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newBUQuadtree, 8)
+func BenchmarkBasicTreeCreationRes8(b *testing.B) {
+	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newBasicTree, 8)
 }
 
-func BenchmarkBUQuadtreeCreationRes16(b *testing.B) {
-	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newBUQuadtree, 16)
+func BenchmarkBasicTreeCreationRes16(b *testing.B) {
+	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newBasicTree, 16)
 }
 
 func BenchmarkCNQuadtreeCreationRes2(b *testing.B) {

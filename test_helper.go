@@ -61,8 +61,8 @@ func savePNG(img image.Image, filename string) error {
 
 type newQuadtreeFunc func(binimg.Scanner, int) (Quadtree, error)
 
-func newBUQuadtree(scanner binimg.Scanner, resolution int) (Quadtree, error) {
-	return NewBUQuadtree(scanner, resolution)
+func newBasicTree(scanner binimg.Scanner, resolution int) (Quadtree, error) {
+	return NewBasicTree(scanner, resolution)
 }
 
 func newCNQuadtree(scanner binimg.Scanner, resolution int) (Quadtree, error) {
