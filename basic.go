@@ -7,12 +7,10 @@ import (
 	"github.com/aurelien-rainone/binimg"
 )
 
-// BasicTree is a standard quadtree implementation with bottom-up neighbour
-// finding technique.
+// BasicTree is a standard implementation of a region quadtree.
 //
-// BasicTree works on rectangles quadrants as well as squares; quadrants of
-// the same parent may have different dimensions due to the integer division.
-// It internally handles BUQNode's which implement the Node interface.
+// It performs a standard quadtree subdivision of the rectangular area
+// represented by an binimg.Scanner.
 type BasicTree struct {
 	resolution int            // maximal resolution
 	scanner    binimg.Scanner // reference image
@@ -20,8 +18,8 @@ type BasicTree struct {
 	leaves     NodeList       // leaf nodes (filled during creation)
 }
 
-// NewBasicTree creates a BasicTree and populates it with BUQNode's,
-// according to the content of the scanned image.
+// NewBasicTree creates a BasicTree from a scannable rectagular area,
+// populating it with BasicNode instances.
 //
 // resolution is the minimal dimension that can have a leaf node, no further
 // subdivisions will be performed on a node if its width or height is equal to
@@ -33,7 +31,7 @@ func NewBasicTree(scanner binimg.Scanner, resolution int) (*BasicTree, error) {
 
 	// To ensure a consistent behavior and eliminate corner cases,
 	// the Quadtree's root node needs to have children. Thus, the
-	// first instantiated BUQNode needs to always be subdivided.
+	// first instantiated Node needs to always be subdivided.
 	// This condition asserts the resolution is respected.
 	minDim := scanner.Bounds().Dx()
 	if scanner.Bounds().Dy() < minDim {
@@ -48,7 +46,12 @@ func NewBasicTree(scanner binimg.Scanner, resolution int) (*BasicTree, error) {
 		scanner:    scanner,
 	}
 
-	q.root = q.createRootNode()
+	// create the root node
+	q.root = &BasicNode{
+		color:  Gray,
+		bounds: q.scanner.Bounds(),
+	}
+	q.subdivide(q.root)
 	return q, nil
 }
 
@@ -67,16 +70,7 @@ func (q *BasicTree) ForEachLeaf(color Color, fn func(Node)) {
 	}
 }
 
-func (q *BasicTree) createRootNode() *BasicNode {
-	n := &BasicNode{
-		color:  Gray,
-		bounds: q.scanner.Bounds(),
-	}
-	q.subdivide(n)
-	return n
-}
-
-func (q *BasicTree) createInnerNode(bounds image.Rectangle, parent *BasicNode, location Quadrant) *BasicNode {
+func (q *BasicTree) newChildNode(bounds image.Rectangle, parent *BasicNode, location Quadrant) *BasicNode {
 	n := &BasicNode{
 		color:    Gray,
 		bounds:   bounds,
@@ -129,10 +123,10 @@ func (q *BasicTree) subdivide(n *BasicNode) {
 	y2 := n.bounds.Max.Y
 
 	// create the 4 children nodes, one per quadrant
-	n.c[Northwest] = q.createInnerNode(image.Rect(x0, y0, x1, y1), n, Northwest)
-	n.c[Southwest] = q.createInnerNode(image.Rect(x0, y1, x1, y2), n, Southwest)
-	n.c[Northeast] = q.createInnerNode(image.Rect(x1, y0, x2, y1), n, Northeast)
-	n.c[Southeast] = q.createInnerNode(image.Rect(x1, y1, x2, y2), n, Southeast)
+	n.c[Northwest] = q.newChildNode(image.Rect(x0, y0, x1, y1), n, Northwest)
+	n.c[Southwest] = q.newChildNode(image.Rect(x0, y1, x1, y2), n, Southwest)
+	n.c[Northeast] = q.newChildNode(image.Rect(x1, y0, x2, y1), n, Northeast)
+	n.c[Southeast] = q.newChildNode(image.Rect(x1, y1, x2, y2), n, Southeast)
 }
 
 // Root returns the quadtree root node.
