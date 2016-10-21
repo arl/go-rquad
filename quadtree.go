@@ -3,7 +3,6 @@
 // subdivides a 2D dimensional space into 4, smaller and generally equal
 // rectangular regions, until the wanted quadtree resolution has been reached,
 // or no further subdivisions can be performed.
-// area
 //
 // Region quadtree may be used for image processing, in this case a node
 // represents a rectangular region of an image in which all pixels have the
@@ -15,15 +14,13 @@
 // subregion it represents.
 //
 // Quadtree implementations in this package use the binimg.Scanner interface to
-// represent the complete area and provide the quadtree with a way to scan over
-// regions of this area in order to perform the subdivisions.
+// represent the complete area, and provide us with a way to know if a
+// particular sub-area is to be considered uniform, in which case further
+// subdivision is not necessary, or not.
 
 package rquad
 
 import "image"
-
-// NodeList is a slice of QNode's
-type NodeList []Node
 
 // Quadtree defines the interface for a quadtree type.
 type Quadtree interface {
@@ -40,14 +37,9 @@ type Quadtree interface {
 	Root() Node
 }
 
-// PointLocator is the interface implemented by objects having a PointLocation method.
+// PointLocator is the interface implemented by objects that, given a point in
+// 2D space, can return the leaf node it contains.
 type PointLocator interface {
 	// PointLocation returns the quadtree node containing the given point.
 	PointLocation(image.Point) Node
-}
-
-// CodeLocator is the interface implemented by objects having a CodeLocation method.
-type CodeLocator interface {
-	// CodeLocation returns the quadtree node corresponding to a given location code.
-	CodeLocation(uint64) Node
 }

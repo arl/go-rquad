@@ -39,6 +39,9 @@ type Node interface {
 	Location() Quadrant
 }
 
+// NodeList is a slice of Node instances.
+type NodeList []Node
+
 // AdjacencyNode is a Node that can find its adjacent nodes, or neighbours.
 type AdjacencyNode interface {
 	Node
