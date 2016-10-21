@@ -24,6 +24,9 @@ func (n *basicNode) Parent() Node {
 
 // Child returns current node child at specified quadrant.
 func (n *basicNode) Child(q Quadrant) Node {
+	if n.c[q] == nil {
+		return nil
+	}
 	return n.c[q]
 }
 
