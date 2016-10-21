@@ -2,6 +2,7 @@ package rquad
 
 import (
 	"image"
+	"math/rand"
 	"testing"
 
 	"github.com/aurelien-rainone/binimg"
@@ -89,4 +90,132 @@ func TestBasicQuadtreeNeighbours(t *testing.T) {
 
 func TestCNTreeNeighbours(t *testing.T) {
 	testQuadtreeNeighbours(t, newCNTree)
+}
+
+// TODO: this test should, obviously, test the results obtained to the correct
+// ones, instead of comparing the results obtained with two different quadtree
+// implementations. At least, like that, we know the results are homogeneous, we
+// are just not sure they are correct! ;-)
+func TestNeighboursFinding(t *testing.T) {
+	var (
+		img     *binimg.Binary
+		scanner binimg.Scanner
+		err     error
+	)
+	img, err = loadPNG("./testdata/bigsquare.png")
+	check(t, err)
+
+	r := rand.New(rand.NewSource(99))
+
+	scanner, err = binimg.NewScanner(img)
+	check(t, err)
+
+	// create a cardinal neighbour and a basic quadtree
+	card, err := NewCNTree(scanner, 8)
+	check(t, err)
+	basic, err := NewBasicTree(scanner, 8)
+	check(t, err)
+
+	// TODO: check with real image bounds
+	if card.Root().Bounds() != basic.Root().Bounds() {
+		t.Fatalf("got different bounds, wanted equal")
+	}
+
+	randomPt := func(rect image.Rectangle) image.Point {
+		return image.Pt(r.Intn(rect.Max.X-rect.Min.X)+rect.Min.X,
+			r.Intn(rect.Max.Y-rect.Min.Y)+rect.Min.Y)
+	}
+
+	for i := 0; i < 50; i++ {
+		pt := randomPt(card.Root().Bounds())
+
+		cnnode := PointLocation(card, pt)
+		basicnode := PointLocation(basic, pt)
+		if (cnnode != nil) != (basicnode != nil) {
+			t.Errorf("got different node existence for point %v, wanted the same", pt)
+		}
+
+		cnwhite, cnblack := neighbourColors(cnnode)
+		bwhite, bblack := neighbourColors(basicnode)
+		if cnwhite != bwhite {
+			t.Errorf("got %d white neighbours for cnnode, %d for basicnode, wanted the same number", cnwhite, bwhite)
+		}
+		if cnblack != bblack {
+			t.Errorf("got %d black neighbours for cnnode, %d for basicnode, wanted the same number", cnblack, bblack)
+		}
+	}
+}
+
+func benchmarkNeighboursFinding(b *testing.B, fn newQuadtreeFunc, numPoints int) {
+	var (
+		img     *binimg.Binary
+		scanner binimg.Scanner
+		err     error
+	)
+	img, err = loadPNG("./testdata/bigsquare.png")
+	checkB(b, err)
+
+	r := rand.New(rand.NewSource(99))
+
+	scanner, err = binimg.NewScanner(img)
+	checkB(b, err)
+
+	// create a cardinal neighbour and a basic quadtree
+	q, err := fn(scanner, 8)
+	checkB(b, err)
+
+	randomPt := func(rect image.Rectangle) image.Point {
+		return image.Pt(r.Intn(rect.Max.X-rect.Min.X)+rect.Min.X,
+			r.Intn(rect.Max.Y-rect.Min.Y)+rect.Min.Y)
+	}
+
+	noop := func(Node) {}
+
+	// fill a slice with random points
+	points := make([]image.Point, numPoints, numPoints)
+	for i := 0; i < numPoints; i++ {
+		pt := randomPt(q.Root().Bounds())
+		points[i] = pt
+	}
+
+	// run N times
+	b.ResetTimer()
+	for n := 0; n < b.N; n++ {
+		for _, pt := range points {
+			node := PointLocation(q, pt)
+			ForEachNeighbour(node, noop)
+		}
+	}
+}
+
+func BenchmarkBasicQuadtreeNeighboursFinding10(b *testing.B) {
+	benchmarkNeighboursFinding(b, newBasicTree, 10)
+}
+
+func BenchmarkBasicQuadtreeNeighboursFinding50(b *testing.B) {
+	benchmarkNeighboursFinding(b, newBasicTree, 50)
+}
+
+func BenchmarkBasicQuadtreeNeighboursFinding200(b *testing.B) {
+	benchmarkNeighboursFinding(b, newBasicTree, 200)
+}
+
+func BenchmarkBasicQuadtreeNeighboursFinding1000(b *testing.B) {
+	benchmarkNeighboursFinding(b, newBasicTree, 1000)
+}
+
+func BenchmarkCNTreeNeighboursFinding10(b *testing.B) {
+	benchmarkNeighboursFinding(b, newCNTree, 10)
+}
+
+func BenchmarkCNTreeNeighboursFinding50(b *testing.B) {
+	benchmarkNeighboursFinding(b, newCNTree, 50)
+}
+
+func BenchmarkCNTreeNeighboursFinding200(b *testing.B) {
+	benchmarkNeighboursFinding(b, newCNTree, 200)
+}
+
+func BenchmarkCNTreeNeighboursFinding1000(b *testing.B) {
+	benchmarkNeighboursFinding(b, newCNTree, 1000)
 }
