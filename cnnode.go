@@ -2,7 +2,7 @@ package rquad
 
 import "image"
 
-// CNode is a node of a CNQuadtree.
+// CNode is a node of a CNTree.
 //
 // It is an implementation of the Node interface, with additional fields and
 // methods required to obtain the node neighbours in constant time. The time

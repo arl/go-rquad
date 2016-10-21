@@ -43,18 +43,18 @@ func BenchmarkBasicTreeCreationRes16(b *testing.B) {
 	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newBasicTree, 16)
 }
 
-func BenchmarkCNQuadtreeCreationRes2(b *testing.B) {
-	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newCNQuadtree, 2)
+func BenchmarkCNTreeCreationRes2(b *testing.B) {
+	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newCNTree, 2)
 }
 
-func BenchmarkCNQuadtreeCreationRes4(b *testing.B) {
-	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newCNQuadtree, 4)
+func BenchmarkCNTreeCreationRes4(b *testing.B) {
+	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newCNTree, 4)
 }
 
-func BenchmarkCNQuadtreeCreationRes8(b *testing.B) {
-	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newCNQuadtree, 8)
+func BenchmarkCNTreeCreationRes8(b *testing.B) {
+	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newCNTree, 8)
 }
 
-func BenchmarkCNQuadtreeCreationRes16(b *testing.B) {
-	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newCNQuadtree, 16)
+func BenchmarkCNTreeCreationRes16(b *testing.B) {
+	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newCNTree, 16)
 }

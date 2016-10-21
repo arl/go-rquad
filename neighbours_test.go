@@ -87,6 +87,6 @@ func TestBasicQuadtreeNeighbours(t *testing.T) {
 	testQuadtreeNeighbours(t, newBasicTree)
 }
 
-func TestCNQuadtreeNeighbours(t *testing.T) {
-	testQuadtreeNeighbours(t, newCNQuadtree)
+func TestCNTreeNeighbours(t *testing.T) {
+	testQuadtreeNeighbours(t, newCNTree)
 }
