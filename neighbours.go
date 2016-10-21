@@ -85,7 +85,7 @@ func children(n Node, dir Side, nodes *NodeList) {
 // ForEachNeighbour calls the given function for each neighbour of the quadtree
 // node n.
 //
-// The neighbour finding technique used depends on the QNode implementation. If
+// The neighbour finding technique used depends on the Node implementation. If
 // the node implements the AdjacencyNode interface, then the specific and
 // faster implementation of ForEachNeighbour is called. If that's not the case,
 // the neighbours are found by using the generic but slower "bottom-up
