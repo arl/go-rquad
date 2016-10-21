@@ -26,7 +26,7 @@ type CNTree struct {
 	leaves     NodeList       // leaf nodes (filled during creation)
 }
 
-// NewCNQuadtree creates a CNQuadtree and populates it with CNQNode's,
+// NewCNTree creates a CNTree and populates it with cNode instances,
 // according to the content of the scanned image. If the image is not a square
 // having power-of-2 sides, the image will be redimensionned to fit this
 // requirement.
@@ -34,7 +34,7 @@ type CNTree struct {
 // Resolution is the minimal dimension that can have a leaf node, no further
 // subdivisions will be performed on a node if its width or height is equal to
 // this value.
-func NewCNQuadtree(scanner binimg.Scanner, resolution int) (*CNTree, error) {
+func NewCNTree(scanner binimg.Scanner, resolution int) (*CNTree, error) {
 	if !binimg.IsPowerOf2Image(scanner) {
 		return nil, errors.New("image must be a square with power-of-2 dimensions")
 	}

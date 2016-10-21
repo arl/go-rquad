@@ -66,7 +66,7 @@ func newBasicTree(scanner binimg.Scanner, resolution int) (Quadtree, error) {
 }
 
 func newCNQuadtree(scanner binimg.Scanner, resolution int) (Quadtree, error) {
-	return NewCNQuadtree(scanner, resolution)
+	return NewCNTree(scanner, resolution)
 }
 
 func appendNode(nl *NodeList) func(Node) {
