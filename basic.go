@@ -133,26 +133,3 @@ func (q *BasicTree) subdivide(n *basicNode) {
 func (q *BasicTree) Root() Node {
 	return q.root
 }
-
-// PointLocation returns the quadtree node containing the given point.
-func (q *BasicTree) PointLocation(pt image.Point) Node {
-	var query func(n *basicNode) Node
-	query = func(n *basicNode) Node {
-		if !pt.In(n.bounds) {
-			return nil
-		}
-		if n.color != Gray {
-			return n
-		}
-
-		if pt.In(n.c[Northwest].bounds) {
-			return query(n.c[Northwest])
-		} else if pt.In(n.c[Northeast].bounds) {
-			return query(n.c[Northeast])
-		} else if pt.In(n.c[Southwest].bounds) {
-			return query(n.c[Southwest])
-		}
-		return query(n.c[Southeast])
-	}
-	return query(q.root)
-}

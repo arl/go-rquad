@@ -62,7 +62,7 @@ func testQuadtreeNeighbours(t *testing.T, fn newQuadtreeFunc) {
 		q, err := fn(scanner, tt.res)
 		check(t, err)
 
-		node := q.(PointLocator).PointLocation(tt.pt)
+		node := PointLocation(q, tt.pt)
 		exists := node != nil
 		if !exists {
 			t.Fatalf("%s, resolution %d, expected exists to be true for point %v, got false instead",

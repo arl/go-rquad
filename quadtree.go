@@ -20,8 +20,6 @@
 
 package rquad
 
-import "image"
-
 // Quadtree defines the interface for a quadtree type.
 type Quadtree interface {
 	// ForEachLeaf calls the given function for each leaf node of the quadtree.
@@ -35,11 +33,4 @@ type Quadtree interface {
 
 	// Root returns the quadtree root node.
 	Root() Node
-}
-
-// PointLocator is the interface implemented by objects that, given a point in
-// 2D space, can return the leaf node it contains.
-type PointLocator interface {
-	// PointLocation returns the quadtree node containing the given point.
-	PointLocation(image.Point) Node
 }
