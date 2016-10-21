@@ -16,7 +16,7 @@ type basicNode struct {
 
 // Parent returns the quadtree node that is the parent of current one.
 func (n *basicNode) Parent() Node {
-	if n == nil || n.parent == nil {
+	if n.parent == nil {
 		return nil
 	}
 	return n.parent
