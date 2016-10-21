@@ -14,7 +14,7 @@ import (
 type BasicTree struct {
 	resolution int            // maximal resolution
 	scanner    binimg.Scanner // reference image
-	root       *BasicNode     // root node
+	root       *basicNode     // root node
 	leaves     NodeList       // leaf nodes (filled during creation)
 }
 
@@ -47,7 +47,7 @@ func NewBasicTree(scanner binimg.Scanner, resolution int) (*BasicTree, error) {
 	}
 
 	// create the root node
-	q.root = &BasicNode{
+	q.root = &basicNode{
 		color:  Gray,
 		bounds: q.scanner.Bounds(),
 	}
@@ -70,8 +70,8 @@ func (q *BasicTree) ForEachLeaf(color Color, fn func(Node)) {
 	}
 }
 
-func (q *BasicTree) newChildNode(bounds image.Rectangle, parent *BasicNode, location Quadrant) *BasicNode {
-	n := &BasicNode{
+func (q *BasicTree) newChildNode(bounds image.Rectangle, parent *basicNode, location Quadrant) *basicNode {
+	n := &basicNode{
 		color:    Gray,
 		bounds:   bounds,
 		parent:   parent,
@@ -104,7 +104,7 @@ func (q *BasicTree) newChildNode(bounds image.Rectangle, parent *BasicNode, loca
 	return n
 }
 
-func (q *BasicTree) subdivide(n *BasicNode) {
+func (q *BasicTree) subdivide(n *basicNode) {
 	//     x0   x1     x2
 	//  y0 .----.-------.
 	//     |    |       |
@@ -136,8 +136,8 @@ func (q *BasicTree) Root() Node {
 
 // PointLocation returns the quadtree node containing the given point.
 func (q *BasicTree) PointLocation(pt image.Point) Node {
-	var query func(n *BasicNode) Node
-	query = func(n *BasicNode) Node {
+	var query func(n *basicNode) Node
+	query = func(n *basicNode) Node {
 		if !pt.In(n.bounds) {
 			return nil
 		}
