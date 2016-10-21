@@ -7,7 +7,7 @@ import (
 	"github.com/aurelien-rainone/binimg"
 )
 
-// CNQuadtree is a quadtree based structure specically crafted for
+// CNTree is a quadtree based structure specically crafted for
 // constant-time neighbour finding. It works on square and power-of-2 sized
 // quadrants.
 //
@@ -19,10 +19,10 @@ import (
 // This quadtree structure has been proposed by Safwan W. Qasem, King Saud
 // University, Kingdom of Saudi Arabia, in his paper "Cardinal Neighbor
 // Quadtree: a New Quadtree-based Structure for Constant-Time Neighbor Finding"
-type CNQuadtree struct {
+type CNTree struct {
 	resolution int            // maximal resolution
 	scanner    binimg.Scanner // reference image
-	root       *CNQNode       // root node
+	root       *cnNode        // root node
 	leaves     NodeList       // leaf nodes (filled during creation)
 }
 
@@ -34,7 +34,7 @@ type CNQuadtree struct {
 // Resolution is the minimal dimension that can have a leaf node, no further
 // subdivisions will be performed on a node if its width or height is equal to
 // this value.
-func NewCNQuadtree(scanner binimg.Scanner, resolution int) (*CNQuadtree, error) {
+func NewCNQuadtree(scanner binimg.Scanner, resolution int) (*CNTree, error) {
 	if !binimg.IsPowerOf2Image(scanner) {
 		return nil, errors.New("image must be a square with power-of-2 dimensions")
 	}
@@ -51,7 +51,7 @@ func NewCNQuadtree(scanner binimg.Scanner, resolution int) (*CNQuadtree, error) 
 		return nil, errors.New("the image size must be greater or equal to twice the resolution")
 	}
 
-	q := &CNQuadtree{
+	q := &CNTree{
 		resolution: resolution,
 		scanner:    scanner,
 	}
@@ -61,8 +61,8 @@ func NewCNQuadtree(scanner binimg.Scanner, resolution int) (*CNQuadtree, error) 
 	return q, nil
 }
 
-func (q *CNQuadtree) newNode(bounds image.Rectangle, parent *CNQNode, location Quadrant) *CNQNode {
-	n := &CNQNode{
+func (q *CNTree) newNode(bounds image.Rectangle, parent *cnNode, location Quadrant) *cnNode {
+	n := &cnNode{
 		color:    Gray,
 		bounds:   bounds,
 		parent:   parent,
@@ -94,7 +94,7 @@ func (q *CNQuadtree) newNode(bounds image.Rectangle, parent *CNQNode, location Q
 	return n
 }
 
-func (q *CNQuadtree) subdivide(p *CNQNode) {
+func (q *CNTree) subdivide(p *cnNode) {
 	// Step 1: Decomposing the gray quadrant and updating the
 	//         parent node following the Z-order traversal.
 
@@ -176,7 +176,7 @@ func (q *CNQuadtree) subdivide(p *CNQNode) {
 }
 
 // Root returns the quadtree root node.
-func (q *CNQuadtree) Root() Node {
+func (q *CNTree) Root() Node {
 	return q.root
 }
 
@@ -187,7 +187,7 @@ func (q *CNQuadtree) Root() Node {
 // color, Black or White.
 // NOTE: As by definition, Gray leaves do not exist, passing Gray to
 // ForEachLeaf should return all leaves, independently of their color.
-func (q *CNQuadtree) ForEachLeaf(color Color, fn func(Node)) {
+func (q *CNTree) ForEachLeaf(color Color, fn func(Node)) {
 	for _, n := range q.leaves {
 		if color == Gray || n.Color() == color {
 			fn(n)
@@ -196,9 +196,9 @@ func (q *CNQuadtree) ForEachLeaf(color Color, fn func(Node)) {
 }
 
 // PointLocation returns the quadtree node containing the given point.
-func (q *CNQuadtree) PointLocation(pt image.Point) Node {
-	var query func(n *CNQNode) Node
-	query = func(n *CNQNode) Node {
+func (q *CNTree) PointLocation(pt image.Point) Node {
+	var query func(n *cnNode) Node
+	query = func(n *cnNode) Node {
 		if !pt.In(n.bounds) {
 			return nil
 		}

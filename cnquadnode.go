@@ -2,9 +2,9 @@ package rquad
 
 import "image"
 
-// CNQNode is a node of a CNQuadtree.
+// CNode is a node of a CNQuadtree.
 //
-// It is an implementation of the QNode interface, with additional fields and
+// It is an implementation of the Node interface, with additional fields and
 // methods required to obtain the node neighbours in constant time. The time
 // complexity reduction is obtained through the addition of only four pointers per
 // leaf node in the quadtree.
@@ -30,32 +30,32 @@ import "image"
 //   Neighbor in the direction i of the Cardinal Neighbor in direction i of the
 //   Node D for 𝑖 ∈ 0,1,2,3 where 0,1,2,3 represent respectively the directions
 //   West, North, East and South and where 𝜑 𝑖°(𝐷)=𝐷. 𝜑 𝑖²(𝐷) = 𝜑 𝑖(𝜑 𝑖(𝐷 ))
-type CNQNode struct {
-	parent *CNQNode // pointer to the parent node
+type cnNode struct {
+	parent *cnNode // pointer to the parent node
 	// TODO: use an array for children
-	northWest *CNQNode        // pointer to the northwest child
-	northEast *CNQNode        // pointer to the northeast child
-	southWest *CNQNode        // pointer to the southwest child
-	southEast *CNQNode        // pointer to the southeast child
+	northWest *cnNode         // pointer to the northwest child
+	northEast *cnNode         // pointer to the northeast child
+	southWest *cnNode         // pointer to the southwest child
+	southEast *cnNode         // pointer to the southeast child
 	bounds    image.Rectangle // node bounds
 	color     Color           // node color
-	cn        [4]*CNQNode     // cardinal neighbours
+	cn        [4]*cnNode      // cardinal neighbours
 	location  Quadrant        // node location inside its parent
 	size      int             // size of a quadrant side
 }
 
 // Bounds returns the bounds of the rectangular area represented by this
 // quadtree node.
-func (n *CNQNode) Bounds() image.Rectangle {
+func (n *cnNode) Bounds() image.Rectangle {
 	return n.bounds
 }
 
 // Color returns the node Color.
-func (n *CNQNode) Color() Color {
+func (n *cnNode) Color() Color {
 	return n.color
 }
 
-func (n *CNQNode) updateNECardinalNeighbours() {
+func (n *cnNode) updateNECardinalNeighbours() {
 	if n.parent == nil || n.cn[North] == nil {
 		// nothing to update as this quadrant lies on the north border
 		return
@@ -83,7 +83,7 @@ func (n *CNQNode) updateNECardinalNeighbours() {
 	}
 }
 
-func (n *CNQNode) updateSWCardinalNeighbours() {
+func (n *cnNode) updateSWCardinalNeighbours() {
 	if n.parent == nil || n.cn[West] == nil {
 		// nothing to update as this quadrant lies on the west border
 		return
@@ -113,10 +113,10 @@ func (n *CNQNode) updateSWCardinalNeighbours() {
 
 // updateNeighbours updates all neighbours according to the current
 // decomposition.
-func (n *CNQNode) updateNeighbours() {
+func (n *cnNode) updateNeighbours() {
 	if n.cn[West] != nil {
 		n.forEachNeighbour(West, func(qn Node) {
-			western := qn.(*CNQNode)
+			western := qn.(*cnNode)
 			if western.cn[East] == n {
 				if western.bounds.Max.Y > n.southWest.bounds.Min.Y {
 					// choose SW
@@ -134,7 +134,7 @@ func (n *CNQNode) updateNeighbours() {
 
 	if n.cn[North] != nil {
 		n.forEachNeighbour(North, func(qn Node) {
-			northern := qn.(*CNQNode)
+			northern := qn.(*cnNode)
 			if northern.cn[South] == n {
 				if northern.bounds.Max.X > n.northEast.bounds.Min.X {
 					// choose NE
@@ -170,17 +170,17 @@ func (n *CNQNode) updateNeighbours() {
 }
 
 // Location returns the node inside its parent quadrant
-func (n *CNQNode) Location() Quadrant {
+func (n *cnNode) Location() Quadrant {
 	return n.location
 }
 
 // Parent returns the quadtree node that is the parent of current one.
-func (n *CNQNode) Parent() Node {
+func (n *cnNode) Parent() Node {
 	return n.parent
 }
 
 // Child returns current node child at specified quadrant.
-func (n *CNQNode) Child(q Quadrant) Node {
+func (n *cnNode) Child(q Quadrant) Node {
 	switch q {
 	case Northwest:
 		return n.northWest
@@ -197,7 +197,7 @@ func (n *CNQNode) Child(q Quadrant) Node {
 
 // forEachNeighbour calls fn on every neighbour of the current node in the given
 // direction
-func (n *CNQNode) forEachNeighbour(dir Side, fn func(Node)) {
+func (n *cnNode) forEachNeighbour(dir Side, fn func(Node)) {
 	// start from the cardinal neighbour on the given direction
 	N := n.cn[dir]
 	if N == nil {
@@ -223,7 +223,7 @@ func (n *CNQNode) forEachNeighbour(dir Side, fn func(Node)) {
 
 // ForEachNeighbour calls the given function for each neighbour of current
 // node.
-func (n *CNQNode) ForEachNeighbour(fn func(Node)) {
+func (n *cnNode) ForEachNeighbour(fn func(Node)) {
 	n.forEachNeighbour(West, fn)
 	n.forEachNeighbour(North, fn)
 	n.forEachNeighbour(East, fn)
