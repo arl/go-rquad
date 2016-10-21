@@ -7,14 +7,13 @@ import (
 	"github.com/aurelien-rainone/binimg"
 )
 
-// CNTree is a quadtree based structure specically crafted for
-// constant-time neighbour finding. It works on square and power-of-2 sized
-// quadrants.
+// CNTree implements a Cardinal Neighbour Quadtree, a quadtree structure that
+// allows finding neighbor quadrants in constant time O(1) regardless of their
+// sizes.
 //
-// The Cardinal Neighbor Quadtree, a pointer based data structure, can
-// determine the existence, and access a smaller, equal or greater size
-// neighbour in constant-time O(1). The time complexity reduction is obtained
-// through the addition of only four pointers per leaf node in the quadtree.
+// The time complexity reduction is obtained through the addition of four
+// pointers per node in the quadtree, those pointers are the cardinal neighbour
+// of the node.
 //
 // This quadtree structure has been proposed by Safwan W. Qasem, King Saud
 // University, Kingdom of Saudi Arabia, in his paper "Cardinal Neighbor
@@ -26,14 +25,13 @@ type CNTree struct {
 	leaves     NodeList       // leaf nodes (filled during creation)
 }
 
-// NewCNTree creates a CNTree and populates it with cNode instances,
-// according to the content of the scanned image. If the image is not a square
-// having power-of-2 sides, the image will be redimensionned to fit this
-// requirement.
+// NewCNTree creates a CNTree and populates it with cnNode instances,
+// according to the content of the scanned image. It works only on square and
+// power of 2 sized images, NewCNTree will return a nil CNTree pointer and an
+// error if that's not the case.
 //
-// Resolution is the minimal dimension that can have a leaf node, no further
-// subdivisions will be performed on a node if its width or height is equal to
-// this value.
+// resolution is the minimal dimension of a leaf node, no further subdivisions
+// will be performed on a leaf if its dimension is equal to the resolution.
 func NewCNTree(scanner binimg.Scanner, resolution int) (*CNTree, error) {
 	if !binimg.IsPowerOf2Image(scanner) {
 		return nil, errors.New("image must be a square with power-of-2 dimensions")
@@ -45,7 +43,7 @@ func NewCNTree(scanner binimg.Scanner, resolution int) (*CNTree, error) {
 
 	// To ensure a consistent behavior and eliminate corner cases,
 	// the Quadtree's root node needs to have children. Thus, the
-	// first instantiated CNQNode needs to always be subdivided.
+	// first instantiated cnNode needs to always be subdivided.
 	// This condition asserts the resolution is respected.
 	if scanner.Bounds().Dx() < resolution*2 {
 		return nil, errors.New("the image size must be greater or equal to twice the resolution")
@@ -122,22 +120,21 @@ func (q *CNTree) subdivide(p *cnNode) {
 	sw := q.newNode(image.Rect(x0, y1, x1, y2), p, Southwest)
 	se := q.newNode(image.Rect(x1, y1, x2, y2), p, Southeast)
 
-	// each sub-quadrant first inherit its parent external neighbours
-	// and then updates its internal neighbours.
+	// at creation, each sub-quadrant first inherits its parent external neighbours
 	nw.cn[West] = p.cn[West]   // inherited
 	nw.cn[North] = p.cn[North] // inherited
-	nw.cn[East] = ne           // set for decomposition, will need to be updated after
-	nw.cn[South] = sw          // set for decomposition, will need to be updated after
-	ne.cn[West] = nw           // set for decomposition, will need to be updated after
+	nw.cn[East] = ne           // set for decomposition, will be updated after
+	nw.cn[South] = sw          // set for decomposition, will be updated after
+	ne.cn[West] = nw           // set for decomposition, will be updated after
 	ne.cn[North] = p.cn[North] // inherited
 	ne.cn[East] = p.cn[East]   // inherited
-	ne.cn[South] = se          // set for decomposition, will need to be updated after
+	ne.cn[South] = se          // set for decomposition, will be updated after
 	sw.cn[West] = p.cn[West]   // inherited
-	sw.cn[North] = nw          // set for decomposition, will need to be updated after
-	sw.cn[East] = se           // set for decomposition, will need to be updated after
+	sw.cn[North] = nw          // set for decomposition, will be updated after
+	sw.cn[East] = se           // set for decomposition, will be updated after
 	sw.cn[South] = p.cn[South] // inherited
-	se.cn[West] = sw           // set for decomposition, will need to be updated after
-	se.cn[North] = ne          // set for decomposition, will need to be updated after
+	se.cn[West] = sw           // set for decomposition, will be updated after
+	se.cn[North] = ne          // set for decomposition, will be updated after
 	se.cn[East] = p.cn[East]   // inherited
 	se.cn[South] = p.cn[South] // inherited
 
@@ -146,21 +143,16 @@ func (q *CNTree) subdivide(p *cnNode) {
 	p.c[Southwest] = sw
 	p.c[Southeast] = se
 
-	p.updateNECardinalNeighbours()
-	p.updateSWCardinalNeighbours()
+	p.updateNorthEast()
+	p.updateSouthWest()
 
-	// Step3: Updating all neighbours accordingly
-	// After the decomposition of a quadrant, all its neighbors in
-	// the four directions must be informed of the change so that
-	// they can update their own cardinal neighbors accordingly
-
-	// On each direction, a full traversal of the neighbors should
-	// be performed. In every quadrant where a reference to the
-	// parent quadrant is stored as the Cardinal Neighbor, it
-	// should be replaced by one of its children created after the
-	// decomposition
+	// update all neighbours accordingly. After the decomposition
+	// of a quadrant, all its neighbors in the four directions
+	// must be informed of the change so that they can update
+	// their own cardinal neighbors accordingly.
 	p.updateNeighbours()
 
+	// subdivide non-leaf nodes
 	if nw.color == Gray {
 		q.subdivide(nw)
 	}

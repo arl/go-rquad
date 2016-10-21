@@ -50,7 +50,7 @@ func init() {
 		East, South, West, North,
 	}
 
-	// For Cardinal Neighbour Quadtrees
+	// for Cardinal Neighbour Quadtrees
 	arrTraversal = [4]Side{
 		/* W     N      E     S  */
 		South, East, North, West,

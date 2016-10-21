@@ -17,19 +17,6 @@ import "image"
 //   eastern neighbors, noted cn2.
 // - The Southern cardinal neighbor is the right-most neighbor node among the
 //   southern neighbors, noted cn3.
-//
-// - 𝜌(𝐷) returns the immediate parent of the node D. The notation 𝜌²(𝐷)
-//   denotes the parent of the parent of D. 𝜌°(𝐷) = 𝐷.
-// - 𝑆𝑖𝑧𝑒(𝐷) returns the side length of node N in pixels.
-// - 𝜑 𝑖(𝐷) returns the cardinal Neighbor of node D in direction i,
-//   for 𝑖 ∈  0,1,2,3 where 0,1,2,3 represent respectively the directions West,
-//   North, East and South.
-// - 𝜑 𝑖𝑗(𝐷) represents the Cardinal Neighbor in the direction i of the
-//   Cardinal Neighbor in direction j of the Node D. 𝜑 𝑖𝑗(𝐷) = 𝜑 𝑖(𝜑 𝑗(𝐷))
-// - 𝜑 𝑖(𝜑 𝑖(𝐷)) will be noted as 𝜑 𝑖²(𝐷). This represents the Cardinal
-//   Neighbor in the direction i of the Cardinal Neighbor in direction i of the
-//   Node D for 𝑖 ∈ 0,1,2,3 where 0,1,2,3 represent respectively the directions
-//   West, North, East and South and where 𝜑 𝑖°(𝐷)=𝐷. 𝜑 𝑖²(𝐷) = 𝜑 𝑖(𝜑 𝑖(𝐷 ))
 type cnNode struct {
 	parent   *cnNode         // pointer to the parent node
 	c        [4]*cnNode      // children nodes
@@ -72,7 +59,7 @@ func (n *cnNode) Location() Quadrant {
 	return n.location
 }
 
-func (n *cnNode) updateNECardinalNeighbours() {
+func (n *cnNode) updateNorthEast() {
 	if n.parent == nil || n.cn[North] == nil {
 		// nothing to update as this quadrant lies on the north border
 		return
@@ -87,11 +74,7 @@ func (n *cnNode) updateNECardinalNeighbours() {
 			cur := c0.cn[North]
 			cumsize := cur.size
 			for cumsize < c0.size {
-				tmp := cur.cn[East]
-				if tmp == nil {
-					break
-				}
-				cur = tmp
+				cur := cur.cn[East]
 				cumsize += cur.size
 			}
 			n.c[Northeast].cn[North] = cur
@@ -99,7 +82,7 @@ func (n *cnNode) updateNECardinalNeighbours() {
 	}
 }
 
-func (n *cnNode) updateSWCardinalNeighbours() {
+func (n *cnNode) updateSouthWest() {
 	if n.parent == nil || n.cn[West] == nil {
 		// nothing to update as this quadrant lies on the west border
 		return
@@ -114,11 +97,7 @@ func (n *cnNode) updateSWCardinalNeighbours() {
 			cur := c0.cn[West]
 			cumsize := cur.size
 			for cumsize < c0.size {
-				tmp := cur.cn[South]
-				if tmp == nil {
-					break
-				}
-				cur = tmp
+				cur := cur.cn[South]
 				cumsize += cur.size
 			}
 			n.c[Southwest].cn[West] = cur
@@ -129,6 +108,12 @@ func (n *cnNode) updateSWCardinalNeighbours() {
 // updateNeighbours updates all neighbours according to the current
 // decomposition.
 func (n *cnNode) updateNeighbours() {
+	// On each direction, a full traversal of the neighbors
+	// should be performed.  In every quadrant where a reference
+	// to the parent quadrant is stored as the Cardinal Neighbor,
+	// it should be replaced by one of its children created after
+	// the decomposition
+
 	if n.cn[West] != nil {
 		n.forEachNeighbour(West, func(qn Node) {
 			western := qn.(*cnNode)
@@ -176,7 +161,7 @@ func (n *cnNode) updateNeighbours() {
 	if n.cn[South] != nil {
 		// To update the southern CN of a quadrant Q that is being
 		// decomposed: Q.CN3.CN1=Q.Ch[SE]
-		// TODO: this seems a typo in the paper.
+		// TODO: there seems to be a typo in the paper.
 		// should have read this instead: Q.CN3.CN1=Q.Ch[SW]
 		if n.cn[South] != nil && n.cn[South].cn[North] == n {
 			n.cn[South].cn[North] = n.c[Southwest]
@@ -185,7 +170,7 @@ func (n *cnNode) updateNeighbours() {
 }
 
 // forEachNeighbour calls fn on every neighbour of the current node in the given
-// direction
+// direction.
 func (n *cnNode) forEachNeighbour(dir Side, fn func(Node)) {
 	// start from the cardinal neighbour on the given direction
 	N := n.cn[dir]
