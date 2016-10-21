@@ -86,14 +86,14 @@ func children(n Node, dir Side, nodes *NodeList) {
 // node n.
 //
 // The neighbour finding technique used depends on the Node implementation. If
-// the node implements the AdjacencyNode interface, then the specific and
+// the node implements the NeighbourNode interface, then the specific and
 // faster implementation of ForEachNeighbour is called. If that's not the case,
 // the neighbours are found by using the generic but slower "bottom-up
 // neighbour finding technique", cf. Hanan Samet 1981 article Neighbour Finding
 // in Quadtrees
 func ForEachNeighbour(n Node, fn func(Node)) {
-	if adjnode, ok := n.(AdjacencyNode); ok {
-		// use adjacency node specific implementation
+	if adjnode, ok := n.(NeighbourNode); ok {
+		// use neighbour node specific implementation
 		adjnode.ForEachNeighbour(fn)
 		return
 	}

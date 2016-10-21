@@ -42,11 +42,11 @@ type Node interface {
 // NodeList is a slice of Node instances.
 type NodeList []Node
 
-// AdjacencyNode is a Node that can find its adjacent nodes, or neighbours.
-type AdjacencyNode interface {
+// NeighbourNode is a Node that can access to its neighbours, by neighbour it
+// is intended other leaf nodes of the same color.
+type NeighbourNode interface {
 	Node
 	// ForEachNeighbour calls the given function
 	// for each neighbour of current node.
-	// TODO: rename ForEachAdjacent
 	ForEachNeighbour(func(Node))
 }
