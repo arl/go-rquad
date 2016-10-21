@@ -44,6 +44,27 @@ type cnNode struct {
 	size      int             // size of a quadrant side
 }
 
+// Parent returns the quadtree node that is the parent of current one.
+func (n *cnNode) Parent() Node {
+	return n.parent
+}
+
+// Child returns current node child at specified quadrant.
+func (n *cnNode) Child(q Quadrant) Node {
+	switch q {
+	case Northwest:
+		return n.northWest
+	case Northeast:
+		return n.northEast
+	case Southwest:
+		return n.southWest
+	default:
+		fallthrough
+	case Southeast:
+		return n.southEast
+	}
+}
+
 // Bounds returns the bounds of the rectangular area represented by this
 // quadtree node.
 func (n *cnNode) Bounds() image.Rectangle {
@@ -53,6 +74,11 @@ func (n *cnNode) Bounds() image.Rectangle {
 // Color returns the node Color.
 func (n *cnNode) Color() Color {
 	return n.color
+}
+
+// Location returns the node inside its parent quadrant
+func (n *cnNode) Location() Quadrant {
+	return n.location
 }
 
 func (n *cnNode) updateNECardinalNeighbours() {
@@ -166,32 +192,6 @@ func (n *cnNode) updateNeighbours() {
 		if n.cn[South] != nil && n.cn[South].cn[North] == n {
 			n.cn[South].cn[North] = n.southWest
 		}
-	}
-}
-
-// Location returns the node inside its parent quadrant
-func (n *cnNode) Location() Quadrant {
-	return n.location
-}
-
-// Parent returns the quadtree node that is the parent of current one.
-func (n *cnNode) Parent() Node {
-	return n.parent
-}
-
-// Child returns current node child at specified quadrant.
-func (n *cnNode) Child(q Quadrant) Node {
-	switch q {
-	case Northwest:
-		return n.northWest
-	case Northeast:
-		return n.northEast
-	case Southwest:
-		return n.southWest
-	default:
-		fallthrough
-	case Southeast:
-		return n.southEast
 	}
 }
 
