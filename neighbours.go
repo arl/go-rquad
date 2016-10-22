@@ -1,5 +1,42 @@
 package rquad
 
+// NeighbourNode is a Node that can access to its neighbours, by neighbour it
+// is intended other leaf nodes of the same color.
+type NeighbourNode interface {
+	Node
+	// ForEachNeighbour calls the given function
+	// for each neighbour of current node.
+	ForEachNeighbour(func(Node))
+}
+
+// ForEachNeighbour calls the given function for each neighbour of the quadtree
+// node n.
+//
+// The neighbour finding technique used depends on the Node implementation. If
+// the node implements the NeighbourNode interface, then the specific and
+// faster implementation of ForEachNeighbour is called. If that's not the case,
+// the neighbours are found by using the generic but slower "bottom-up
+// neighbour finding technique", cf. Hanan Samet 1981 article Neighbour Finding
+// in Quadtrees
+func ForEachNeighbour(n Node, fn func(Node)) {
+	if adjnode, ok := n.(NeighbourNode); ok {
+		// use neighbour node specific implementation
+		adjnode.ForEachNeighbour(fn)
+		return
+	}
+
+	// TODO; fn should be passed to individual neighbours functions to remove
+	// the need to fill a temporary slice.
+	var nodes NodeList
+	neighbours(n, North, &nodes)
+	neighbours(n, South, &nodes)
+	neighbours(n, East, &nodes)
+	neighbours(n, West, &nodes)
+	for _, nb := range nodes {
+		fn(nb)
+	}
+}
+
 // equalSizeNeighbour locates an equal-sized neighbour of the current node in the
 // vertical or horizontal direction.
 //
@@ -79,33 +116,5 @@ func children(n Node, dir Side, nodes *NodeList) {
 		*nodes = append(*nodes, s2)
 	} else {
 		children(s2, dir, nodes)
-	}
-}
-
-// ForEachNeighbour calls the given function for each neighbour of the quadtree
-// node n.
-//
-// The neighbour finding technique used depends on the Node implementation. If
-// the node implements the NeighbourNode interface, then the specific and
-// faster implementation of ForEachNeighbour is called. If that's not the case,
-// the neighbours are found by using the generic but slower "bottom-up
-// neighbour finding technique", cf. Hanan Samet 1981 article Neighbour Finding
-// in Quadtrees
-func ForEachNeighbour(n Node, fn func(Node)) {
-	if adjnode, ok := n.(NeighbourNode); ok {
-		// use neighbour node specific implementation
-		adjnode.ForEachNeighbour(fn)
-		return
-	}
-
-	// TODO; fn should be passed to individual neighbours functions to remove
-	// the need to fill a temporary slice.
-	var nodes NodeList
-	neighbours(n, North, &nodes)
-	neighbours(n, South, &nodes)
-	neighbours(n, East, &nodes)
-	neighbours(n, West, &nodes)
-	for _, nb := range nodes {
-		fn(nb)
 	}
 }

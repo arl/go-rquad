@@ -41,12 +41,3 @@ type Node interface {
 
 // NodeList is a slice of Node instances.
 type NodeList []Node
-
-// NeighbourNode is a Node that can access to its neighbours, by neighbour it
-// is intended other leaf nodes of the same color.
-type NeighbourNode interface {
-	Node
-	// ForEachNeighbour calls the given function
-	// for each neighbour of current node.
-	ForEachNeighbour(func(Node))
-}
