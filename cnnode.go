@@ -17,10 +17,10 @@ import "image"
 //   eastern neighbors, noted cn2.
 // - The Southern cardinal neighbor is the right-most neighbor node among the
 //   southern neighbors, noted cn3.
-type cnNode struct {
-	parent   *cnNode         // pointer to the parent node
-	c        [4]*cnNode      // children nodes
-	cn       [4]*cnNode      // cardinal neighbours
+type CNNode struct {
+	parent   *CNNode         // pointer to the parent node
+	c        [4]*CNNode      // children nodes
+	cn       [4]*CNNode      // cardinal neighbours
 	bounds   image.Rectangle // node bounds
 	color    Color           // node color
 	location Quadrant        // node location inside its parent
@@ -28,7 +28,7 @@ type cnNode struct {
 }
 
 // Parent returns the quadtree node that is the parent of current one.
-func (n *cnNode) Parent() Node {
+func (n *CNNode) Parent() Node {
 	if n.parent == nil {
 		return nil
 	}
@@ -36,7 +36,7 @@ func (n *cnNode) Parent() Node {
 }
 
 // Child returns current node child at specified quadrant.
-func (n *cnNode) Child(q Quadrant) Node {
+func (n *CNNode) Child(q Quadrant) Node {
 	if n.c[q] == nil {
 		return nil
 	}
@@ -45,21 +45,21 @@ func (n *cnNode) Child(q Quadrant) Node {
 
 // Bounds returns the bounds of the rectangular area represented by this
 // quadtree node.
-func (n *cnNode) Bounds() image.Rectangle {
+func (n *CNNode) Bounds() image.Rectangle {
 	return n.bounds
 }
 
 // Color returns the node Color.
-func (n *cnNode) Color() Color {
+func (n *CNNode) Color() Color {
 	return n.color
 }
 
 // Location returns the node inside its parent quadrant
-func (n *cnNode) Location() Quadrant {
+func (n *CNNode) Location() Quadrant {
 	return n.location
 }
 
-func (n *cnNode) updateNorthEast() {
+func (n *CNNode) updateNorthEast() {
 	if n.parent == nil || n.cn[North] == nil {
 		// nothing to update as this quadrant lies on the north border
 		return
@@ -82,7 +82,7 @@ func (n *cnNode) updateNorthEast() {
 	}
 }
 
-func (n *cnNode) updateSouthWest() {
+func (n *CNNode) updateSouthWest() {
 	if n.parent == nil || n.cn[West] == nil {
 		// nothing to update as this quadrant lies on the west border
 		return
@@ -107,7 +107,7 @@ func (n *cnNode) updateSouthWest() {
 
 // updateNeighbours updates all neighbours according to the current
 // decomposition.
-func (n *cnNode) updateNeighbours() {
+func (n *CNNode) updateNeighbours() {
 	// On each direction, a full traversal of the neighbors
 	// should be performed.  In every quadrant where a reference
 	// to the parent quadrant is stored as the Cardinal Neighbor,
@@ -116,7 +116,7 @@ func (n *cnNode) updateNeighbours() {
 
 	if n.cn[West] != nil {
 		n.forEachNeighbour(West, func(qn Node) {
-			western := qn.(*cnNode)
+			western := qn.(*CNNode)
 			if western.cn[East] == n {
 				if western.bounds.Max.Y > n.c[Southwest].bounds.Min.Y {
 					// choose SW
@@ -134,7 +134,7 @@ func (n *cnNode) updateNeighbours() {
 
 	if n.cn[North] != nil {
 		n.forEachNeighbour(North, func(qn Node) {
-			northern := qn.(*cnNode)
+			northern := qn.(*CNNode)
 			if northern.cn[South] == n {
 				if northern.bounds.Max.X > n.c[Northeast].bounds.Min.X {
 					// choose NE
@@ -171,7 +171,7 @@ func (n *cnNode) updateNeighbours() {
 
 // forEachNeighbour calls fn on every neighbour of the current node in the given
 // direction.
-func (n *cnNode) forEachNeighbour(dir Side, fn func(Node)) {
+func (n *CNNode) forEachNeighbour(dir Side, fn func(Node)) {
 	// start from the cardinal neighbour on the given direction
 	N := n.cn[dir]
 	if N == nil {
@@ -197,7 +197,7 @@ func (n *cnNode) forEachNeighbour(dir Side, fn func(Node)) {
 
 // ForEachNeighbour calls the given function for each neighbour of current
 // node.
-func (n *cnNode) ForEachNeighbour(fn func(Node)) {
+func (n *CNNode) ForEachNeighbour(fn func(Node)) {
 	n.forEachNeighbour(West, fn)
 	n.forEachNeighbour(North, fn)
 	n.forEachNeighbour(East, fn)

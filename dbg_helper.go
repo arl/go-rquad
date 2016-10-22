@@ -2,7 +2,7 @@ package rquad
 
 import "fmt"
 
-func (n *cnNode) String() string {
+func (n *CNNode) String() string {
 	var scn0, scn1, scn2, scn3 string
 	if n.cn[West] != nil {
 		scn0 = fmt.Sprintf("%v-%d", n.cn[West].bounds.Min, n.cn[West].size)

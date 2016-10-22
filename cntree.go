@@ -21,7 +21,7 @@ import (
 type CNTree struct {
 	resolution int            // maximal resolution
 	scanner    binimg.Scanner // reference image
-	root       *cnNode        // root node
+	root       *CNNode        // root node
 	leaves     NodeList       // leaf nodes (filled during creation)
 }
 
@@ -59,8 +59,8 @@ func NewCNTree(scanner binimg.Scanner, resolution int) (*CNTree, error) {
 	return q, nil
 }
 
-func (q *CNTree) newNode(bounds image.Rectangle, parent *cnNode, location Quadrant) *cnNode {
-	n := &cnNode{
+func (q *CNTree) newNode(bounds image.Rectangle, parent *CNNode, location Quadrant) *CNNode {
+	n := &CNNode{
 		color:    Gray,
 		bounds:   bounds,
 		parent:   parent,
@@ -92,7 +92,7 @@ func (q *CNTree) newNode(bounds image.Rectangle, parent *cnNode, location Quadra
 	return n
 }
 
-func (q *CNTree) subdivide(p *cnNode) {
+func (q *CNTree) subdivide(p *CNNode) {
 	// Step 1: Decomposing the gray quadrant and updating the
 	//         parent node following the Z-order traversal.
 
