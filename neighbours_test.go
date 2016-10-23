@@ -92,17 +92,13 @@ func TestCNTreeNeighbours(t *testing.T) {
 	testQuadtreeNeighbours(t, newCNTree)
 }
 
-// TODO: this test should, obviously, test the results obtained to the correct
-// ones, instead of comparing the results obtained with two different quadtree
-// implementations. At least, like that, we know the results are homogeneous, we
-// are just not sure they are correct! ;-)
 func TestNeighboursFinding(t *testing.T) {
 	var (
 		img     *binimg.Binary
 		scanner binimg.Scanner
 		err     error
 	)
-	img, err = loadPNG("./testdata/bigsquare.png")
+	img, err = loadPNG("./testdata/random-1024x1024.png")
 	check(t, err)
 
 	r := rand.New(rand.NewSource(99))
@@ -146,7 +142,7 @@ func TestNeighboursFinding(t *testing.T) {
 	}
 }
 
-func benchmarkNeighboursFinding(b *testing.B, fn newQuadtreeFunc, numNodes int) {
+func benchmarkNeighboursFinding(b *testing.B, fn newQuadtreeFunc, numNodes int, resolution int) {
 	var (
 		img     *binimg.Binary
 		scanner binimg.Scanner
@@ -161,7 +157,7 @@ func benchmarkNeighboursFinding(b *testing.B, fn newQuadtreeFunc, numNodes int) 
 	checkB(b, err)
 
 	// create a quadtree
-	q, err := fn(scanner, 8)
+	q, err := fn(scanner, resolution)
 	checkB(b, err)
 
 	randomPt := func(rect image.Rectangle) image.Point {
@@ -187,34 +183,50 @@ func benchmarkNeighboursFinding(b *testing.B, fn newQuadtreeFunc, numNodes int) 
 	}
 }
 
-func BenchmarkBasicQuadtreeNeighboursFinding10(b *testing.B) {
-	benchmarkNeighboursFinding(b, newBasicTree, 10)
+func BenchmarkBasicNeighboursRes32(b *testing.B) {
+	benchmarkNeighboursFinding(b, newBasicTree, 100, 32)
 }
 
-func BenchmarkBasicQuadtreeNeighboursFinding50(b *testing.B) {
-	benchmarkNeighboursFinding(b, newBasicTree, 50)
+func BenchmarkBasicNeighboursRes16(b *testing.B) {
+	benchmarkNeighboursFinding(b, newBasicTree, 100, 16)
 }
 
-func BenchmarkBasicQuadtreeNeighboursFinding200(b *testing.B) {
-	benchmarkNeighboursFinding(b, newBasicTree, 200)
+func BenchmarkBasicNeighboursRes8(b *testing.B) {
+	benchmarkNeighboursFinding(b, newBasicTree, 100, 8)
 }
 
-func BenchmarkBasicQuadtreeNeighboursFinding1000(b *testing.B) {
-	benchmarkNeighboursFinding(b, newBasicTree, 1000)
+func BenchmarkBasicNeighboursRes4(b *testing.B) {
+	benchmarkNeighboursFinding(b, newBasicTree, 100, 4)
 }
 
-func BenchmarkCNTreeNeighboursFinding10(b *testing.B) {
-	benchmarkNeighboursFinding(b, newCNTree, 10)
+func BenchmarkBasicNeighboursRes2(b *testing.B) {
+	benchmarkNeighboursFinding(b, newBasicTree, 100, 2)
 }
 
-func BenchmarkCNTreeNeighboursFinding50(b *testing.B) {
-	benchmarkNeighboursFinding(b, newCNTree, 50)
+func BenchmarkBasicNeighboursRes1(b *testing.B) {
+	benchmarkNeighboursFinding(b, newBasicTree, 100, 1)
 }
 
-func BenchmarkCNTreeNeighboursFinding200(b *testing.B) {
-	benchmarkNeighboursFinding(b, newCNTree, 200)
+func BenchmarkCNTreeNeighboursRes32(b *testing.B) {
+	benchmarkNeighboursFinding(b, newCNTree, 100, 32)
 }
 
-func BenchmarkCNTreeNeighboursFinding1000(b *testing.B) {
-	benchmarkNeighboursFinding(b, newCNTree, 1000)
+func BenchmarkCNTreeNeighboursRes16(b *testing.B) {
+	benchmarkNeighboursFinding(b, newCNTree, 100, 16)
+}
+
+func BenchmarkCNTreeNeighboursRes8(b *testing.B) {
+	benchmarkNeighboursFinding(b, newCNTree, 100, 8)
+}
+
+func BenchmarkCNTreeNeighboursRes4(b *testing.B) {
+	benchmarkNeighboursFinding(b, newCNTree, 100, 4)
+}
+
+func BenchmarkCNTreeNeighboursRes2(b *testing.B) {
+	benchmarkNeighboursFinding(b, newCNTree, 100, 2)
+}
+
+func BenchmarkCNTreeNeighboursRes1(b *testing.B) {
+	benchmarkNeighboursFinding(b, newCNTree, 100, 1)
 }

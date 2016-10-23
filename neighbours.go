@@ -25,16 +25,11 @@ func ForEachNeighbour(n Node, fn func(Node)) {
 		return
 	}
 
-	// TODO; fn should be passed to individual neighbours functions to remove
-	// the need to fill a temporary slice.
-	var nodes NodeList
-	neighbours(n, North, &nodes)
-	neighbours(n, South, &nodes)
-	neighbours(n, East, &nodes)
-	neighbours(n, West, &nodes)
-	for _, nb := range nodes {
-		fn(nb)
-	}
+	// perform generic implementation (bottom-up technique)
+	neighbours(n, North, fn)
+	neighbours(n, South, fn)
+	neighbours(n, East, fn)
+	neighbours(n, West, fn)
 }
 
 // equalSizeNeighbour locates an equal-sized neighbour of the current node in the
@@ -62,28 +57,28 @@ func equalSizeNeighbour(n Node, dir Side) Node {
 	return neighbour
 }
 
-// neighbours locates all leaf neighbours of the current node in the given
-// direction, appending them to a slice.
-func neighbours(n Node, dir Side, nodes *NodeList) {
+// neighbours calls fn for each leaf neighbours of the current node it finds in
+// the given direction
+func neighbours(n Node, dir Side, fn func(Node)) {
 	// If no neighbour can be found in the given
 	// direction, node will be null.
 	node := equalSizeNeighbour(n, dir)
 	if node != nil {
 		if node.Color() != Gray {
-			// Neighbour is already a leaf node, we're done.
-			*nodes = append(*nodes, node)
+			// Neighbour is already a leaf node, we're done after that.
+			fn(node)
 		} else {
 			// The neighbour isn't a leaf node so we need to
 			// go further down matching its children, but in
 			// the opposite direction from where we came.
-			children(node, opposite(dir), nodes)
+			children(node, opposite(dir), fn)
 		}
 	}
 }
 
-// children fills the given slice with all the leaf children of this node (i.e
-// either black or white), that can be found in a given direction.
-func children(n Node, dir Side, nodes *NodeList) {
+// children calls fn for each leaf children of this node it finds in the given
+// direction.
+func children(n Node, dir Side, fn func(Node)) {
 	var (
 		s1, s2 Node
 	)
@@ -107,14 +102,14 @@ func children(n Node, dir Side, nodes *NodeList) {
 	}
 
 	if s1.Color() != Gray {
-		*nodes = append(*nodes, s1)
+		fn(s1)
 	} else {
-		children(s1, dir, nodes)
+		children(s1, dir, fn)
 	}
 
 	if s2.Color() != Gray {
-		*nodes = append(*nodes, s2)
+		fn(s2)
 	} else {
-		children(s2, dir, nodes)
+		children(s2, dir, fn)
 	}
 }

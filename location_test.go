@@ -8,13 +8,13 @@ import (
 	"github.com/aurelien-rainone/binimg"
 )
 
-func benchmarkPointLocation(b *testing.B, fn newQuadtreeFunc, numPoints int) {
+func benchmarkPointLocation(b *testing.B, fn newQuadtreeFunc, numPoints int, resolution int) {
 	var (
 		img     *binimg.Binary
 		scanner binimg.Scanner
 		err     error
 	)
-	img, err = loadPNG("./testdata/bigsquare.png")
+	img, err = loadPNG("./testdata/random-1024x1024.png")
 	checkB(b, err)
 
 	r := rand.New(rand.NewSource(99))
@@ -23,7 +23,7 @@ func benchmarkPointLocation(b *testing.B, fn newQuadtreeFunc, numPoints int) {
 	checkB(b, err)
 
 	// create a quadtree
-	q, err := fn(scanner, 8)
+	q, err := fn(scanner, resolution)
 	checkB(b, err)
 
 	randomPt := func(rect image.Rectangle) image.Point {
@@ -53,34 +53,50 @@ func benchmarkPointLocation(b *testing.B, fn newQuadtreeFunc, numPoints int) {
 	}
 }
 
-func BenchmarkBasicQuadtreePointLocation10(b *testing.B) {
-	benchmarkPointLocation(b, newBasicTree, 10)
+func BenchmarkBasicPointLocationRes32(b *testing.B) {
+	benchmarkPointLocation(b, newBasicTree, 100, 32)
 }
 
-func BenchmarkBasicQuadtreePointLocation50(b *testing.B) {
-	benchmarkPointLocation(b, newBasicTree, 50)
+func BenchmarkBasicPointLocationRes16(b *testing.B) {
+	benchmarkPointLocation(b, newBasicTree, 100, 16)
 }
 
-func BenchmarkBasicQuadtreePointLocation200(b *testing.B) {
-	benchmarkPointLocation(b, newBasicTree, 200)
+func BenchmarkBasicPointLocationRes8(b *testing.B) {
+	benchmarkPointLocation(b, newBasicTree, 100, 8)
 }
 
-func BenchmarkBasicQuadtreePointLocation1000(b *testing.B) {
-	benchmarkPointLocation(b, newBasicTree, 1000)
+func BenchmarkBasicPointLocationRes4(b *testing.B) {
+	benchmarkPointLocation(b, newBasicTree, 100, 4)
 }
 
-func BenchmarkCNTreePointLocation10(b *testing.B) {
-	benchmarkPointLocation(b, newCNTree, 10)
+func BenchmarkBasicPointLocationRes2(b *testing.B) {
+	benchmarkPointLocation(b, newBasicTree, 100, 2)
 }
 
-func BenchmarkCNTreePointLocation50(b *testing.B) {
-	benchmarkPointLocation(b, newCNTree, 50)
+func BenchmarkBasicPointLocationRes1(b *testing.B) {
+	benchmarkPointLocation(b, newBasicTree, 100, 1)
 }
 
-func BenchmarkCNTreePointLocation200(b *testing.B) {
-	benchmarkPointLocation(b, newCNTree, 200)
+func BenchmarkCNTreePointLocationRes32(b *testing.B) {
+	benchmarkPointLocation(b, newCNTree, 100, 32)
 }
 
-func BenchmarkCNTreePointLocation1000(b *testing.B) {
-	benchmarkPointLocation(b, newCNTree, 1000)
+func BenchmarkCNTreePointLocationRes16(b *testing.B) {
+	benchmarkPointLocation(b, newCNTree, 100, 16)
+}
+
+func BenchmarkCNTreePointLocationRes8(b *testing.B) {
+	benchmarkPointLocation(b, newCNTree, 100, 8)
+}
+
+func BenchmarkCNTreePointLocationRes4(b *testing.B) {
+	benchmarkPointLocation(b, newCNTree, 100, 4)
+}
+
+func BenchmarkCNTreePointLocationRes2(b *testing.B) {
+	benchmarkPointLocation(b, newCNTree, 100, 2)
+}
+
+func BenchmarkCNTreePointLocationRes1(b *testing.B) {
+	benchmarkPointLocation(b, newCNTree, 100, 1)
 }
