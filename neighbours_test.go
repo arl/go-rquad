@@ -146,7 +146,7 @@ func TestNeighboursFinding(t *testing.T) {
 	}
 }
 
-func benchmarkNeighboursFinding(b *testing.B, fn newQuadtreeFunc, numPoints int) {
+func benchmarkNeighboursFinding(b *testing.B, fn newQuadtreeFunc, numNodes int) {
 	var (
 		img     *binimg.Binary
 		scanner binimg.Scanner
@@ -160,7 +160,7 @@ func benchmarkNeighboursFinding(b *testing.B, fn newQuadtreeFunc, numPoints int)
 	scanner, err = binimg.NewScanner(img)
 	checkB(b, err)
 
-	// create a cardinal neighbour and a basic quadtree
+	// create a quadtree
 	q, err := fn(scanner, 8)
 	checkB(b, err)
 
@@ -171,19 +171,18 @@ func benchmarkNeighboursFinding(b *testing.B, fn newQuadtreeFunc, numPoints int)
 
 	noop := func(Node) {}
 
-	// fill a slice with random points
-	points := make([]image.Point, numPoints, numPoints)
-	for i := 0; i < numPoints; i++ {
+	// fill a slice with random nodes
+	nodes := make(NodeList, numNodes, numNodes)
+	for i := 0; i < numNodes; i++ {
 		pt := randomPt(q.Root().Bounds())
-		points[i] = pt
+		nodes[i] = PointLocation(q, pt)
 	}
 
 	// run N times
 	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
-		for _, pt := range points {
-			node := PointLocation(q, pt)
-			ForEachNeighbour(node, noop)
+		for _, n := range nodes {
+			ForEachNeighbour(n, noop)
 		}
 	}
 }
