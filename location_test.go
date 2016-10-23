@@ -39,16 +39,16 @@ func benchmarkPointLocation(b *testing.B, fn newQuadtreeFunc, numPoints int, res
 
 	// run N times
 	b.ResetTimer()
-	var pt_ Node
+	var dummy Node
 	for n := 0; n < b.N; n++ {
 		for _, pt := range points {
 			// we don't want the compiler to optimize out the call to PointLocation
 			// so we assign to a variable
-			pt_ = PointLocation(q, pt)
+			dummy = PointLocation(q, pt)
 		}
 	}
 	b.StopTimer()
-	if pt_ == nil {
+	if dummy == nil {
 		b.Log("to not optimize the call to PointLocation, but should not be seen")
 	}
 }
