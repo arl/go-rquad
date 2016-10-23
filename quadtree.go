@@ -1,13 +1,27 @@
-package quadtree
+// Package quadtrees proposes various implementations of region quadtrees.
+// The region quadtree is a special kind of quadtree that recursively
+// subdivides a 2D dimensional space into 4, smaller and generally equal
+// rectangular regions, until the wanted quadtree resolution has been reached,
+// or no further subdivisions can be performed.
+//
+// Region quadtree may be used for image processing, in this case a node
+// represents a rectangular region of an image in which all pixels have the
+// same color.
+//
+// A region quadtree may also be used as a variable resolution representation
+// of a data field. For example, the temperatures in an area may be stored as a
+// quadtree, with each leaf node storing the average temperature over the
+// subregion it represents.
+//
+// Quadtree implementations in this package use the binimg.Scanner interface to
+// represent the complete area, and provide us with a way to know if a
+// particular sub-area is to be considered uniform, in which case further
+// subdivision is not necessary, or not.
 
-import "image"
-
-// QNodeList is a slice of QNode's
-type QNodeList []QNode
+package rquad
 
 // Quadtree defines the interface for a quadtree type.
 type Quadtree interface {
-
 	// ForEachLeaf calls the given function for each leaf node of the quadtree.
 	//
 	// Successive calls to the provided function are performed in no particular
@@ -15,31 +29,8 @@ type Quadtree interface {
 	// color, Black or White.
 	// NOTE: As by definition, Gray leaves do not exist, passing Gray to
 	// ForEachLeaf should return all leaves, independently of their color.
-	ForEachLeaf(QNodeColor, func(QNode))
+	ForEachLeaf(Color, func(Node))
 
 	// Root returns the quadtree root node.
-	Root() QNode
-}
-
-// Query returns the leaf node that contains a given point.
-func Query(q Quadtree, pt image.Point) (n QNode, exists bool) {
-	return query(q.Root(), pt)
-}
-
-func query(n QNode, pt image.Point) (QNode, bool) {
-	if !pt.In(n.Bounds()) {
-		return nil, false
-	}
-	if n.Color() != Gray {
-		return n, true
-	}
-
-	if pt.In(n.NorthWest().Bounds()) {
-		return query(n.NorthWest(), pt)
-	} else if pt.In(n.NorthEast().Bounds()) {
-		return query(n.NorthEast(), pt)
-	} else if pt.In(n.SouthWest().Bounds()) {
-		return query(n.SouthWest(), pt)
-	}
-	return query(n.SouthEast(), pt)
+	Root() Node
 }

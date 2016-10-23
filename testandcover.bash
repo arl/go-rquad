@@ -13,7 +13,7 @@ function die() {
 
 # list packages to be test and covered, one by line.
 readonly PACKAGES='
-github.com/aurelien-rainone/go-quadtrees
+github.com/aurelien-rainone/go-rquad
 '
 
 # exclude files from coverage report/count (regex)

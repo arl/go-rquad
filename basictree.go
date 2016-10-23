@@ -1,4 +1,4 @@
-package quadtree
+package rquad
 
 import (
 	"errors"
@@ -7,36 +7,31 @@ import (
 	"github.com/aurelien-rainone/binimg"
 )
 
-// BUQuadtree is a standard quadtree implementation with bottom-up neighbor
-// finding technique.
+// BasicTree is a standard implementation of a region quadtree.
 //
-// BUQuadtree works on rectangles quadrants as well as squares; quadrants of
-// the same parent may have different dimensions due to the integer division.
-// It internally handles BUQNode's which implement the QNode interface.
-type BUQuadtree struct {
+// It performs a standard quadtree subdivision of the rectangular area
+// represented by an binimg.Scanner.
+type BasicTree struct {
 	resolution int            // maximal resolution
 	scanner    binimg.Scanner // reference image
-	root       *BUQNode       // root node
-	leaves     QNodeList      // leaf nodes (filled during creation)
+	root       *basicNode     // root node
+	leaves     NodeList       // leaf nodes (filled during creation)
 }
 
-// NewBUQuadtree creates a BUQuadtree and populates it with BUQNode's,
-// according to the content of the scanned image.
+// NewBasicTree creates a BasicTree from a scannable rectagular area,
+// populating it with BasicNode instances.
 //
 // resolution is the minimal dimension that can have a leaf node, no further
 // subdivisions will be performed on a node if its width or height is equal to
 // this value.
-func NewBUQuadtree(scanner binimg.Scanner, resolution int) (*BUQuadtree, error) {
-	// initialize package level variables
-	initPackage()
-
+func NewBasicTree(scanner binimg.Scanner, resolution int) (*BasicTree, error) {
 	if resolution < 1 {
 		return nil, errors.New("resolution must be greater than 0")
 	}
 
 	// To ensure a consistent behavior and eliminate corner cases,
 	// the Quadtree's root node needs to have children. Thus, the
-	// first instantiated BUQNode needs to always be subdivided.
+	// first instantiated Node needs to always be subdivided.
 	// This condition asserts the resolution is respected.
 	minDim := scanner.Bounds().Dx()
 	if scanner.Bounds().Dy() < minDim {
@@ -46,12 +41,17 @@ func NewBUQuadtree(scanner binimg.Scanner, resolution int) (*BUQuadtree, error) 
 		return nil, errors.New("the image smaller dimension must be greater or equal to twice the resolution")
 	}
 
-	q := &BUQuadtree{
+	q := &BasicTree{
 		resolution: resolution,
 		scanner:    scanner,
 	}
 
-	q.root = q.createRootNode()
+	// create the root node
+	q.root = &basicNode{
+		color:  Gray,
+		bounds: q.scanner.Bounds(),
+	}
+	q.subdivide(q.root)
 	return q, nil
 }
 
@@ -62,7 +62,7 @@ func NewBUQuadtree(scanner binimg.Scanner, resolution int) (*BUQuadtree, error) 
 // color, Black or White.
 // NOTE: As by definition, Gray leaves do not exist, passing Gray to
 // ForEachLeaf should return all leaves, independently of their color.
-func (q *BUQuadtree) ForEachLeaf(color QNodeColor, fn func(QNode)) {
+func (q *BasicTree) ForEachLeaf(color Color, fn func(Node)) {
 	for _, n := range q.leaves {
 		if color == Gray || n.Color() == color {
 			fn(n)
@@ -70,25 +70,12 @@ func (q *BUQuadtree) ForEachLeaf(color QNodeColor, fn func(QNode)) {
 	}
 }
 
-func (q *BUQuadtree) createRootNode() *BUQNode {
-	n := &BUQNode{
-		qnode: qnode{
-			color:  Gray,
-			bounds: q.scanner.Bounds(),
-		},
-	}
-	q.subdivide(n)
-	return n
-}
-
-func (q *BUQuadtree) createInnerNode(bounds image.Rectangle, parent *BUQNode, location quadrant) *BUQNode {
-	n := &BUQNode{
-		qnode: qnode{
-			color:    Gray,
-			bounds:   bounds,
-			parent:   parent,
-			location: location,
-		},
+func (q *BasicTree) newChildNode(bounds image.Rectangle, parent *basicNode, location Quadrant) *basicNode {
+	n := &basicNode{
+		color:    Gray,
+		bounds:   bounds,
+		parent:   parent,
+		location: location,
 	}
 
 	uniform, col := q.scanner.Uniform(bounds)
@@ -117,7 +104,7 @@ func (q *BUQuadtree) createInnerNode(bounds image.Rectangle, parent *BUQNode, lo
 	return n
 }
 
-func (q *BUQuadtree) subdivide(n *BUQNode) {
+func (q *BasicTree) subdivide(n *basicNode) {
 	//     x0   x1     x2
 	//  y0 .----.-------.
 	//     |    |       |
@@ -136,13 +123,13 @@ func (q *BUQuadtree) subdivide(n *BUQNode) {
 	y2 := n.bounds.Max.Y
 
 	// create the 4 children nodes, one per quadrant
-	n.northWest = q.createInnerNode(image.Rect(x0, y0, x1, y1), n, northWest)
-	n.southWest = q.createInnerNode(image.Rect(x0, y1, x1, y2), n, southWest)
-	n.northEast = q.createInnerNode(image.Rect(x1, y0, x2, y1), n, northEast)
-	n.southEast = q.createInnerNode(image.Rect(x1, y1, x2, y2), n, southEast)
+	n.c[Northwest] = q.newChildNode(image.Rect(x0, y0, x1, y1), n, Northwest)
+	n.c[Southwest] = q.newChildNode(image.Rect(x0, y1, x1, y2), n, Southwest)
+	n.c[Northeast] = q.newChildNode(image.Rect(x1, y0, x2, y1), n, Northeast)
+	n.c[Southeast] = q.newChildNode(image.Rect(x1, y1, x2, y2), n, Southeast)
 }
 
 // Root returns the quadtree root node.
-func (q *BUQuadtree) Root() QNode {
+func (q *BasicTree) Root() Node {
 	return q.root
 }

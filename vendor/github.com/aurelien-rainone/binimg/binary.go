@@ -151,6 +151,21 @@ func (b *Binary) SetBit(x, y int, c Bit) {
 	b.Pix[i] = c.v
 }
 
+// SetRect sets all the pixels in the rectangle defined by given rectangle.
+func (b *Binary) SetRect(r image.Rectangle, c Bit) {
+	r = r.Intersect(b.Rect)
+	if !r.Empty() {
+		for y := r.Min.Y; y < r.Max.Y; y++ {
+			i := b.PixOffset(r.Min.X, y)
+			j := b.PixOffset(r.Max.X, y)
+			// loop on all pixels (bytes) of this horizontal line
+			for x := i; x < j; x++ {
+				b.Pix[x] = c.v
+			}
+		}
+	}
+}
+
 // SubImage returns an image representing the portion of the image p visible
 // through r. The returned value shares pixels with the original image.
 func (b *Binary) SubImage(r image.Rectangle) image.Image {
