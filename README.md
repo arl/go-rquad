@@ -22,6 +22,11 @@ Quadtree implementations in this package use the `binimg.Scanner` interface to
 represent the complete area and provide the quadtree with a way to scan over
 regions of this area in order to perform the subdivisions.
 
+The `CNTree` (Cardinal Neighbour Quadtree) is also augmented with an innovative
+method to perform point location queries, that is simple, efficient,
+nonrecursive and table-free, that reduce the number of comparisons with
+poor predictive behavior, that are otherwise required with the standard method.
+
 
 ## References
 
@@ -32,6 +37,10 @@ Quadtrees*)
  - Cardinal Neighbor Quadtree  
 (cf Safwan Qasem 2015, *Cardinal Neighbor Quadtree: a New Quadtree-based
 Structure for Constant-Time Neighbor Finding*)
+
+ - Fast point location using binary branching method  
+(cf Frisken, Perry 2002, *Simple and Efficient Traversal Methods for Quadtrees
+and Octrees*)
 
 
 ## License
