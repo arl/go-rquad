@@ -17,7 +17,6 @@
 // represent the complete area, and provide us with a way to know if a
 // particular sub-area is to be considered uniform, in which case further
 // subdivision is not necessary, or not.
-
 package rquad
 
 // Quadtree defines the interface for a quadtree type.
