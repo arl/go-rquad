@@ -1,4 +1,4 @@
-// Package quadtrees proposes various implementations of region quadtrees.
+// Package rquad proposes various implementations of region quadtrees.
 // The region quadtree is a special kind of quadtree that recursively
 // subdivides a 2D dimensional space into 4, smaller and generally equal
 // rectangular regions, until the wanted quadtree resolution has been reached,
