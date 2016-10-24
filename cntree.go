@@ -3,6 +3,7 @@ package rquad
 import (
 	"errors"
 	"image"
+	"math"
 
 	"github.com/aurelien-rainone/binimg"
 )
@@ -23,6 +24,7 @@ type CNTree struct {
 	scanner    binimg.Scanner // reference image
 	root       *CNNode        // root node
 	leaves     NodeList       // leaf nodes (filled during creation)
+	nLevels    uint           // maximum number of levels of the quadtree
 }
 
 // NewCNTree creates a CNTree and populates it with cnNode instances,
@@ -53,6 +55,9 @@ func NewCNTree(scanner binimg.Scanner, resolution int) (*CNTree, error) {
 		resolution: resolution,
 		scanner:    scanner,
 	}
+	// given the resolution and the size, we can determine
+	// the max number of levels in the tree
+	q.computeNumLevels(scanner.Bounds().Dx())
 
 	q.root = q.newNode(q.scanner.Bounds(), nil, rootQuadrant)
 	q.subdivide(q.root)
@@ -185,4 +190,58 @@ func (q *CNTree) ForEachLeaf(color Color, fn func(Node)) {
 			fn(n)
 		}
 	}
+}
+
+// given the resolution, that is a power of 2, and the size, compute the
+// maximum number of levels the quadtree can have
+func (q *CNTree) computeNumLevels(size int) {
+	q.nLevels = 1
+	n := uint(size)
+	for n&1 == 0 {
+		n >>= 1
+		if n < uint(q.resolution) {
+			break
+		}
+		q.nLevels++
+	}
+}
+
+// PointLocation returns the Node that contains the given point, or nil.
+func (q *CNTree) PointLocation(pt image.Point) Node {
+	// binary branching method assumes the point lies in the bounds
+	b := q.root.bounds
+	if !pt.In(b) {
+		return nil
+	}
+
+	// apply affine transformations of the coordinate space, actually letting
+	// the image square being defined over [0,1)²
+	var (
+		x, y float64
+		bit  uint
+		node *CNNode
+		k    uint
+	)
+
+	// first, we multiply the position of the cell’s left corner by 2^ROOT_LEVEL
+	// and then represent use product in binary form
+	x = float64(pt.X-b.Min.X) / float64(b.Dx())
+	y = float64(pt.Y-b.Min.Y) / float64(b.Dy())
+	k = q.nLevels - 1
+	ix := uint(x * math.Pow(2.0, float64(k)))
+	iy := uint(y * math.Pow(2.0, float64(k)))
+
+	// Now, following the branching pattern is just a matter of following, for
+	// each level k in the tree, the branching indicated by the (k-1)st bit from
+	// each of the x, y locational codes, it directly determines the index to
+	// the appropriate child cell.  When the indexed child cell has no children,
+	// the desired leaf cell has been reached and the operation is complete.
+	node = q.root
+	for node.color == Gray {
+		k--
+		bit = 1 << k
+		childIdx := (ix&bit)>>k + ((iy&bit)>>k)<<1
+		node = node.c[childIdx]
+	}
+	return node
 }
