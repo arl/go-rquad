@@ -3,9 +3,11 @@ package rquad
 import (
 	"errors"
 	"image"
+	"image/color"
 	"math"
 
-	"github.com/aurelien-rainone/binimg"
+	"github.com/aurelien-rainone/imgtools"
+	"github.com/aurelien-rainone/imgtools/imgscan"
 )
 
 // CNTree implements a Cardinal Neighbour Quadtree, a quadtree structure that
@@ -20,11 +22,11 @@ import (
 // University, Kingdom of Saudi Arabia, in his paper "Cardinal Neighbor
 // Quadtree: a New Quadtree-based Structure for Constant-Time Neighbor Finding"
 type CNTree struct {
-	resolution int            // maximal resolution
-	scanner    binimg.Scanner // reference image
-	root       *CNNode        // root node
-	leaves     NodeList       // leaf nodes (filled during creation)
-	nLevels    uint           // maximum number of levels of the quadtree
+	resolution int             // maximal resolution
+	scanner    imgscan.Scanner // reference image
+	root       *CNNode         // root node
+	leaves     NodeList        // leaf nodes (filled during creation)
+	nLevels    uint            // maximum number of levels of the quadtree
 }
 
 // NewCNTree creates a CNTree and populates it with cnNode instances,
@@ -34,8 +36,8 @@ type CNTree struct {
 //
 // resolution is the minimal dimension of a leaf node, no further subdivisions
 // will be performed on a leaf if its dimension is equal to the resolution.
-func NewCNTree(scanner binimg.Scanner, resolution int) (*CNTree, error) {
-	if !binimg.IsPowerOf2Image(scanner) {
+func NewCNTree(scanner imgscan.Scanner, resolution int) (*CNTree, error) {
+	if !imgtools.IsPowerOf2Image(scanner) {
 		return nil, errors.New("image must be a square with power-of-2 dimensions")
 	}
 
@@ -77,7 +79,7 @@ func (q *CNTree) newNode(bounds image.Rectangle, parent *CNNode, location Quadra
 	switch uniform {
 	case true:
 		// quadrant is uniform, won't need to subdivide any further
-		if col == binimg.White {
+		if col == color.White {
 			n.color = White
 		} else {
 			n.color = Black

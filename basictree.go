@@ -3,8 +3,9 @@ package rquad
 import (
 	"errors"
 	"image"
+	"image/color"
 
-	"github.com/aurelien-rainone/binimg"
+	"github.com/aurelien-rainone/imgtools/imgscan"
 )
 
 // BasicTree is a standard implementation of a region quadtree.
@@ -12,10 +13,10 @@ import (
 // It performs a standard quadtree subdivision of the rectangular area
 // represented by an binimg.Scanner.
 type BasicTree struct {
-	resolution int            // maximal resolution
-	scanner    binimg.Scanner // reference image
-	root       *basicNode     // root node
-	leaves     NodeList       // leaf nodes (filled during creation)
+	resolution int             // maximal resolution
+	scanner    imgscan.Scanner // reference image
+	root       *basicNode      // root node
+	leaves     NodeList        // leaf nodes (filled during creation)
 }
 
 // NewBasicTree creates a BasicTree from a scannable rectagular area,
@@ -24,7 +25,7 @@ type BasicTree struct {
 // resolution is the minimal dimension that can have a leaf node, no further
 // subdivisions will be performed on a node if its width or height is equal to
 // this value.
-func NewBasicTree(scanner binimg.Scanner, resolution int) (*BasicTree, error) {
+func NewBasicTree(scanner imgscan.Scanner, resolution int) (*BasicTree, error) {
 	if resolution < 1 {
 		return nil, errors.New("resolution must be greater than 0")
 	}
@@ -82,7 +83,7 @@ func (q *BasicTree) newChildNode(bounds image.Rectangle, parent *basicNode, loca
 	switch uniform {
 	case true:
 		// quadrant is uniform, won't need to subdivide any further
-		if col == binimg.White {
+		if col == color.White {
 			n.color = White
 		} else {
 			n.color = Black

@@ -6,7 +6,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/aurelien-rainone/binimg"
+	"github.com/aurelien-rainone/imgtools/binimg"
+	"github.com/aurelien-rainone/imgtools/imgscan"
 )
 
 func check(t *testing.T, err error) {
@@ -41,7 +42,7 @@ func loadPNG(filename string) (*binimg.Binary, error) {
 		return bm, err
 	}
 
-	bm = binimg.NewFromImage(img)
+	bm = binimg.NewFromImage(img, binimg.BlackAndWhite)
 	return bm, nil
 }
 
@@ -59,13 +60,13 @@ func savePNG(img image.Image, filename string) error {
 	return nil
 }
 
-type newQuadtreeFunc func(binimg.Scanner, int) (Quadtree, error)
+type newQuadtreeFunc func(imgscan.Scanner, int) (Quadtree, error)
 
-func newBasicTree(scanner binimg.Scanner, resolution int) (Quadtree, error) {
+func newBasicTree(scanner imgscan.Scanner, resolution int) (Quadtree, error) {
 	return NewBasicTree(scanner, resolution)
 }
 
-func newCNTree(scanner binimg.Scanner, resolution int) (Quadtree, error) {
+func newCNTree(scanner imgscan.Scanner, resolution int) (Quadtree, error) {
 	return NewCNTree(scanner, resolution)
 }
 

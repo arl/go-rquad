@@ -5,13 +5,14 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/aurelien-rainone/binimg"
+	"github.com/aurelien-rainone/imgtools/binimg"
+	"github.com/aurelien-rainone/imgtools/imgscan"
 )
 
 func benchmarkPointLocation(b *testing.B, fn newQuadtreeFunc, numPoints int, resolution int) {
 	var (
 		img     *binimg.Binary
-		scanner binimg.Scanner
+		scanner imgscan.Scanner
 		err     error
 	)
 	img, err = loadPNG("./testdata/random-1024x1024.png")
@@ -19,7 +20,7 @@ func benchmarkPointLocation(b *testing.B, fn newQuadtreeFunc, numPoints int, res
 
 	r := rand.New(rand.NewSource(99))
 
-	scanner, err = binimg.NewScanner(img)
+	scanner, err = imgscan.NewScanner(img)
 	checkB(b, err)
 
 	// create a quadtree

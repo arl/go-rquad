@@ -4,7 +4,8 @@ import (
 	"image"
 	"testing"
 
-	"github.com/aurelien-rainone/binimg"
+	"github.com/aurelien-rainone/imgtools/binimg"
+	"github.com/aurelien-rainone/imgtools/imgscan"
 )
 
 func TestBasicTreeLogicalErrors(t *testing.T) {
@@ -26,12 +27,12 @@ func TestBasicTreeLogicalErrors(t *testing.T) {
 	var (
 		err     error
 		bm      image.Image
-		scanner binimg.Scanner
+		scanner imgscan.Scanner
 	)
 
 	for _, tt := range testTbl {
-		bm = binimg.New(image.Rect(0, 0, tt.w, tt.h))
-		scanner, err = binimg.NewScanner(bm)
+		bm = binimg.New(image.Rect(0, 0, tt.w, tt.h), binimg.BlackAndWhite)
+		scanner, err = imgscan.NewScanner(bm)
 		check(t, err)
 		_, err = NewBasicTree(scanner, tt.res)
 		actual := err == nil
@@ -68,11 +69,11 @@ func TestBasicTreeQuery(t *testing.T) {
 	var (
 		err     error
 		bm      image.Image
-		scanner binimg.Scanner
+		scanner imgscan.Scanner
 	)
 	bm, err = loadPNG("./testdata/labyrinth1.32x32.png")
 	check(t, err)
-	scanner, err = binimg.NewScanner(bm)
+	scanner, err = imgscan.NewScanner(bm)
 	check(t, err)
 
 	for _, res := range []int{1, 2, 3, 4, 5, 6, 7, 8} {

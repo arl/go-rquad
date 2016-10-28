@@ -4,19 +4,19 @@ import (
 	"image"
 	"testing"
 
-	"github.com/aurelien-rainone/binimg"
+	"github.com/aurelien-rainone/imgtools/imgscan"
 )
 
 func benchmarkQuadtreeCreation(b *testing.B, pngfile string, fn newQuadtreeFunc, resolution int) {
 	var (
 		bm      image.Image
 		err     error
-		scanner binimg.Scanner
+		scanner imgscan.Scanner
 	)
 
 	bm, err = loadPNG(pngfile)
 	checkB(b, err)
-	scanner, err = binimg.NewScanner(bm)
+	scanner, err = imgscan.NewScanner(bm)
 	checkB(b, err)
 
 	// run N times

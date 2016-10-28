@@ -4,7 +4,7 @@ import (
 	"image"
 	"testing"
 
-	"github.com/aurelien-rainone/binimg"
+	"github.com/aurelien-rainone/imgtools/imgscan"
 )
 
 func testQuadtreeCountLeaves(t *testing.T, fn newQuadtreeFunc) {
@@ -27,13 +27,13 @@ func testQuadtreeCountLeaves(t *testing.T, fn newQuadtreeFunc) {
 	var (
 		err     error
 		bm      image.Image
-		scanner binimg.Scanner
+		scanner imgscan.Scanner
 	)
 
 	for _, tt := range testTbl {
 		bm, err = loadPNG(tt.fn)
 		check(t, err)
-		scanner, err = binimg.NewScanner(bm)
+		scanner, err = imgscan.NewScanner(bm)
 		check(t, err)
 
 		for _, res := range tt.resolutions {
