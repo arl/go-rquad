@@ -17,6 +17,7 @@ type BasicTree struct {
 	scanner    imgscan.Scanner // reference image
 	root       *basicNode      // root node
 	leaves     NodeList        // leaf nodes (filled during creation)
+	nextId     int             // id to attribute to the next created node
 }
 
 // NewBasicTree creates a BasicTree from a scannable rectagular area,
@@ -45,12 +46,14 @@ func NewBasicTree(scanner imgscan.Scanner, resolution int) (*BasicTree, error) {
 	q := &BasicTree{
 		resolution: resolution,
 		scanner:    scanner,
+		nextId:     1,
 	}
 
 	// create the root node
 	q.root = &basicNode{
 		color:  Gray,
 		bounds: q.scanner.Bounds(),
+		id:     0,
 	}
 	q.subdivide(q.root)
 	return q, nil
@@ -77,7 +80,9 @@ func (q *BasicTree) newChildNode(bounds image.Rectangle, parent *basicNode, loca
 		bounds:   bounds,
 		parent:   parent,
 		location: location,
+		id:       q.nextId,
 	}
+	q.nextId++
 
 	uniform, col := q.scanner.Uniform(bounds)
 	switch uniform {

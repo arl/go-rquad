@@ -12,6 +12,7 @@ type basicNode struct {
 	bounds   image.Rectangle // node bounds
 	color    Color           // node color
 	location Quadrant        // node location inside its parent
+	id       int             // unique identifier
 }
 
 // Parent returns the quadtree node that is the parent of current one.
@@ -44,4 +45,10 @@ func (n *basicNode) Color() Color {
 // Location returns the node inside its parent quadrant
 func (n *basicNode) Location() Quadrant {
 	return n.location
+}
+
+// Id returns an identifier for this node, guaranteed to be unique inside a
+// Quadtree.
+func (n *basicNode) Id() int {
+	return n.id
 }

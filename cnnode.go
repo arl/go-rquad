@@ -25,6 +25,7 @@ type CNNode struct {
 	color    Color           // node color
 	location Quadrant        // node location inside its parent
 	size     int             // size of a quadrant side
+	id       int             // unique identifier
 }
 
 // Parent returns the quadtree node that is the parent of current one.
@@ -57,6 +58,12 @@ func (n *CNNode) Color() Color {
 // Location returns the node inside its parent quadrant
 func (n *CNNode) Location() Quadrant {
 	return n.location
+}
+
+// Id returns an identifier for this node, guaranteed to be unique inside a
+// Quadtree.
+func (n *CNNode) Id() int {
+	return n.id
 }
 
 func (n *CNNode) updateNorthEast() {
