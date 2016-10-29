@@ -60,9 +60,9 @@ func (n *CNNode) Location() Quadrant {
 	return n.location
 }
 
-// Id returns an identifier for this node, guaranteed to be unique inside a
+// ID returns an identifier for this node, guaranteed to be unique inside a
 // Quadtree.
-func (n *CNNode) Id() int {
+func (n *CNNode) ID() int {
 	return n.id
 }
 

@@ -27,7 +27,7 @@ type CNTree struct {
 	root       *CNNode         // root node
 	leaves     NodeList        // leaf nodes (filled during creation)
 	nLevels    uint            // maximum number of levels of the quadtree
-	nextId     int             // id to attribute to the next created node
+	nextID     int             // id to attribute to the next created node
 }
 
 // NewCNTree creates a CNTree and populates it with cnNode instances,
@@ -57,7 +57,7 @@ func NewCNTree(scanner imgscan.Scanner, resolution int) (*CNTree, error) {
 	q := &CNTree{
 		resolution: resolution,
 		scanner:    scanner,
-		nextId:     0,
+		nextID:     0,
 	}
 	// given the resolution and the size, we can determine
 	// the max number of levels in the tree
@@ -75,10 +75,10 @@ func (q *CNTree) newNode(bounds image.Rectangle, parent *CNNode, location Quadra
 		parent:   parent,
 		location: location,
 		size:     bounds.Dx(),
-		id:       q.nextId,
+		id:       q.nextID,
 	}
 
-	q.nextId++
+	q.nextID++
 
 	uniform, col := q.scanner.Uniform(bounds)
 	switch uniform {

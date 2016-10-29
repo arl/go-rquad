@@ -38,9 +38,9 @@ type Node interface {
 	// Location returns the node inside its parent quadrant
 	Location() Quadrant
 
-	// Id returns an identifier for this node, guaranteed to be unique inside a
+	// ID returns an identifier for this node, guaranteed to be unique inside a
 	// Quadtree.
-	Id() int
+	ID() int
 }
 
 // NodeList is a slice of Node instances.
