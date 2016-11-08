@@ -18,9 +18,8 @@ of a data field. For example, the temperatures in an area may be stored as a
 quadtree, with each leaf node storing the average temperature over the
 subregion it represents.
 
-Quadtree implementations in this package use the `binimg.Scanner` interface to
-represent the complete area and provide the quadtree with a way to scan over
-regions of this area in order to perform the subdivisions.
+Quadtree implementations in this package use the [`imgscan.Scanner`](https://github.com/aurelien-rainone/imgtools/tree/master/imgscan) interface to represent the complete area and provide the quadtree with a way 
+to scan over regions of this area in order to perform the subdivisions.
 
 The `CNTree` (Cardinal Neighbour Quadtree) is also augmented with an innovative
 method to perform point location queries, that is simple, efficient,
