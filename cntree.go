@@ -320,7 +320,7 @@ func (n *CNNode) updateNorthEast() {
 			cur := c0.cn[North]
 			cumsize := cur.size
 			for cumsize < c0.size {
-				cur := cur.cn[East]
+				cur = cur.cn[East]
 				cumsize += cur.size
 			}
 			n.c[Northeast].cn[North] = cur
@@ -343,7 +343,7 @@ func (n *CNNode) updateSouthWest() {
 			cur := c0.cn[West]
 			cumsize := cur.size
 			for cumsize < c0.size {
-				cur := cur.cn[South]
+				cur = cur.cn[South]
 				cumsize += cur.size
 			}
 			n.c[Southwest].cn[West] = cur
