@@ -27,27 +27,27 @@ func benchmarkQuadtreeCreation(b *testing.B, pngfile string, fn newQuadtreeFunc,
 	}
 }
 
-func BenchmarkBasicTreeCreationRes32(b *testing.B) {
+func BenchmarkBasicCreationRes32(b *testing.B) {
 	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newBasicTree, 32)
 }
 
-func BenchmarkBasicTreeCreationRes16(b *testing.B) {
+func BenchmarkBasicCreationRes16(b *testing.B) {
 	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newBasicTree, 16)
 }
 
-func BenchmarkBasicTreeCreationRes8(b *testing.B) {
+func BenchmarkBasicCreationRes8(b *testing.B) {
 	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newBasicTree, 8)
 }
 
-func BenchmarkBasicTreeCreationRes4(b *testing.B) {
+func BenchmarkBasicCreationRes4(b *testing.B) {
 	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newBasicTree, 4)
 }
 
-func BenchmarkBasicTreeCreationRes2(b *testing.B) {
+func BenchmarkBasicCreationRes2(b *testing.B) {
 	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newBasicTree, 2)
 }
 
-func BenchmarkBasicTreeCreationRes1(b *testing.B) {
+func BenchmarkBasicCreationRes1(b *testing.B) {
 	benchmarkQuadtreeCreation(b, "./testdata/bigsquare.png", newBasicTree, 1)
 }
 
