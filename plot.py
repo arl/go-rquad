@@ -29,7 +29,7 @@ with open(sys.argv[1]) as f:
 
 for name, data in cmpbench.iteritems():
     # new plot starts here
-    plt.title(name)
+    plt.title(name, fontsize=22)
     handles = []
     for k, g in groupby(data, lambda x:x.type):
         pts_x, pts_y = [], []
@@ -43,7 +43,7 @@ for name, data in cmpbench.iteritems():
 
         hnd, = plt.plot(pts_x, pts_y, next(dots), label=k)
         handles.append(hnd)
-        plt.legend(handles=handles)
+        plt.legend(handles=handles, prop={'size':22})
         # print 'x', pts_x
         # print 'y', pts_y
 
