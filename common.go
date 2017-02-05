@@ -14,15 +14,15 @@ const (
 	rootQuadrant
 )
 
-const _Quadrant_name = "NorthwestNortheastSouthwestSoutheastrootQuadrant"
+const quadrantName = "NorthwestNortheastSouthwestSoutheastrootQuadrant"
 
-var _Quadrant_index = [...]uint8{0, 9, 18, 27, 36, 48}
+var quadrantIndex = [...]uint8{0, 9, 18, 27, 36, 48}
 
 func (i Quadrant) String() string {
-	if i < 0 || i >= Quadrant(len(_Quadrant_index)-1) {
+	if i < 0 || i >= Quadrant(len(quadrantIndex)-1) {
 		return fmt.Sprintf("Quadrant(%d)", i)
 	}
-	return _Quadrant_name[_Quadrant_index[i]:_Quadrant_index[i+1]]
+	return quadrantName[quadrantIndex[i]:quadrantIndex[i+1]]
 }
 
 // Side is used to represent a direction according to a quadtree Node.
@@ -36,15 +36,15 @@ const (
 	South
 )
 
-const _Side_name = "WestNorthEastSouth"
+const sideName = "WestNorthEastSouth"
 
-var _Side_index = [...]uint8{0, 4, 9, 13, 18}
+var sideIndex = [...]uint8{0, 4, 9, 13, 18}
 
 func (i Side) String() string {
-	if i < 0 || i >= Side(len(_Side_index)-1) {
+	if i < 0 || i >= Side(len(sideIndex)-1) {
 		return fmt.Sprintf("Side(%d)", i)
 	}
-	return _Side_name[_Side_index[i]:_Side_index[i+1]]
+	return sideName[sideIndex[i]:sideIndex[i+1]]
 }
 
 // init() initializes package level variables.

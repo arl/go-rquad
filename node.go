@@ -22,15 +22,15 @@ const (
 	Gray
 )
 
-const _Color_name = "BlackWhiteGray"
+const colorName = "BlackWhiteGray"
 
-var _Color_index = [...]uint8{0, 5, 10, 14}
+var colorIndex = [...]uint8{0, 5, 10, 14}
 
 func (i Color) String() string {
-	if i >= Color(len(_Color_index)-1) {
+	if i >= Color(len(colorIndex)-1) {
 		return fmt.Sprintf("Color(%d)", i)
 	}
-	return _Color_name[_Color_index[i]:_Color_index[i+1]]
+	return colorName[colorIndex[i]:colorIndex[i+1]]
 }
 
 // Node defines the interface for a quadtree node.
