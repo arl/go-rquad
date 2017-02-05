@@ -1,7 +1,10 @@
 package rquad
 
-// NeighbourNode is a Node that can access to its neighbours, by neighbour it
-// is intended other leaf nodes of the same color.
+// NeighbourNode is the interface implemented by nodes that provide access to
+// their neighbours.
+//
+// The neighbours of a node are other leaf nodes of the same color that share a
+// common segment, or part of a segment.
 type NeighbourNode interface {
 	Node
 	// ForEachNeighbour calls the given function
@@ -9,15 +12,14 @@ type NeighbourNode interface {
 	ForEachNeighbour(func(Node))
 }
 
-// ForEachNeighbour calls the given function for each neighbour of the quadtree
-// node n.
+// ForEachNeighbour calls the given function for each neighbour of the node n.
 //
-// The neighbour finding technique used depends on the Node implementation. If
-// the node implements the NeighbourNode interface, then the specific and
-// faster implementation of ForEachNeighbour is called. If that's not the case,
-// the neighbours are found by using the generic but slower "bottom-up
-// neighbour finding technique", cf. Hanan Samet 1981 article Neighbour Finding
-// in Quadtrees
+// The generic method to search for the neighbours of node n is the "bottom-up
+// neighbour finding technique", first described by Hanan Samet in 1981 in his
+// article "Neighbour FInding in Quadtrees".
+// If n implements the NeighbourNode interface, (i.e it implements a specific
+// and generalyl more efficient method), then the call is forwarded to
+// n.ForEachNeighbour.
 func ForEachNeighbour(n Node, fn func(Node)) {
 	if adjnode, ok := n.(NeighbourNode); ok {
 		// use neighbour node specific implementation
