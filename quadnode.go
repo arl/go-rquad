@@ -1,6 +1,9 @@
 package rquad
 
-import "image"
+import (
+	"fmt"
+	"image"
+)
 
 // Color is the set of colors that can take a Node.
 type Color byte
@@ -18,6 +21,17 @@ const (
 	// that contain both black and white children.
 	Gray
 )
+
+const _Color_name = "BlackWhiteGray"
+
+var _Color_index = [...]uint8{0, 5, 10, 14}
+
+func (i Color) String() string {
+	if i >= Color(len(_Color_index)-1) {
+		return fmt.Sprintf("Color(%d)", i)
+	}
+	return _Color_name[_Color_index[i]:_Color_index[i+1]]
+}
 
 // Node defines the interface for a quadtree node.
 type Node interface {
