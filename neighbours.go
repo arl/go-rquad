@@ -1,15 +1,15 @@
 package rquad
 
-// NeighbourNode is the interface implemented by nodes that provide access to
+// neighbourNode is the interface implemented by nodes that provide access to
 // their neighbours.
 //
 // The neighbours of a node are other leaf nodes of the same color that share a
 // common segment, or part of a segment.
-type NeighbourNode interface {
+type neighbourNode interface {
 	Node
-	// ForEachNeighbour calls the given function
+	// forEachNeighbour calls the given function
 	// for each neighbour of current node.
-	ForEachNeighbour(func(Node))
+	forEachNeighbour(func(Node))
 }
 
 // ForEachNeighbour calls the given function for each neighbour of the node n.
@@ -21,9 +21,9 @@ type NeighbourNode interface {
 // and generalyl more efficient method), then the call is forwarded to
 // n.ForEachNeighbour.
 func ForEachNeighbour(n Node, fn func(Node)) {
-	if adjnode, ok := n.(NeighbourNode); ok {
+	if adjnode, ok := n.(neighbourNode); ok {
 		// use neighbour node specific implementation
-		adjnode.ForEachNeighbour(fn)
+		adjnode.forEachNeighbour(fn)
 		return
 	}
 

@@ -63,7 +63,7 @@ func testQuadtreeNeighbours(t *testing.T, fn newQuadtreeFunc) {
 		q, err := fn(scanner, tt.res)
 		check(t, err)
 
-		node := PointLocation(q, tt.pt)
+		node := Locate(q, tt.pt)
 		exists := node != nil
 		if !exists {
 			t.Fatalf("%s, resolution %d, expected exists to be true for point %v, got false instead",
@@ -125,8 +125,8 @@ func TestNeighboursFinding(t *testing.T) {
 	for i := 0; i < 50; i++ {
 		pt := randomPt(card.Root().Bounds())
 
-		cnnode := PointLocation(card, pt)
-		basicnode := PointLocation(basic, pt)
+		cnnode := Locate(card, pt)
+		basicnode := Locate(basic, pt)
 		if (cnnode != nil) != (basicnode != nil) {
 			t.Errorf("got different node existence for point %v, wanted the same", pt)
 		}
@@ -171,7 +171,7 @@ func benchmarkNeighboursFinding(b *testing.B, fn newQuadtreeFunc, numNodes int, 
 	nodes := make(NodeList, numNodes, numNodes)
 	for i := 0; i < numNodes; i++ {
 		pt := randomPt(q.Root().Bounds())
-		nodes[i] = PointLocation(q, pt)
+		nodes[i] = Locate(q, pt)
 	}
 
 	// run N times

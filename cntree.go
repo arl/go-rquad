@@ -208,8 +208,8 @@ func (q *CNTree) computeNumLevels(size int) {
 	}
 }
 
-// PointLocation returns the Node that contains the given point, or nil.
-func (q *CNTree) PointLocation(pt image.Point) Node {
+// locate returns the Node that contains the given point, or nil.
+func (q *CNTree) locate(pt image.Point) Node {
 	// binary branching method assumes the point lies in the bounds
 	b := q.root.bounds
 	if !pt.In(b) {
@@ -361,7 +361,7 @@ func (n *CNNode) updateNeighbours() {
 	// the decomposition
 
 	if n.cn[West] != nil {
-		n.forEachNeighbour(West, func(qn Node) {
+		n.forEachNeighbourInDirection(West, func(qn Node) {
 			western := qn.(*CNNode)
 			if western.cn[East] == n {
 				if western.bounds.Max.Y > n.c[Southwest].bounds.Min.Y {
@@ -379,7 +379,7 @@ func (n *CNNode) updateNeighbours() {
 	}
 
 	if n.cn[North] != nil {
-		n.forEachNeighbour(North, func(qn Node) {
+		n.forEachNeighbourInDirection(North, func(qn Node) {
 			northern := qn.(*CNNode)
 			if northern.cn[South] == n {
 				if northern.bounds.Max.X > n.c[Northeast].bounds.Min.X {
@@ -415,9 +415,9 @@ func (n *CNNode) updateNeighbours() {
 	}
 }
 
-// forEachNeighbour calls fn on every neighbour of the current node in the given
+// forEachNeighbourInDirection calls fn on every neighbour of the current node in the given
 // direction.
-func (n *CNNode) forEachNeighbour(dir Side, fn func(Node)) {
+func (n *CNNode) forEachNeighbourInDirection(dir Side, fn func(Node)) {
 	// start from the cardinal neighbour on the given direction
 	N := n.cn[dir]
 	if N == nil {
@@ -441,13 +441,13 @@ func (n *CNNode) forEachNeighbour(dir Side, fn func(Node)) {
 	}
 }
 
-// ForEachNeighbour calls the given function for each neighbour of current
+// forEachNeighbour calls the given function for each neighbour of current
 // node.
-func (n *CNNode) ForEachNeighbour(fn func(Node)) {
-	n.forEachNeighbour(West, fn)
-	n.forEachNeighbour(North, fn)
-	n.forEachNeighbour(East, fn)
-	n.forEachNeighbour(South, fn)
+func (n *CNNode) forEachNeighbour(fn func(Node)) {
+	n.forEachNeighbourInDirection(West, fn)
+	n.forEachNeighbourInDirection(North, fn)
+	n.forEachNeighbourInDirection(East, fn)
+	n.forEachNeighbourInDirection(South, fn)
 }
 
 // String returns a symbolic representation of the node with its cardinal
