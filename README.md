@@ -64,7 +64,6 @@ func ForEachNeighbour(n Node, fn func(Node))
 
 `BasicTree` is in many ways the standard implementation of `Quadtree`, it just does the job.
 
-
 ### State of the art implementation: `CNTree` and `CNNode`
 
 `CNTree` or **Cardinal Neighbour Quadtree** implements state of the art techniques:
@@ -74,7 +73,11 @@ poor predictive behavior, that are otherwise required with the standard method.
 
 ## Benchmarks
 
+![Quadtree creation benchmark](https://raw.githubusercontent.com/aurelien-rainone/go-rquad/readme-docs/Creation.png)
 
+![Neighbour finding benchmark](https://raw.githubusercontent.com/aurelien-rainone/go-rquad/readme-docs/Neighbours.png)
+
+![Point location benchmark](https://raw.githubusercontent.com/aurelien-rainone/go-rquad/readme-docs/PointLocation.png)
 
 ## References
 
@@ -115,4 +118,5 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+
 
