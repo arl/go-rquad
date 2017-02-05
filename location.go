@@ -2,28 +2,29 @@ package rquad
 
 import "image"
 
-// PointLocator is the interface implemented by objects that, given a point in
+// pointLocator is the interface implemented by objects that, given a point in
 // 2D space, can return the leaf node that contains it.
-type PointLocator interface {
-	// PointLocation returns the Node that contains the given point, or nil.
-	PointLocation(image.Point) Node
+type pointLocator interface {
+	// locate returns the Node that contains the given point, or nil.
+	locate(image.Point) Node
 }
 
-// PointLocation returns the quadtree node containing the given point.
+// Locate returns the leaf node containing the given point.
 //
-// The standard method to search for the Node that contains a given point is a
-// recursively search, starting from the root node, returning the Node that
-// contains the point is a leaf. If q implements the PointLocator interfacen
-// then the specific and more efficient implementation of PointLocation is
-// called
-func PointLocation(q Quadtree, pt image.Point) Node {
-	if locator, ok := q.(PointLocator); ok {
+// The generic method to search for the leaf Node that contains a given point is
+// a recursive search from the root node, it returns the leaf node containing
+// the point.
+// If q implements the PointLocator interface, (i.e it implements a specific and
+// generally more efficient method), then the call is forwarded to q.Locate.
+func Locate(q Quadtree, pt image.Point) Node {
+	if locator, ok := q.(pointLocator); ok {
 		// use the specific point location implementation
-		return locator.PointLocation(pt)
+		return locator.locate(pt)
 	}
 	return pointLocation(q.Root(), pt)
 }
 
+// generic recursive method to return the leaf node containing pt
 func pointLocation(n Node, pt image.Point) Node {
 	if !pt.In(n.Bounds()) {
 		return nil

@@ -53,10 +53,7 @@ func savePNG(img image.Image, filename string) error {
 	defer out.Close()
 
 	err = png.Encode(out, img)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 type newQuadtreeFunc func(binimg.Scanner, int) (Quadtree, error)

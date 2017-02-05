@@ -80,14 +80,14 @@ func TestBasicTreeQuery(t *testing.T) {
 		check(t, err)
 
 		for _, tt := range testTbl {
-			node := PointLocation(q, tt.pt)
+			node := Locate(q, tt.pt)
 			exists := node != nil
 			if exists != tt.exists {
 				t.Fatalf("resolution %d, expected exists to be %t for point %v, got %t instead",
 					res, tt.exists, tt.pt, exists)
 			}
 			// obtain the refNode
-			refNode := PointLocation(q, refPt)
+			refNode := Locate(q, refPt)
 			if refNode == nil {
 				t.Fatalf("reference node should exist")
 			}

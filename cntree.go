@@ -2,6 +2,7 @@ package rquad
 
 import (
 	"errors"
+	"fmt"
 	"image"
 	"math"
 
@@ -27,10 +28,11 @@ type CNTree struct {
 	nLevels    uint           // maximum number of levels of the quadtree
 }
 
-// NewCNTree creates a CNTree and populates it with cnNode instances,
-// according to the content of the scanned image. It works only on square and
-// power of 2 sized images, NewCNTree will return a nil CNTree pointer and an
-// error if that's not the case.
+// NewCNTree creates a cardinal neighbour quadtree and populates it.
+//
+// The quadtree is populated according to the content of the scanned image. It
+// works only on square and power of 2 sized images, NewCNTree will return a
+// non-nil error if that's not the case.
 //
 // resolution is the minimal dimension of a leaf node, no further subdivisions
 // will be performed on a leaf if its dimension is equal to the resolution.
@@ -206,8 +208,8 @@ func (q *CNTree) computeNumLevels(size int) {
 	}
 }
 
-// PointLocation returns the Node that contains the given point, or nil.
-func (q *CNTree) PointLocation(pt image.Point) Node {
+// locate returns the Node that contains the given point, or nil.
+func (q *CNTree) locate(pt image.Point) Node {
 	// binary branching method assumes the point lies in the bounds
 	b := q.root.bounds
 	if !pt.In(b) {
@@ -244,4 +246,225 @@ func (q *CNTree) PointLocation(pt image.Point) Node {
 		node = node.c[childIdx]
 	}
 	return node
+}
+
+// CNNode is a node of a Cardinal Neighbour Quadtree.
+//
+// It is an implementation of the Node interface, with additional fields and
+// methods required to obtain the node neighbours in constant time. The time
+// complexity reduction is obtained through the addition of only four pointers per
+// leaf node in the quadtree.
+//
+// - The Western cardinal neighbor is the top-most neighbor node among the
+//   western neighbors, noted cn0.
+// - The Northern cardinal neighbor is the left-most neighbor node among the
+//   northern neighbors, noted cn1.
+// - The Eastern cardinal neighbor is the bottom-most neighbor node among the
+//   eastern neighbors, noted cn2.
+// - The Southern cardinal neighbor is the right-most neighbor node among the
+//   southern neighbors, noted cn3.
+type CNNode struct {
+	parent   *CNNode         // pointer to the parent node
+	c        [4]*CNNode      // children nodes
+	cn       [4]*CNNode      // cardinal neighbours
+	bounds   image.Rectangle // node bounds
+	color    Color           // node color
+	location Quadrant        // node location inside its parent
+	size     int             // size of a quadrant side
+}
+
+// Parent returns the quadtree node that is the parent of current one.
+func (n *CNNode) Parent() Node {
+	if n.parent == nil {
+		return nil
+	}
+	return n.parent
+}
+
+// Child returns current node child at specified quadrant.
+func (n *CNNode) Child(q Quadrant) Node {
+	if n.c[q] == nil {
+		return nil
+	}
+	return n.c[q]
+}
+
+// Bounds returns the bounds of the rectangular area represented by this
+// quadtree node.
+func (n *CNNode) Bounds() image.Rectangle {
+	return n.bounds
+}
+
+// Color returns the node Color.
+func (n *CNNode) Color() Color {
+	return n.color
+}
+
+// Location returns the node inside its parent quadrant
+func (n *CNNode) Location() Quadrant {
+	return n.location
+}
+
+func (n *CNNode) updateNorthEast() {
+	if n.parent == nil || n.cn[North] == nil {
+		// nothing to update as this quadrant lies on the north border
+		return
+	}
+	// step 2.2: Updating Cardinal Neighbors of NE sub-Quadrant.
+	if n.cn[North] != nil {
+		if n.cn[North].size < n.size {
+			c0 := n.c[Northwest]
+			c0.cn[North] = n.cn[North]
+			// to update C1, we perform a west-east traversal
+			// recording the cumulative size of traversed nodes
+			cur := c0.cn[North]
+			cumsize := cur.size
+			for cumsize < c0.size {
+				cur = cur.cn[East]
+				cumsize += cur.size
+			}
+			n.c[Northeast].cn[North] = cur
+		}
+	}
+}
+
+func (n *CNNode) updateSouthWest() {
+	if n.parent == nil || n.cn[West] == nil {
+		// nothing to update as this quadrant lies on the west border
+		return
+	}
+	// step 2.1: Updating Cardinal Neighbors of SW sub-Quadrant.
+	if n.cn[North] != nil {
+		if n.cn[North].size < n.size {
+			c0 := n.c[Northwest]
+			c0.cn[North] = n.cn[North]
+			// to update C2, we perform a north-south traversal
+			// recording the cumulative size of traversed nodes
+			cur := c0.cn[West]
+			cumsize := cur.size
+			for cumsize < c0.size {
+				cur = cur.cn[South]
+				cumsize += cur.size
+			}
+			n.c[Southwest].cn[West] = cur
+		}
+	}
+}
+
+// updateNeighbours updates all neighbours according to the current
+// decomposition.
+func (n *CNNode) updateNeighbours() {
+	// On each direction, a full traversal of the neighbors
+	// should be performed.  In every quadrant where a reference
+	// to the parent quadrant is stored as the Cardinal Neighbor,
+	// it should be replaced by one of its children created after
+	// the decomposition
+
+	if n.cn[West] != nil {
+		n.forEachNeighbourInDirection(West, func(qn Node) {
+			western := qn.(*CNNode)
+			if western.cn[East] == n {
+				if western.bounds.Max.Y > n.c[Southwest].bounds.Min.Y {
+					// choose SW
+					western.cn[East] = n.c[Southwest]
+				} else {
+					// choose NW
+					western.cn[East] = n.c[Northwest]
+				}
+				if western.cn[East].bounds.Min.Y == western.bounds.Min.Y {
+					western.cn[East].cn[West] = western
+				}
+			}
+		})
+	}
+
+	if n.cn[North] != nil {
+		n.forEachNeighbourInDirection(North, func(qn Node) {
+			northern := qn.(*CNNode)
+			if northern.cn[South] == n {
+				if northern.bounds.Max.X > n.c[Northeast].bounds.Min.X {
+					// choose NE
+					northern.cn[South] = n.c[Northeast]
+				} else {
+					// choose NW
+					northern.cn[South] = n.c[Northwest]
+				}
+				if northern.cn[South].bounds.Min.X == northern.bounds.Min.X {
+					northern.cn[South].cn[North] = northern
+				}
+			}
+		})
+	}
+
+	if n.cn[East] != nil {
+		if n.cn[East] != nil && n.cn[East].cn[West] == n {
+			// To update the eastern CN of a quadrant Q that is being
+			// decomposed: Q.CN2.CN0=Q.Ch[NE]
+			n.cn[East].cn[West] = n.c[Northeast]
+		}
+	}
+
+	if n.cn[South] != nil {
+		// To update the southern CN of a quadrant Q that is being
+		// decomposed: Q.CN3.CN1=Q.Ch[SE]
+		// TODO: there seems to be a typo in the paper.
+		// should have read this instead: Q.CN3.CN1=Q.Ch[SW]
+		if n.cn[South] != nil && n.cn[South].cn[North] == n {
+			n.cn[South].cn[North] = n.c[Southwest]
+		}
+	}
+}
+
+// forEachNeighbourInDirection calls fn on every neighbour of the current node in the given
+// direction.
+func (n *CNNode) forEachNeighbourInDirection(dir Side, fn func(Node)) {
+	// start from the cardinal neighbour on the given direction
+	N := n.cn[dir]
+	if N == nil {
+		return
+	}
+	fn(N)
+	if N.size >= n.size {
+		return
+	}
+
+	traversal := traversal(dir)
+	opposite := opposite(dir)
+	// perform cardinal neighbour traversal
+	for {
+		N = N.cn[traversal]
+		if N != nil && N.cn[opposite] == n {
+			fn(N)
+		} else {
+			return
+		}
+	}
+}
+
+// forEachNeighbour calls the given function for each neighbour of current
+// node.
+func (n *CNNode) forEachNeighbour(fn func(Node)) {
+	n.forEachNeighbourInDirection(West, fn)
+	n.forEachNeighbourInDirection(North, fn)
+	n.forEachNeighbourInDirection(East, fn)
+	n.forEachNeighbourInDirection(South, fn)
+}
+
+// String returns a symbolic representation of the node with its cardinal
+// neighbours. It is useful for debugging purposes only.
+func (n *CNNode) String() string {
+	var scn0, scn1, scn2, scn3 string
+	if n.cn[West] != nil {
+		scn0 = fmt.Sprintf("%v-%d", n.cn[West].bounds.Min, n.cn[West].size)
+	}
+	if n.cn[North] != nil {
+		scn1 = fmt.Sprintf("%v-%d", n.cn[North].bounds.Min, n.cn[North].size)
+	}
+	if n.cn[East] != nil {
+		scn2 = fmt.Sprintf("%v-%d", n.cn[East].bounds.Min, n.cn[East].size)
+	}
+	if n.cn[South] != nil {
+		scn3 = fmt.Sprintf("%v-%d", n.cn[South].bounds.Min, n.cn[South].size)
+	}
+	return fmt.Sprintf("[%v-%d-%s|CN ←%v ↑%v →%v ↓%v]", n.bounds.Min, n.size, n.color, scn0, scn1, scn2, scn3)
 }
