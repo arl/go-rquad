@@ -36,6 +36,17 @@ const (
 	South
 )
 
+const _Side_name = "WestNorthEastSouth"
+
+var _Side_index = [...]uint8{0, 4, 9, 13, 18}
+
+func (i Side) String() string {
+	if i < 0 || i >= Side(len(_Side_index)-1) {
+		return fmt.Sprintf("Side(%d)", i)
+	}
+	return _Side_name[_Side_index[i]:_Side_index[i+1]]
+}
+
 // init() initializes package level variables.
 func init() {
 
