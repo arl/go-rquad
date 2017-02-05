@@ -9,13 +9,13 @@ type PointLocator interface {
 	PointLocation(image.Point) Node
 }
 
-// PointLocation returns the quadtree node containing the given point.
+// PointLocation returns the leaf node containing the given point.
 //
-// The standard method to search for the Node that contains a given point is a
-// recursively search, starting from the root node, returning the Node that
-// contains the point is a leaf. If q implements the PointLocator interfacen
-// then the specific and more efficient implementation of PointLocation is
-// called
+// The generic method to search for the leaf Node that contains a given point is
+// a recursive search from the root node, it returns the leaf node containing
+// the point.
+// If q implements the PointLocator interface, (i.e it implements a probably
+// more efficient method), then the call is forwardded to q.PointLocation
 func PointLocation(q Quadtree, pt image.Point) Node {
 	if locator, ok := q.(PointLocator); ok {
 		// use the specific point location implementation
@@ -24,6 +24,7 @@ func PointLocation(q Quadtree, pt image.Point) Node {
 	return pointLocation(q.Root(), pt)
 }
 
+// generic recursive method to return the leaf node containing pt
 func pointLocation(n Node, pt image.Point) Node {
 	if !pt.In(n.Bounds()) {
 		return nil
