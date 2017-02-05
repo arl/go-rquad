@@ -12,7 +12,7 @@ import (
 // It performs a standard quadtree subdivision of the rectangular area
 // represented by an binimg.Scanner.
 type BasicTree struct {
-	resolution int            // maximal resolution
+	resolution int            // leaf node resolution
 	scanner    binimg.Scanner // reference image
 	root       *basicNode     // root node
 	leaves     NodeList       // leaf nodes (filled during creation)
@@ -21,9 +21,9 @@ type BasicTree struct {
 // NewBasicTree creates a basic region quadtree from a scannable rectangular
 // area and populates it with basic node instances.
 //
-// resolution is the minimal dimension that can have a leaf node, no further
-// subdivisions will be performed on a node if its width or height is equal to
-// this value.
+// resolution is the smallest size in pixels that can have a leaf node, no
+// further subdivisions will be performed on a node if its width or height is
+// equal to this value.
 func NewBasicTree(scanner binimg.Scanner, resolution int) (*BasicTree, error) {
 	if resolution < 1 {
 		return nil, errors.New("resolution must be greater than 0")
