@@ -2,7 +2,7 @@ package rquad
 
 import "image"
 
-// CNNode is a node of a CNTree.
+// CNNode is a node of a Cardinal Neighbour Quadtree.
 //
 // It is an implementation of the Node interface, with additional fields and
 // methods required to obtain the node neighbours in constant time. The time

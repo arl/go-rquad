@@ -27,10 +27,11 @@ type CNTree struct {
 	nLevels    uint           // maximum number of levels of the quadtree
 }
 
-// NewCNTree creates a CNTree and populates it with cnNode instances,
-// according to the content of the scanned image. It works only on square and
-// power of 2 sized images, NewCNTree will return a nil CNTree pointer and an
-// error if that's not the case.
+// NewCNTree creates a cardinal neighbour quadtree and populates it.
+//
+// The quadtree is populated according to the content of the scanned image. It
+// works only on square and power of 2 sized images, NewCNTree will return a
+// non-nil error if that's not the case.
 //
 // resolution is the minimal dimension of a leaf node, no further subdivisions
 // will be performed on a leaf if its dimension is equal to the resolution.
