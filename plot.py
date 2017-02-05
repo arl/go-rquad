@@ -8,7 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 Point = namedtuple('Point', 'type name nodes time')
-dots = cycle(['r', 'b', 'g'])
+dots = cycle(['r', 'g'])
 prog = re.compile(r'Benchmark(Basic|CNTree)(.*)Res(\d*)-\d*\s*\d*\s*(\d*)')
 cmpbench = defaultdict(list)
 sizes = {'Creation': 4096, 'PointLocation': 1024, 'Neighbours': 4096}
