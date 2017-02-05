@@ -1,5 +1,7 @@
 package rquad
 
+import "fmt"
+
 // Quadrant indicates the position of a child Node inside its parent.
 type Quadrant int
 
@@ -11,6 +13,17 @@ const (
 	Southeast
 	rootQuadrant
 )
+
+const _Quadrant_name = "NorthwestNortheastSouthwestSoutheastrootQuadrant"
+
+var _Quadrant_index = [...]uint8{0, 9, 18, 27, 36, 48}
+
+func (i Quadrant) String() string {
+	if i < 0 || i >= Quadrant(len(_Quadrant_index)-1) {
+		return fmt.Sprintf("Quadrant(%d)", i)
+	}
+	return _Quadrant_name[_Quadrant_index[i]:_Quadrant_index[i+1]]
+}
 
 // Side is used to represent a direction according to a quadtree Node.
 type Side int
