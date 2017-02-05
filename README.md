@@ -18,13 +18,62 @@ of a data field. For example, the temperatures in an area may be stored as a
 quadtree, with each leaf node storing the average temperature over the
 subregion it represents.
 
-Quadtree implementations in this package use the [`imgscan.Scanner`](https://github.com/aurelien-rainone/imgtools/tree/master/imgscan) interface to represent the complete area and provide the quadtree with a way 
+Quadtree implementations in this package use the [`imgscan.Scanner`](https://github.com/aurelien-rainone/imgtools/tree/master/imgscan)
+interface to represent the complete area and provide the quadtree with a way 
 to scan over regions of this area in order to perform the subdivisions.
 
-The `CNTree` (Cardinal Neighbour Quadtree) is also augmented with an innovative
-method to perform point location queries, that is simple, efficient,
-nonrecursive and table-free, that reduce the number of comparisons with
+## API Overview
+
+### `Node` interface
+```go
+type Node interface {
+        Parent() Node
+        Child(Quadrant) Node
+        Bounds() image.Rectangle
+        Color() Color
+        Location() Quadrant
+}
+```
+
+### `Quadtree` interface
+
+A `Quadtree` being a hierarchical collection of `Node`s, its API is relatively
+simple and gives an access to the tree root, and a way to iterate over all
+the leaves.
+
+```go
+type Quadtree interface {
+        ForEachLeaf(Color, func(Node))
+        Root() Node
+}
+```
+
+### Functions
+
+`Locate` returns the leaf node of `q` that contains `pt`, or nil if `q` doesn't contain `pt`.
+```go
+func Locate(q Quadtree, pt image.Point) Node
+```
+
+`ForEachNeighbour` calls `fn` for each neighbour of `n`.
+```go
+func ForEachNeighbour(n Node, fn func(Node))
+```
+
+### Basic implementation: `BasicTree` and `basicNode`
+
+`BasicTree` is in many ways the standard implementation of `Quadtree`, it just does the job.
+
+
+### State of the art implementation: `CNTree` and `CNNode`
+
+`CNTree` or **Cardinal Neighbour Quadtree** implements state of the art techniques:
+ - node neighbours (of any size) are accessed in constant time *0(1)* thanks to the implementation of *Cardinal Neighbour Quadtree* technique (cf Safwan Qasem 2015). The time complexity reduction is obtained through the addition of only four pointers per leaf node in the quadtree.
+ - fast point location queries (locating which leaf node contains a specific point), thanks to the *binary branching method* (cf Frisken Perry 2002). This simple and efficient method is nonrecursive, table free, and reduces the number of comparisons with
 poor predictive behavior, that are otherwise required with the standard method.
+
+## Benchmarks
+
 
 
 ## References
@@ -66,3 +115,4 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+
