@@ -1,39 +1,58 @@
-#!/usr/bin/env python2
+#! /usr/bin/env python2
+
 import sys
 import re
-from collections import namedtuple, defaultdict
-from itertools import groupby, cycle
+from collections import defaultdict, namedtuple
+from itertools import cycle, groupby
 
-import numpy as np
 import matplotlib.pyplot as plt
 
-Point = namedtuple('Point', 'type name nodes time')
+
+Point = namedtuple('Point', 'type nodes time')
 dots = cycle(['r', 'g'])
-prog = re.compile(r'Benchmark(Basic|CNTree)(.*)Res(\d*)-\d*\s*\d*\s*(\d*)')
-cmpbench = defaultdict(list)
+LINE_PROG = re.compile(r'Benchmark(Basic|CNTree)(.*)Res(\d*)-\d*\s*\d*\s*(\d*)')
 sizes = {'Creation': 4096, 'PointLocation': 1024, 'Neighbours': 4096}
 
-with open(sys.argv[1]) as f:
-    for line in f.readlines():
-        res = prog.match(line.strip())
-        if res:
-            grp = res.groups()
-            type_ = grp[0]
-            name = grp[1]
-            res = int(grp[2])
-            time = float(grp[3])
-            dim = sizes[name]
-            nodes = (dim*dim)/res
-            pt = Point(type_, name, nodes, time)
-            cmpbench[pt.name].append(pt)
 
-for name, data in cmpbench.iteritems():
-    # new plot starts here
+def rquad_line_parser(line):
+    res = LINE_PROG.match(line)
+    if res:
+        grp = res.groups()
+        type_ = grp[0]
+        name = grp[1]
+        res = int(grp[2])
+        time = float(grp[3])
+        dim = sizes[name]
+        nodes = (dim * dim) / res
+        return name, Point(type_, nodes, time)
+
+
+def extract(filename, parser):
+    """
+    Extract data from benchmarks report `filename`
+
+    `parser` is a user-defined function taking a benchmark line, and returning a
+    2-tuple (plotname, DATAPOINT) where plotname is the name of the plot on
+    which DATAPOINT should be plotted, and DATAPOINT is the domain-specific
+    object representing the values of this line.
+    """
+    benchs = defaultdict(list)
+    with open(filename) as f:
+        for line in f.readlines():
+            parsed = parser(line)
+            if parsed:
+                name, datapoint = parsed
+                benchs[name].append(datapoint)
+    return benchs
+
+
+def rquad_plot(name, dps):
+    print 'plotting: ', name
     plt.title(name, fontsize=22)
     handles = []
-    for k, g in groupby(data, lambda x:x.type):
+    for k, g in groupby(dps, lambda x: x.type):
         pts_x, pts_y = [], []
-        for pt in sorted(list(g), key=lambda x:x.nodes):
+        for pt in sorted(list(g), key=lambda x: x.nodes):
             pts_x.append(pt.nodes)
             pts_y.append(pt.time)
         plt.xscale('linear')
@@ -43,13 +62,26 @@ for name, data in cmpbench.iteritems():
 
         hnd, = plt.plot(pts_x, pts_y, next(dots), label=k)
         handles.append(hnd)
-        plt.legend(handles=handles, prop={'size':22})
+        plt.legend(handles=handles, prop={'size': 22})
         # print 'x', pts_x
         # print 'y', pts_y
 
     plt.gcf().set_size_inches(18, 9)
     # plt.show()
-    name = name + '.png'
-    print 'output plot: ', name
-    plt.savefig(name)
+    filename = name + '.png'
+    print 'output plot: ', filename
+    plt.savefig(filename)
     plt.clf()
+
+
+def main():
+    if len(sys.argv) < 2:
+        print "usage: plot.py FILENAME"
+        return
+    benchs = extract(sys.argv[1], rquad_line_parser)
+    for plot_name in benchs.keys():
+        rquad_plot(plot_name, benchs[plot_name])
+
+
+if __name__ == "__main__":
+    main()
