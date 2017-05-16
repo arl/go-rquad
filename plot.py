@@ -1,4 +1,5 @@
 #! /usr/bin/env python2
+# -*- coding: utf-8 -*-
 
 import sys
 import re
@@ -9,7 +10,7 @@ import matplotlib.pyplot as plt
 
 
 Point = namedtuple('Point', 'type nodes time')
-dots = cycle(['r', 'g'])
+color = cycle(['b', 'r'])
 LINE_PROG = re.compile(r'Benchmark(Basic|CNTree)(.*)Res(\d*)-\d*\s*\d*\s*(\d*)')
 sizes = {'Creation': 4096, 'PointLocation': 1024, 'Neighbours': 4096}
 
@@ -21,7 +22,7 @@ def rquad_line_parser(line):
         type_ = grp[0]
         name = grp[1]
         res = int(grp[2])
-        time = float(grp[3])
+        time = float(grp[3]) * 1e-3  # convert to µs
         dim = sizes[name]
         nodes = (dim * dim) / res
         return name, Point(type_, nodes, time)
@@ -46,9 +47,9 @@ def extract(filename, parser):
     return benchs
 
 
-def rquad_plot(name, dps):
-    print 'plotting: ', name
-    plt.title(name, fontsize=22)
+def rquad_plot(title, filename, dps):
+    print 'plotting: ', title
+    plt.title(title, fontsize=28)
     handles = []
     for k, g in groupby(dps, lambda x: x.type):
         pts_x, pts_y = [], []
@@ -57,30 +58,43 @@ def rquad_plot(name, dps):
             pts_y.append(pt.time)
         plt.xscale('linear')
         plt.yscale('linear')
-        plt.xlabel('Number of nodes', fontsize=22)
-        plt.ylabel('Time per operation (nanoseconds)', fontsize=22)
+        plt.xlabel('Number of nodes', fontsize=24)
+        plt.ylabel(u'Time µs (microseconds)', fontsize=24)
 
-        hnd, = plt.plot(pts_x, pts_y, next(dots), label=k)
+        hnd, = plt.plot(pts_x, pts_y,
+                        marker='o',
+                        linestyle='--',
+                        linewidth=2,
+                        color=next(color),
+                        label=k)
         handles.append(hnd)
-        plt.legend(handles=handles, prop={'size': 22})
+        plt.legend(handles=handles, prop={'size': 24})
         # print 'x', pts_x
         # print 'y', pts_y
 
+        plt.tick_params(axis='both', labelsize=18)
+
+
     plt.gcf().set_size_inches(18, 9)
     # plt.show()
-    filename = name + '.png'
-    print 'output plot: ', filename
+    print 'saving plot: ', filename
     plt.savefig(filename)
     plt.clf()
 
 
 def main():
+    titles = {
+        'PointLocation': 'Point Location\n(finding the leaf node containing a given point)',
+        'Neighbours': 'Neighbours Finding\n(finding the neighbours of a leaf node)',
+        'Creation': 'Creation Time\n(creating the whole quadtree)',
+    }
+
     if len(sys.argv) < 2:
         print "usage: plot.py FILENAME"
         return
     benchs = extract(sys.argv[1], rquad_line_parser)
     for plot_name in benchs.keys():
-        rquad_plot(plot_name, benchs[plot_name])
+        rquad_plot(titles[plot_name], plot_name + '.png', benchs[plot_name])
 
 
 if __name__ == "__main__":
