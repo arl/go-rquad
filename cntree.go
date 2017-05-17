@@ -255,14 +255,17 @@ func (q *CNTree) locate(pt image.Point) Node {
 // complexity reduction is obtained through the addition of only four pointers per
 // leaf node in the quadtree.
 //
-// - The Western cardinal neighbor is the top-most neighbor node among the
-//   western neighbors, noted cn0.
-// - The Northern cardinal neighbor is the left-most neighbor node among the
-//   northern neighbors, noted cn1.
-// - The Eastern cardinal neighbor is the bottom-most neighbor node among the
-//   eastern neighbors, noted cn2.
-// - The Southern cardinal neighbor is the right-most neighbor node among the
-//   southern neighbors, noted cn3.
+// The Western cardinal neighbor is the top-most neighbor node among the
+// western neighbors, noted cn0.
+//
+// The Northern cardinal neighbor is the left-most neighbor node among the
+// northern neighbors, noted cn1.
+//
+// The Eastern cardinal neighbor is the bottom-most neighbor node among the
+// eastern neighbors, noted cn2.
+//
+// The Southern cardinal neighbor is the right-most neighbor node among the
+// southern neighbors, noted cn3.
 type CNNode struct {
 	parent   *CNNode         // pointer to the parent node
 	c        [4]*CNNode      // children nodes
