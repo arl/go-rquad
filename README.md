@@ -1,6 +1,6 @@
 # Region quadtrees in Go
 [![Build Status](https://travis-ci.org/aurelien-rainone/go-rquad.svg?branch=master)](https://travis-ci.org/aurelien-rainone/go-rquad) [![Coverage Status](https://coveralls.io/repos/github/aurelien-rainone/go-rquad/badge.svg?branch=master)](https://coveralls.io/github/aurelien-rainone/go-rquad?branch=master)
-[![Go Report Card](https://goreportcard.com/badge/github.com/plar/go-adaptive-radix-tree)](https://goreportcard.com/report/github.com/plar/go-adaptive-radix-tree)
+[![Go Report Card](https://goreportcard.com/badge/github.com/aurelien-rainone/go-rquad)](https://goreportcard.com/report/github.com/aurelien-rainone/go-rquad)
 [![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](http://godoc.org/github.com/aurelien-rainone/go-rquad) 
 
 **Region quadtrees and efficient neighbour finding techniques in Go**
