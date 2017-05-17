@@ -1,26 +1,28 @@
-# go-rquads: region quadtrees in Go
-[![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](http://godoc.org/github.com/aurelien-rainone/go-rquad) [![Build Status](https://travis-ci.org/aurelien-rainone/go-rquad.svg?branch=master)](https://travis-ci.org/aurelien-rainone/go-rquad) [![Coverage Status](https://coveralls.io/repos/github/aurelien-rainone/go-rquad/badge.svg?branch=master)](https://coveralls.io/github/aurelien-rainone/go-rquad?branch=master)
+# Region quadtrees in Go
+[![Build Status](https://travis-ci.org/aurelien-rainone/go-rquad.svg?branch=master)](https://travis-ci.org/aurelien-rainone/go-rquad) [![Coverage Status](https://coveralls.io/repos/github/aurelien-rainone/go-rquad/badge.svg?branch=master)](https://coveralls.io/github/aurelien-rainone/go-rquad?branch=master)
+[![Go Report Card](https://goreportcard.com/badge/github.com/plar/go-adaptive-radix-tree)](https://goreportcard.com/report/github.com/plar/go-adaptive-radix-tree)
+[![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](http://godoc.org/github.com/aurelien-rainone/go-rquad) 
 
-**Quadtrees and efficient neighbour finding techniques in Go**
+**Region quadtrees and efficient neighbour finding techniques in Go**
 
-Package `rquad` proposes various implementations of **region quadtrees**.
-The region quadtree is a special kind of quadtree that recursively
+**Go-rquad** proposes various implementations of **region quadtrees**.
+
+A region quadtree is a special kind of quadtree that recursively
 subdivides a 2 dimensional space into 4 smaller and generally equal
 rectangular regions, until the wanted quadtree resolution has been reached,
 or no further subdivisions can be performed.
 
-Region quadtree may be used for image processing, in this case a node
-represents a rectangular region of an image in which all pixels have the
-same color.
+Region quadtrees can be used for image processing; in this case a leaf node
+represents a rectangular region of an image in which all colors are equal or
+the color difference is under a given threshold.
 
-A region quadtree may also be used as a variable resolution representation
-of a data field. For example, the temperatures in an area may be stored as a
-quadtree, with each leaf node storing the average temperature over the
+Region quadtrees may also be used to represent data fields with variable 
+resolution. For example, the temperatures in an area may be stored as a
+quadtree where each leaf node stores the average temperature over the
 subregion it represents.
 
-Quadtree implementations in this package use the [`imgscan.Scanner`](https://github.com/aurelien-rainone/imgtools/tree/master/imgscan)
-interface to represent the complete area and provide the quadtree with a way 
-to scan over regions of this area in order to perform the subdivisions.
+In this package, quadtrees implement the [`imgscan.Scanner`](https://github.com/aurelien-rainone/imgtools/tree/master/imgscan) interface,
+this provides a way to scan (i.e extract) the pixels in order to perform the subdivisions.
 
 ## API Overview
 
@@ -37,9 +39,8 @@ type Node interface {
 
 ### `Quadtree` interface
 
-A `Quadtree` being a hierarchical collection of `Node`s, its API is relatively
-simple and gives an access to the tree root, and a way to iterate over all
-the leaves.
+A `Quadtree` represents a hierarchical collection of `Node`s, its API is
+simple: access to the root Node and a way to iterate over all the leaves.
 
 ```go
 type Quadtree interface {
@@ -67,7 +68,7 @@ func ForEachNeighbour(n Node, fn func(Node))
 ### State of the art implementation: `CNTree` and `CNNode`
 
 `CNTree` or **Cardinal Neighbour Quadtree** implements state of the art techniques:
- - node neighbours (of any size) are accessed in constant time *0(1)* thanks to the implementation of *Cardinal Neighbour Quadtree* technique (cf Safwan Qasem 2015). The time complexity reduction is obtained through the addition of only four pointers per leaf node in the quadtree.
+ - from any given leaf node, its neighbours (of any size) are accessed in constant time *0(1)*  as they implement the  *Cardinal Neighbour Quadtree* technique (cf Safwan Qasem 2015). The time complexity reduction is obtained through the addition of only four pointers per leaf node in the quadtree.
  - fast point location queries (locating which leaf node contains a specific point), thanks to the *binary branching method* (cf Frisken Perry 2002). This simple and efficient method is nonrecursive, table free, and reduces the number of comparisons with
 poor predictive behavior, that are otherwise required with the standard method.
 
