@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/aurelien-rainone/binimg"
+	"github.com/aurelien-rainone/go-rquad/internal"
 )
 
 func TestBasicTreeLogicalErrors(t *testing.T) {
@@ -70,7 +71,7 @@ func TestBasicTreeQuery(t *testing.T) {
 		bm      image.Image
 		scanner binimg.Scanner
 	)
-	bm, err = loadPNG("./testdata/labyrinth1.32x32.png")
+	bm, err = internal.LoadPNG("./testdata/labyrinth1.32x32.png")
 	check(t, err)
 	scanner, err = binimg.NewScanner(bm)
 	check(t, err)

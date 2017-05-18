@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/aurelien-rainone/binimg"
+	"github.com/aurelien-rainone/go-rquad/internal"
 )
 
 func benchmarkPointLocation(b *testing.B, fn newQuadtreeFunc, numPoints int, resolution int) {
@@ -14,7 +15,7 @@ func benchmarkPointLocation(b *testing.B, fn newQuadtreeFunc, numPoints int, res
 		scanner binimg.Scanner
 		err     error
 	)
-	img, err = loadPNG("./testdata/random-1024x1024.png")
+	img, err = internal.LoadPNG("./testdata/random-1024x1024.png")
 	checkB(b, err)
 
 	r := rand.New(rand.NewSource(99))

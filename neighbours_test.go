@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/aurelien-rainone/binimg"
+	"github.com/aurelien-rainone/go-rquad/internal"
 )
 
 func testQuadtreeNeighbours(t *testing.T, fn newQuadtreeFunc) {
@@ -15,9 +16,9 @@ func testQuadtreeNeighbours(t *testing.T, fn newQuadtreeFunc) {
 	)
 
 	// load both test images
-	laby1, err = loadPNG("./testdata/labyrinth1.32x32.png")
+	laby1, err = internal.LoadPNG("./testdata/labyrinth1.32x32.png")
 	check(t, err)
-	laby2, err = loadPNG("./testdata/labyrinth4.8x8.png")
+	laby2, err = internal.LoadPNG("./testdata/labyrinth4.8x8.png")
 	check(t, err)
 
 	// for logging purposes
@@ -98,7 +99,7 @@ func TestNeighboursFinding(t *testing.T) {
 		scanner binimg.Scanner
 		err     error
 	)
-	img, err = loadPNG("./testdata/random-1024x1024.png")
+	img, err = internal.LoadPNG("./testdata/random-1024x1024.png")
 	check(t, err)
 
 	r := rand.New(rand.NewSource(99))
@@ -148,7 +149,7 @@ func benchmarkNeighboursFinding(b *testing.B, fn newQuadtreeFunc, numNodes int, 
 		scanner binimg.Scanner
 		err     error
 	)
-	img, err = loadPNG("./testdata/bigsquare.png")
+	img, err = internal.LoadPNG("./testdata/bigsquare.png")
 	checkB(b, err)
 
 	r := rand.New(rand.NewSource(99))

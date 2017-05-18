@@ -1,9 +1,6 @@
 package rquad
 
 import (
-	"image"
-	"image/png"
-	"os"
 	"testing"
 
 	"github.com/aurelien-rainone/binimg"
@@ -19,41 +16,6 @@ func checkB(b *testing.B, err error) {
 	if err != nil {
 		b.Fatal(err)
 	}
-}
-
-// helper function that uses binimg.NewFromImage internally.
-func loadPNG(filename string) (*binimg.Binary, error) {
-	var (
-		f   *os.File
-		img image.Image
-		bm  *binimg.Binary
-		err error
-	)
-
-	f, err = os.Open(filename)
-	if err != nil {
-		return bm, err
-	}
-	defer f.Close()
-
-	img, err = png.Decode(f)
-	if err != nil {
-		return bm, err
-	}
-
-	bm = binimg.NewFromImage(img)
-	return bm, nil
-}
-
-func savePNG(img image.Image, filename string) error {
-	out, err := os.Create(filename)
-	if err != nil {
-		return err
-	}
-	defer out.Close()
-
-	err = png.Encode(out, img)
-	return err
 }
 
 type newQuadtreeFunc func(binimg.Scanner, int) (Quadtree, error)

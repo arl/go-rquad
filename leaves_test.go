@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/aurelien-rainone/binimg"
+	"github.com/aurelien-rainone/go-rquad/internal"
 )
 
 func testQuadtreeCountLeaves(t *testing.T, fn newQuadtreeFunc) {
@@ -31,7 +32,7 @@ func testQuadtreeCountLeaves(t *testing.T, fn newQuadtreeFunc) {
 	)
 
 	for _, tt := range testTbl {
-		bm, err = loadPNG(tt.fn)
+		bm, err = internal.LoadPNG(tt.fn)
 		check(t, err)
 		scanner, err = binimg.NewScanner(bm)
 		check(t, err)
