@@ -32,7 +32,7 @@ main() {
   DRY_RUN=0
   KEEP=0
   DONT_SEND=0
-  EXCLUDE=0
+  EXCLUDE='^$'
 
   while [ $# -gt 0 ]; do
     case $1 in
@@ -86,11 +86,11 @@ main() {
   [ -z "$GOVERALLS" ] && die "goveralls not found, run 'go get github.com/mattn/goveralls'"
 
   # create list of project packages, excluding vendored (with govendor)
-  if [ $EXCLUDE -eq 0 ]; then
-    PKGS=$($GOVENDOR list -no-status +local)
-  else
-    PKGS=$($GOVENDOR list -no-status +local | grep -v $EXCLUDE)
-  fi
+  #if [ -z ${EXCLUDE} ]; then
+  PKGS=$($GOVENDOR list -no-status +local)
+  #else
+    #PKGS=$($GOVENDOR list -no-status +local | grep -v $EXCLUDE)
+  #fi
   export PKGS
 
   # make comma-separated
@@ -105,18 +105,15 @@ main() {
     go list -f "{{if or (len .TestGoFiles) (len .XTestGoFiles)}}$GOVENDOR test -covermode count -coverprofile {{.Name}}_{{len .Imports}}_{{len .Deps}}.coverprofile -coverpkg '$PKGS_DELIM' {{.ImportPath}}{{end}}" $PKGS
     exit
   fi
-
   # merge the package specific coverage profiles into one
-  "$GOCOVMERGE" $(ls *.coverprofile) > cover.out
+  "$GOCOVMERGE" $(ls *.coverprofile) | grep -v "${EXCLUDE}" > cover.out
 
-  if [ $DONT_SEND -eq 0 ]; then
-    if [[ $CI == true ]]; then
-      # on continuous integration, send to coveralls.io
-      $GOVERALLS -coverprofile=cover.out -service=travis-ci
-    else
-      # otherwise, show profile in the browser
-      go tool cover -html=cover.out
-    fi
+  if [[ $CI == true ]] && [ $DONT_SEND -eq 0 ]; then
+    # on continuous integration, send to coveralls.io
+    $GOVERALLS -coverprofile=cover.out -service=travis-ci
+  else
+    # otherwise, show profile in the browser
+    go tool cover -html=cover.out
   fi
 
   if [ $KEEP -eq 0 ]; then
