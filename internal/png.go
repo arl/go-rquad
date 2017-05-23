@@ -5,7 +5,7 @@ import (
 	"image/png"
 	"os"
 
-	"github.com/aurelien-rainone/binimg"
+	"github.com/aurelien-rainone/imgtools/binimg"
 )
 
 // helper function that uses binimg.NewFromImage internally.

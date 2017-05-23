@@ -3,7 +3,7 @@ package rquad
 import (
 	"testing"
 
-	"github.com/aurelien-rainone/binimg"
+	"github.com/aurelien-rainone/imgtools/imgscan"
 )
 
 func check(t *testing.T, err error) {
@@ -18,13 +18,13 @@ func checkB(b *testing.B, err error) {
 	}
 }
 
-type newQuadtreeFunc func(binimg.Scanner, int) (Quadtree, error)
+type newQuadtreeFunc func(imgscan.Scanner, int) (Quadtree, error)
 
-func newBasicTree(scanner binimg.Scanner, resolution int) (Quadtree, error) {
+func newBasicTree(scanner imgscan.Scanner, resolution int) (Quadtree, error) {
 	return NewBasicTree(scanner, resolution)
 }
 
-func newCNTree(scanner binimg.Scanner, resolution int) (Quadtree, error) {
+func newCNTree(scanner imgscan.Scanner, resolution int) (Quadtree, error) {
 	return NewCNTree(scanner, resolution)
 }
 
