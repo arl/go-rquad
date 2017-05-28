@@ -1,19 +1,6 @@
 {
 	"comment": "",
 	"ignore": "test",
-	"package": [
-		{
-			"checksumSHA1": "3BA9k5AAAX+OckU2oEXKArmg0rQ=",
-			"path": "github.com/aurelien-rainone/imgtools/binimg",
-			"revision": "be98ac0807ca3b187ae587bf72b5a7e6b0ee1e67",
-			"revisionTime": "2017-05-23T07:11:55Z"
-		},
-		{
-			"checksumSHA1": "xzJcYDxAsyxLjCE0RDtQw5V0i9s=",
-			"path": "github.com/aurelien-rainone/imgtools/imgscan",
-			"revision": "be98ac0807ca3b187ae587bf72b5a7e6b0ee1e67",
-			"revisionTime": "2017-05-23T07:11:55Z"
-		}
-	],
+	"package": [],
 	"rootPath": "github.com/aurelien-rainone/go-rquad"
 }
