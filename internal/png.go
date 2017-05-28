@@ -9,11 +9,11 @@ import (
 )
 
 // helper function that uses binimg.NewFromImage internally.
-func LoadPNG(filename string) (*binimg.Binary, error) {
+func LoadPNG(filename string) (*binimg.Image, error) {
 	var (
 		f   *os.File
 		img image.Image
-		bm  *binimg.Binary
+		bm  *binimg.Image
 		err error
 	)
 

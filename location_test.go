@@ -12,7 +12,7 @@ import (
 
 func benchmarkPointLocation(b *testing.B, fn newQuadtreeFunc, numPoints int, resolution int) {
 	var (
-		img     *binimg.Binary
+		img     *binimg.Image
 		scanner imgscan.Scanner
 		err     error
 	)

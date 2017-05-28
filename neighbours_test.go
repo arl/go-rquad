@@ -12,7 +12,7 @@ import (
 
 func testQuadtreeNeighbours(t *testing.T, fn newQuadtreeFunc) {
 	var (
-		laby1, laby2 *binimg.Binary
+		laby1, laby2 *binimg.Image
 		err          error
 	)
 
@@ -23,17 +23,17 @@ func testQuadtreeNeighbours(t *testing.T, fn newQuadtreeFunc) {
 	check(t, err)
 
 	// for logging purposes
-	imgAlias := map[*binimg.Binary]string{
+	imgAlias := map[*binimg.Image]string{
 		laby1: "'labyrinth1.32x32'",
 		laby2: "'cn-8x8-3.png'",
 	}
 
 	var testTbl = []struct {
-		img   *binimg.Binary // source image
-		res   int            // resolution
-		pt    image.Point    // queried point
-		white int            // num white neighbours
-		black int            // num black neighbours
+		img   *binimg.Image // source image
+		res   int           // resolution
+		pt    image.Point   // queried point
+		white int           // num white neighbours
+		black int           // num black neighbours
 	}{
 		{laby1, 8, image.Pt(3, 3), 1, 1},
 		{laby1, 8, image.Pt(11, 3), 2, 1},
@@ -96,7 +96,7 @@ func TestCNTreeNeighbours(t *testing.T) {
 
 func TestNeighboursFinding(t *testing.T) {
 	var (
-		img     *binimg.Binary
+		img     *binimg.Image
 		scanner imgscan.Scanner
 		err     error
 	)
@@ -146,7 +146,7 @@ func TestNeighboursFinding(t *testing.T) {
 
 func benchmarkNeighboursFinding(b *testing.B, fn newQuadtreeFunc, numNodes int, resolution int) {
 	var (
-		img     *binimg.Binary
+		img     *binimg.Image
 		scanner imgscan.Scanner
 		err     error
 	)
