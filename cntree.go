@@ -59,7 +59,13 @@ func NewCNTree(scanner binimg.Scanner, resolution int) (*CNTree, error) {
 	// the max number of levels in the tree
 	q.computeNumLevels(scanner.Bounds().Dx())
 
-	q.root = q.newNode(q.scanner.Bounds(), nil, rootQuadrant)
+	q.root = &CNNode{
+		basicNode: basicNode{
+			color:  Gray,
+			bounds: q.scanner.Bounds(),
+		},
+		size: q.scanner.Bounds().Dy(),
+	}
 	q.subdivide(q.root.(*CNNode))
 	return q, nil
 }
