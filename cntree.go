@@ -78,6 +78,7 @@ func NewCNTree(scanner binimg.Scanner, resolution int) (*CNTree, error) {
 		q.nLevels++
 	}
 
+	// perform the subdivision
 	q.subdivide(q.root.(*CNNode))
 	return q, nil
 }
