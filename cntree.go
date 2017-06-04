@@ -54,10 +54,18 @@ func NewCNTree(scanner binimg.Scanner, resolution int) (*CNTree, error) {
 			resolution: resolution,
 			scanner:    scanner,
 		},
+		nLevels: 1,
 	}
 	// given the resolution and the size, we can determine
-	// the max number of levels in the tree
-	q.computeNumLevels(scanner.Bounds().Dx())
+	// the maxmum number of levels the quadtree can have
+	n := uint(q.scanner.Bounds().Dx())
+	for n&1 == 0 {
+		n >>= 1
+		if n < uint(q.resolution) {
+			break
+		}
+		q.nLevels++
+	}
 
 	q.root = &CNNode{
 		basicNode: basicNode{
@@ -177,40 +185,6 @@ func (q *CNTree) subdivide(p *CNNode) {
 	}
 	if se.color == Gray {
 		q.subdivide(se)
-	}
-}
-
-// Root returns the quadtree root node.
-func (q *CNTree) Root() Node {
-	return q.root
-}
-
-// ForEachLeaf calls the given function for each leaf node of the quadtree.
-//
-// Successive calls to the provided function are performed in no particular
-// order. The color parameter allows to loop on the leaves of a particular
-// color, Black or White.
-// NOTE: As by definition, Gray leaves do not exist, passing Gray to
-// ForEachLeaf should return all leaves, independently of their color.
-func (q *CNTree) ForEachLeaf(color Color, fn func(Node)) {
-	for _, n := range q.leaves {
-		if color == Gray || n.Color() == color {
-			fn(n)
-		}
-	}
-}
-
-// given the resolution, that is a power of 2, and the size, compute the
-// maximum number of levels the quadtree can have
-func (q *CNTree) computeNumLevels(size int) {
-	q.nLevels = 1
-	n := uint(size)
-	for n&1 == 0 {
-		n >>= 1
-		if n < uint(q.resolution) {
-			break
-		}
-		q.nLevels++
 	}
 }
 
