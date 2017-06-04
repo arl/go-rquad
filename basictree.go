@@ -14,7 +14,7 @@ import (
 type BasicTree struct {
 	resolution int            // leaf node resolution
 	scanner    binimg.Scanner // reference image
-	root       *basicNode     // root node
+	root       Node           // root node
 	leaves     NodeList       // leaf nodes (filled during creation)
 }
 
@@ -51,7 +51,7 @@ func NewBasicTree(scanner binimg.Scanner, resolution int) (*BasicTree, error) {
 		color:  Gray,
 		bounds: q.scanner.Bounds(),
 	}
-	q.subdivide(q.root)
+	q.subdivide(q.root.(*basicNode))
 	return q, nil
 }
 
