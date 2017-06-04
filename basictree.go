@@ -41,17 +41,19 @@ func NewBasicTree(scanner binimg.Scanner, resolution int) (*BasicTree, error) {
 		return nil, errors.New("the image smaller dimension must be greater or equal to twice the resolution")
 	}
 
+	// create root node
+	root := &basicNode{
+		color:  Gray,
+		bounds: scanner.Bounds(),
+	}
+
+	// create quadtree
 	q := &BasicTree{
 		resolution: resolution,
 		scanner:    scanner,
+		root:       root,
 	}
-
-	// create the root node
-	q.root = &basicNode{
-		color:  Gray,
-		bounds: q.scanner.Bounds(),
-	}
-	q.subdivide(q.root.(*basicNode))
+	q.subdivide(root)
 	return q, nil
 }
 

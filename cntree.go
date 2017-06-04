@@ -49,16 +49,27 @@ func NewCNTree(scanner binimg.Scanner, resolution int) (*CNTree, error) {
 		return nil, errors.New("the image size must be greater or equal to twice the resolution")
 	}
 
+	// create root node
+	root := &CNNode{
+		basicNode: basicNode{
+			color:  Gray,
+			bounds: scanner.Bounds(),
+		},
+		size: scanner.Bounds().Dy(),
+	}
+
+	// create cardinal neighbour quadtree
 	q := &CNTree{
 		BasicTree: BasicTree{
 			resolution: resolution,
 			scanner:    scanner,
+			root:       root,
 		},
 		nLevels: 1,
 	}
 	// given the resolution and the size, we can determine
 	// the maxmum number of levels the quadtree can have
-	n := uint(q.scanner.Bounds().Dx())
+	n := uint(scanner.Bounds().Dx())
 	for n&1 == 0 {
 		n >>= 1
 		if n < uint(q.resolution) {
@@ -67,13 +78,6 @@ func NewCNTree(scanner binimg.Scanner, resolution int) (*CNTree, error) {
 		q.nLevels++
 	}
 
-	q.root = &CNNode{
-		basicNode: basicNode{
-			color:  Gray,
-			bounds: q.scanner.Bounds(),
-		},
-		size: q.scanner.Bounds().Dy(),
-	}
 	q.subdivide(q.root.(*CNNode))
 	return q, nil
 }
