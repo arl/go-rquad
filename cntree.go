@@ -20,11 +20,8 @@ import (
 // University, Kingdom of Saudi Arabia, in his paper "Cardinal Neighbor
 // Quadtree: a New Quadtree-based Structure for Constant-Time Neighbor Finding"
 type CNTree struct {
-	resolution int            // maximal resolution
-	scanner    binimg.Scanner // reference image
-	root       Node           // root node
-	leaves     NodeList       // leaf nodes (filled during creation)
-	nLevels    uint           // maximum number of levels of the quadtree
+	BasicTree
+	nLevels uint // maximum number of levels of the quadtree
 }
 
 // NewCNTree creates a cardinal neighbour quadtree and populates it.
@@ -53,8 +50,10 @@ func NewCNTree(scanner binimg.Scanner, resolution int) (*CNTree, error) {
 	}
 
 	q := &CNTree{
-		resolution: resolution,
-		scanner:    scanner,
+		BasicTree: BasicTree{
+			resolution: resolution,
+			scanner:    scanner,
+		},
 	}
 	// given the resolution and the size, we can determine
 	// the max number of levels in the tree
