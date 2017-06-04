@@ -23,7 +23,7 @@ import (
 type CNTree struct {
 	resolution int            // maximal resolution
 	scanner    binimg.Scanner // reference image
-	root       *CNNode        // root node
+	root       Node           // root node
 	leaves     NodeList       // leaf nodes (filled during creation)
 	nLevels    uint           // maximum number of levels of the quadtree
 }
@@ -62,17 +62,19 @@ func NewCNTree(scanner binimg.Scanner, resolution int) (*CNTree, error) {
 	q.computeNumLevels(scanner.Bounds().Dx())
 
 	q.root = q.newNode(q.scanner.Bounds(), nil, rootQuadrant)
-	q.subdivide(q.root)
+	q.subdivide(q.root.(*CNNode))
 	return q, nil
 }
 
 func (q *CNTree) newNode(bounds image.Rectangle, parent *CNNode, location Quadrant) *CNNode {
 	n := &CNNode{
-		color:    Gray,
-		bounds:   bounds,
-		parent:   parent,
-		location: location,
-		size:     bounds.Dx(),
+		basicNode: basicNode{
+			color:    Gray,
+			bounds:   bounds,
+			parent:   parent,
+			location: location,
+		},
+		size: bounds.Dx(),
 	}
 
 	uniform, col := q.scanner.Uniform(bounds)
@@ -211,7 +213,8 @@ func (q *CNTree) computeNumLevels(size int) {
 // locate returns the Node that contains the given point, or nil.
 func (q *CNTree) locate(pt image.Point) Node {
 	// binary branching method assumes the point lies in the bounds
-	b := q.root.bounds
+	cnroot := q.root.(*CNNode)
+	b := cnroot.bounds
 	if !pt.In(b) {
 		return nil
 	}
@@ -238,12 +241,12 @@ func (q *CNTree) locate(pt image.Point) Node {
 	// each of the x, y locational codes, it directly determines the index to
 	// the appropriate child cell.  When the indexed child cell has no children,
 	// the desired leaf cell has been reached and the operation is complete.
-	node = q.root
+	node = cnroot
 	for node.color == Gray {
 		k--
 		bit = 1 << k
 		childIdx := (ix&bit)>>k + ((iy&bit)>>k)<<1
-		node = node.c[childIdx]
+		node = node.c[childIdx].(*CNNode)
 	}
 	return node
 }
@@ -267,45 +270,9 @@ func (q *CNTree) locate(pt image.Point) Node {
 // The Southern cardinal neighbor is the right-most neighbor node among the
 // southern neighbors, noted cn3.
 type CNNode struct {
-	parent   *CNNode         // pointer to the parent node
-	c        [4]*CNNode      // children nodes
-	cn       [4]*CNNode      // cardinal neighbours
-	bounds   image.Rectangle // node bounds
-	color    Color           // node color
-	location Quadrant        // node location inside its parent
-	size     int             // size of a quadrant side
-}
-
-// Parent returns the quadtree node that is the parent of current one.
-func (n *CNNode) Parent() Node {
-	if n.parent == nil {
-		return nil
-	}
-	return n.parent
-}
-
-// Child returns current node child at specified quadrant.
-func (n *CNNode) Child(q Quadrant) Node {
-	if n.c[q] == nil {
-		return nil
-	}
-	return n.c[q]
-}
-
-// Bounds returns the bounds of the rectangular area represented by this
-// quadtree node.
-func (n *CNNode) Bounds() image.Rectangle {
-	return n.bounds
-}
-
-// Color returns the node Color.
-func (n *CNNode) Color() Color {
-	return n.color
-}
-
-// Location returns the node inside its parent quadrant
-func (n *CNNode) Location() Quadrant {
-	return n.location
+	basicNode
+	size int        // size of a quadrant side
+	cn   [4]*CNNode // cardinal neighbours
 }
 
 func (n *CNNode) updateNorthEast() {
@@ -316,7 +283,7 @@ func (n *CNNode) updateNorthEast() {
 	// step 2.2: Updating Cardinal Neighbors of NE sub-Quadrant.
 	if n.cn[North] != nil {
 		if n.cn[North].size < n.size {
-			c0 := n.c[Northwest]
+			c0 := n.c[Northwest].(*CNNode)
 			c0.cn[North] = n.cn[North]
 			// to update C1, we perform a west-east traversal
 			// recording the cumulative size of traversed nodes
@@ -326,7 +293,7 @@ func (n *CNNode) updateNorthEast() {
 				cur = cur.cn[East]
 				cumsize += cur.size
 			}
-			n.c[Northeast].cn[North] = cur
+			n.c[Northeast].(*CNNode).cn[North] = cur
 		}
 	}
 }
@@ -339,7 +306,7 @@ func (n *CNNode) updateSouthWest() {
 	// step 2.1: Updating Cardinal Neighbors of SW sub-Quadrant.
 	if n.cn[North] != nil {
 		if n.cn[North].size < n.size {
-			c0 := n.c[Northwest]
+			c0 := n.c[Northwest].(*CNNode)
 			c0.cn[North] = n.cn[North]
 			// to update C2, we perform a north-south traversal
 			// recording the cumulative size of traversed nodes
@@ -349,7 +316,7 @@ func (n *CNNode) updateSouthWest() {
 				cur = cur.cn[South]
 				cumsize += cur.size
 			}
-			n.c[Southwest].cn[West] = cur
+			n.c[Southwest].(*CNNode).cn[West] = cur
 		}
 	}
 }
@@ -367,12 +334,12 @@ func (n *CNNode) updateNeighbours() {
 		n.forEachNeighbourInDirection(West, func(qn Node) {
 			western := qn.(*CNNode)
 			if western.cn[East] == n {
-				if western.bounds.Max.Y > n.c[Southwest].bounds.Min.Y {
+				if western.bounds.Max.Y > n.c[Southwest].(*CNNode).bounds.Min.Y {
 					// choose SW
-					western.cn[East] = n.c[Southwest]
+					western.cn[East] = n.c[Southwest].(*CNNode)
 				} else {
 					// choose NW
-					western.cn[East] = n.c[Northwest]
+					western.cn[East] = n.c[Northwest].(*CNNode)
 				}
 				if western.cn[East].bounds.Min.Y == western.bounds.Min.Y {
 					western.cn[East].cn[West] = western
@@ -385,12 +352,12 @@ func (n *CNNode) updateNeighbours() {
 		n.forEachNeighbourInDirection(North, func(qn Node) {
 			northern := qn.(*CNNode)
 			if northern.cn[South] == n {
-				if northern.bounds.Max.X > n.c[Northeast].bounds.Min.X {
+				if northern.bounds.Max.X > n.c[Northeast].(*CNNode).bounds.Min.X {
 					// choose NE
-					northern.cn[South] = n.c[Northeast]
+					northern.cn[South] = n.c[Northeast].(*CNNode)
 				} else {
 					// choose NW
-					northern.cn[South] = n.c[Northwest]
+					northern.cn[South] = n.c[Northwest].(*CNNode)
 				}
 				if northern.cn[South].bounds.Min.X == northern.bounds.Min.X {
 					northern.cn[South].cn[North] = northern
@@ -403,7 +370,7 @@ func (n *CNNode) updateNeighbours() {
 		if n.cn[East] != nil && n.cn[East].cn[West] == n {
 			// To update the eastern CN of a quadrant Q that is being
 			// decomposed: Q.CN2.CN0=Q.Ch[NE]
-			n.cn[East].cn[West] = n.c[Northeast]
+			n.cn[East].cn[West] = n.c[Northeast].(*CNNode)
 		}
 	}
 
@@ -413,7 +380,7 @@ func (n *CNNode) updateNeighbours() {
 		// TODO: there seems to be a typo in the paper.
 		// should have read this instead: Q.CN3.CN1=Q.Ch[SW]
 		if n.cn[South] != nil && n.cn[South].cn[North] == n {
-			n.cn[South].cn[North] = n.c[Southwest]
+			n.cn[South].cn[North] = n.c[Southwest].(*CNNode)
 		}
 	}
 }

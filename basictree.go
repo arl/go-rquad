@@ -139,8 +139,8 @@ func (q *BasicTree) Root() Node {
 // It is a basic implementation of the Node interface, the one used in the
 // BasicTree implementation of the Quadtree interface.
 type basicNode struct {
-	parent   *basicNode      // pointer to the parent node
-	c        [4]*basicNode   // children nodes
+	parent   Node            // pointer to the parent node
+	c        [4]Node         // children nodes
 	bounds   image.Rectangle // node bounds
 	color    Color           // node color
 	location Quadrant        // node location inside its parent
