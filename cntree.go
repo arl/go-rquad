@@ -53,7 +53,7 @@ func NewCNTree(scanner imgscan.Scanner, resolution int) (*CNTree, error) {
 
 	// create root node
 	root := &CNNode{
-		basicNode: basicNode{
+		BasicNode: BasicNode{
 			color:  Gray,
 			bounds: scanner.Bounds(),
 		},
@@ -87,7 +87,7 @@ func NewCNTree(scanner imgscan.Scanner, resolution int) (*CNTree, error) {
 
 func (q *CNTree) newNode(bounds image.Rectangle, parent *CNNode, location Quadrant) *CNNode {
 	n := &CNNode{
-		basicNode: basicNode{
+		BasicNode: BasicNode{
 			color:    Gray,
 			bounds:   bounds,
 			parent:   parent,
@@ -255,7 +255,7 @@ func (q *CNTree) locate(pt image.Point) Node {
 // The Southern cardinal neighbor is the right-most neighbor node among the
 // southern neighbors, noted cn3.
 type CNNode struct {
-	basicNode
+	BasicNode
 	size int        // size of a quadrant side
 	cn   [4]*CNNode // cardinal neighbours
 }

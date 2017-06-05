@@ -43,7 +43,7 @@ func NewBasicTree(scanner imgscan.Scanner, resolution int) (*BasicTree, error) {
 	}
 
 	// create root node
-	root := &basicNode{
+	root := &BasicNode{
 		color:  Gray,
 		bounds: scanner.Bounds(),
 	}
@@ -73,8 +73,8 @@ func (q *BasicTree) ForEachLeaf(color Color, fn func(Node)) {
 	}
 }
 
-func (q *BasicTree) newChildNode(bounds image.Rectangle, parent *basicNode, location Quadrant) *basicNode {
-	n := &basicNode{
+func (q *BasicTree) newChildNode(bounds image.Rectangle, parent *BasicNode, location Quadrant) *BasicNode {
+	n := &BasicNode{
 		color:    Gray,
 		bounds:   bounds,
 		parent:   parent,
@@ -107,7 +107,7 @@ func (q *BasicTree) newChildNode(bounds image.Rectangle, parent *basicNode, loca
 	return n
 }
 
-func (q *BasicTree) subdivide(n *basicNode) {
+func (q *BasicTree) subdivide(n *BasicNode) {
 	//     x0   x1     x2
 	//  y0 .----.-------.
 	//     |    |       |
@@ -137,11 +137,11 @@ func (q *BasicTree) Root() Node {
 	return q.root
 }
 
-// basicNode represents a standard quadtree node.
+// BasicNode represents a standard quadtree node.
 //
 // It is a basic implementation of the Node interface, the one used in the
 // BasicTree implementation of the Quadtree interface.
-type basicNode struct {
+type BasicNode struct {
 	parent   Node            // pointer to the parent node
 	c        [4]Node         // children nodes
 	bounds   image.Rectangle // node bounds
@@ -150,7 +150,7 @@ type basicNode struct {
 }
 
 // Parent returns the quadtree node that is the parent of current one.
-func (n *basicNode) Parent() Node {
+func (n *BasicNode) Parent() Node {
 	if n.parent == nil {
 		return nil
 	}
@@ -158,7 +158,7 @@ func (n *basicNode) Parent() Node {
 }
 
 // Child returns current node child at specified quadrant.
-func (n *basicNode) Child(q Quadrant) Node {
+func (n *BasicNode) Child(q Quadrant) Node {
 	if n.c[q] == nil {
 		return nil
 	}
@@ -167,16 +167,16 @@ func (n *basicNode) Child(q Quadrant) Node {
 
 // Bounds returns the bounds of the rectangular area represented by this
 // quadtree node.
-func (n *basicNode) Bounds() image.Rectangle {
+func (n *BasicNode) Bounds() image.Rectangle {
 	return n.bounds
 }
 
 // Color returns the node Color.
-func (n *basicNode) Color() Color {
+func (n *BasicNode) Color() Color {
 	return n.color
 }
 
 // Location returns the node inside its parent quadrant
-func (n *basicNode) Location() Quadrant {
+func (n *BasicNode) Location() Quadrant {
 	return n.location
 }
