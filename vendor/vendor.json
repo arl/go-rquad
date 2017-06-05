@@ -3,10 +3,10 @@
 	"ignore": "test",
 	"package": [
 		{
-			"checksumSHA1": "kCLTIQaQD/keheqo2G5S7/f7tDQ=",
+			"checksumSHA1": "gA7DfPdQFexTauvjv3jF3bGGPIA=",
 			"path": "github.com/aurelien-rainone/imgtools",
-			"revision": "d6507b34973469a5700b0c2cfe50bcb9854bc51c",
-			"revisionTime": "2017-06-05T15:40:48Z"
+			"revision": "b5ad07d7d67b01f5c856befb4ec98dd867448852",
+			"revisionTime": "2017-06-05T20:15:58Z"
 		},
 		{
 			"checksumSHA1": "PEe5gRHyJqpoMWktvNmaa5248NE=",

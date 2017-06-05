@@ -9,9 +9,9 @@ import (
 	"github.com/aurelien-rainone/imgtools/binimg"
 )
 
-// pow2roundup rounds up to next higher power
+// Pow2Roundup rounds up to next higher power
 // of 2, or n if n is already a power of 2.
-func pow2roundup(x int) int {
+func Pow2Roundup(x int) int {
 	if x <= 1 {
 		return 1
 	}
@@ -69,7 +69,7 @@ func PowerOf2Image(src image.Image, pad color.Color) (image.Image, error) {
 	if src.Bounds().Dy() > side {
 		side = src.Bounds().Dy()
 	}
-	side = pow2roundup(side)
+	side = Pow2Roundup(side)
 
 	// compute the dimensions
 	x, y := src.Bounds().Min.X, src.Bounds().Min.Y
@@ -93,7 +93,7 @@ func IsPowerOf2Image(img image.Image) bool {
 	if img.Bounds().Dy() > maxdim {
 		maxdim = img.Bounds().Dy()
 	}
-	maxdim = pow2roundup(maxdim)
+	maxdim = Pow2Roundup(maxdim)
 	return maxdim == img.Bounds().Dx() &&
 		maxdim == img.Bounds().Dy()
 }
