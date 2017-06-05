@@ -3,11 +3,23 @@
 	"ignore": "test",
 	"package": [
 		{
-			"checksumSHA1": "QWeVvGGAHmQY64sLibtVrL+35us=",
-			"path": "github.com/aurelien-rainone/binimg",
-			"revision": "ddd5605ab6d6e27f3e48ae1c7b75ac38233947d9",
-			"revisionTime": "2016-10-16T17:30:04Z"
+			"checksumSHA1": "kCLTIQaQD/keheqo2G5S7/f7tDQ=",
+			"path": "github.com/aurelien-rainone/imgtools",
+			"revision": "cc8eb6774e8c2bc2c08d07200ef19a6df91555f1",
+			"revisionTime": "2017-05-31T07:58:46Z"
+		},
+		{
+			"checksumSHA1": "fmMrHRJb9i3W7/PxxYjHMXSS79s=",
+			"path": "github.com/aurelien-rainone/imgtools/binimg",
+			"revision": "cc8eb6774e8c2bc2c08d07200ef19a6df91555f1",
+			"revisionTime": "2017-05-31T07:58:46Z"
+		},
+		{
+			"checksumSHA1": "7VtWAOGrEx1iflfHVPSG7x5IGbo=",
+			"path": "github.com/aurelien-rainone/imgtools/imgscan",
+			"revision": "cc8eb6774e8c2bc2c08d07200ef19a6df91555f1",
+			"revisionTime": "2017-05-31T07:58:46Z"
 		}
 	],
-	"rootPath": "github.com/aurelien-rainone/go-quadtrees"
+	"rootPath": "github.com/aurelien-rainone/go-rquad"
 }

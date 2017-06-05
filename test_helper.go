@@ -1,12 +1,9 @@
 package rquad
 
 import (
-	"image"
-	"image/png"
-	"os"
 	"testing"
 
-	"github.com/aurelien-rainone/binimg"
+	"github.com/aurelien-rainone/imgtools/imgscan"
 )
 
 func check(t *testing.T, err error) {
@@ -21,48 +18,13 @@ func checkB(b *testing.B, err error) {
 	}
 }
 
-// helper function that uses binimg.NewFromImage internally.
-func loadPNG(filename string) (*binimg.Binary, error) {
-	var (
-		f   *os.File
-		img image.Image
-		bm  *binimg.Binary
-		err error
-	)
+type newQuadtreeFunc func(imgscan.Scanner, int) (Quadtree, error)
 
-	f, err = os.Open(filename)
-	if err != nil {
-		return bm, err
-	}
-	defer f.Close()
-
-	img, err = png.Decode(f)
-	if err != nil {
-		return bm, err
-	}
-
-	bm = binimg.NewFromImage(img)
-	return bm, nil
-}
-
-func savePNG(img image.Image, filename string) error {
-	out, err := os.Create(filename)
-	if err != nil {
-		return err
-	}
-	defer out.Close()
-
-	err = png.Encode(out, img)
-	return err
-}
-
-type newQuadtreeFunc func(binimg.Scanner, int) (Quadtree, error)
-
-func newBasicTree(scanner binimg.Scanner, resolution int) (Quadtree, error) {
+func newBasicTree(scanner imgscan.Scanner, resolution int) (Quadtree, error) {
 	return NewBasicTree(scanner, resolution)
 }
 
-func newCNTree(scanner binimg.Scanner, resolution int) (Quadtree, error) {
+func newCNTree(scanner imgscan.Scanner, resolution int) (Quadtree, error) {
 	return NewCNTree(scanner, resolution)
 }
 

@@ -5,33 +5,35 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/aurelien-rainone/binimg"
+	"github.com/aurelien-rainone/go-rquad/internal"
+	"github.com/aurelien-rainone/imgtools/binimg"
+	"github.com/aurelien-rainone/imgtools/imgscan"
 )
 
 func testQuadtreeNeighbours(t *testing.T, fn newQuadtreeFunc) {
 	var (
-		laby1, laby2 *binimg.Binary
+		laby1, laby2 *binimg.Image
 		err          error
 	)
 
 	// load both test images
-	laby1, err = loadPNG("./testdata/labyrinth1.32x32.png")
+	laby1, err = internal.LoadPNG("./testdata/labyrinth1.32x32.png")
 	check(t, err)
-	laby2, err = loadPNG("./testdata/labyrinth4.8x8.png")
+	laby2, err = internal.LoadPNG("./testdata/labyrinth4.8x8.png")
 	check(t, err)
 
 	// for logging purposes
-	imgAlias := map[*binimg.Binary]string{
+	imgAlias := map[*binimg.Image]string{
 		laby1: "'labyrinth1.32x32'",
 		laby2: "'cn-8x8-3.png'",
 	}
 
 	var testTbl = []struct {
-		img   *binimg.Binary // source image
-		res   int            // resolution
-		pt    image.Point    // queried point
-		white int            // num white neighbours
-		black int            // num black neighbours
+		img   *binimg.Image // source image
+		res   int           // resolution
+		pt    image.Point   // queried point
+		white int           // num white neighbours
+		black int           // num black neighbours
 	}{
 		{laby1, 8, image.Pt(3, 3), 1, 1},
 		{laby1, 8, image.Pt(11, 3), 2, 1},
@@ -58,7 +60,7 @@ func testQuadtreeNeighbours(t *testing.T, fn newQuadtreeFunc) {
 	}
 
 	for _, tt := range testTbl {
-		scanner, err := binimg.NewScanner(tt.img)
+		scanner, err := imgscan.NewScanner(tt.img)
 		check(t, err)
 		q, err := fn(scanner, tt.res)
 		check(t, err)
@@ -94,16 +96,16 @@ func TestCNTreeNeighbours(t *testing.T) {
 
 func TestNeighboursFinding(t *testing.T) {
 	var (
-		img     *binimg.Binary
-		scanner binimg.Scanner
+		img     *binimg.Image
+		scanner imgscan.Scanner
 		err     error
 	)
-	img, err = loadPNG("./testdata/random-1024x1024.png")
+	img, err = internal.LoadPNG("./testdata/random-1024x1024.png")
 	check(t, err)
 
 	r := rand.New(rand.NewSource(99))
 
-	scanner, err = binimg.NewScanner(img)
+	scanner, err = imgscan.NewScanner(img)
 	check(t, err)
 
 	// create a cardinal neighbour and a basic quadtree
@@ -144,16 +146,16 @@ func TestNeighboursFinding(t *testing.T) {
 
 func benchmarkNeighboursFinding(b *testing.B, fn newQuadtreeFunc, numNodes int, resolution int) {
 	var (
-		img     *binimg.Binary
-		scanner binimg.Scanner
+		img     *binimg.Image
+		scanner imgscan.Scanner
 		err     error
 	)
-	img, err = loadPNG("./testdata/bigsquare.png")
+	img, err = internal.LoadPNG("./testdata/bigsquare.png")
 	checkB(b, err)
 
 	r := rand.New(rand.NewSource(99))
 
-	scanner, err = binimg.NewScanner(img)
+	scanner, err = imgscan.NewScanner(img)
 	checkB(b, err)
 
 	// create a quadtree
