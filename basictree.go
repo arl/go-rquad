@@ -14,7 +14,7 @@ import (
 type BasicTree struct {
 	resolution int            // leaf node resolution
 	scanner    binimg.Scanner // reference image
-	root       *basicNode     // root node
+	root       Node           // root node
 	leaves     NodeList       // leaf nodes (filled during creation)
 }
 
@@ -41,17 +41,19 @@ func NewBasicTree(scanner binimg.Scanner, resolution int) (*BasicTree, error) {
 		return nil, errors.New("the image smaller dimension must be greater or equal to twice the resolution")
 	}
 
+	// create root node
+	root := &basicNode{
+		color:  Gray,
+		bounds: scanner.Bounds(),
+	}
+
+	// create quadtree
 	q := &BasicTree{
 		resolution: resolution,
 		scanner:    scanner,
+		root:       root,
 	}
-
-	// create the root node
-	q.root = &basicNode{
-		color:  Gray,
-		bounds: q.scanner.Bounds(),
-	}
-	q.subdivide(q.root)
+	q.subdivide(root)
 	return q, nil
 }
 
@@ -139,8 +141,8 @@ func (q *BasicTree) Root() Node {
 // It is a basic implementation of the Node interface, the one used in the
 // BasicTree implementation of the Quadtree interface.
 type basicNode struct {
-	parent   *basicNode      // pointer to the parent node
-	c        [4]*basicNode   // children nodes
+	parent   Node            // pointer to the parent node
+	c        [4]Node         // children nodes
 	bounds   image.Rectangle // node bounds
 	color    Color           // node color
 	location Quadrant        // node location inside its parent
