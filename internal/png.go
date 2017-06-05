@@ -8,7 +8,7 @@ import (
 	"github.com/aurelien-rainone/imgtools/binimg"
 )
 
-// helper function that uses binimg.NewFromImage internally.
+// LoadPNG is an helper function that uses binimg.NewFromImage internally.
 func LoadPNG(filename string) (*binimg.Image, error) {
 	var (
 		f   *os.File
@@ -32,6 +32,7 @@ func LoadPNG(filename string) (*binimg.Image, error) {
 	return bm, nil
 }
 
+// SavePNG is an helper function that encodes img to PNG and saves it on disk.
 func SavePNG(img image.Image, filename string) error {
 	out, err := os.Create(filename)
 	if err != nil {
