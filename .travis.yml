@@ -16,6 +16,6 @@ before_install:
 - go get -u -v github.com/golang/lint/golint
 
 script:
-- ./golint.bash
+- golint -set_exit_status ./...
 - go test ./...
 - ./cover.sh -x 'test_helper\.go'
