@@ -37,7 +37,7 @@ type Scanner interface {
 	AverageColor(r image.Rectangle) (bool, color.Color)
 }
 
-// ErrUnSupportedType is returned by NewScanner when an implementation of
+// ErrUnsupportedType is returned by NewScanner when an implementation of
 // imgscan.Scanner for the specific image type doesn't exist.
 var ErrUnsupportedType = errors.New("scanner: unsupported image type")
 
