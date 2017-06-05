@@ -52,7 +52,7 @@ func (c Bit) Other() Bit {
 }
 
 // Model is the color model for binary images.
-var Model color.Model = color.ModelFunc(model)
+var Model = color.ModelFunc(model)
 
 func model(c color.Color) color.Color {
 	if _, ok := c.(Bit); ok {
