@@ -43,7 +43,7 @@ func NewBasicTree(scanner imgscan.Scanner, resolution int) (*BasicTree, error) {
 	}
 
 	// create root node
-	root := &basicNode{
+	root := &BasicNode{
 		color:  Gray,
 		bounds: scanner.Bounds(),
 	}
@@ -73,8 +73,8 @@ func (q *BasicTree) ForEachLeaf(color Color, fn func(Node)) {
 	}
 }
 
-func (q *BasicTree) newChildNode(bounds image.Rectangle, parent *basicNode, location Quadrant) *basicNode {
-	n := &basicNode{
+func (q *BasicTree) newChildNode(bounds image.Rectangle, parent *BasicNode, location Quadrant) *BasicNode {
+	n := &BasicNode{
 		color:    Gray,
 		bounds:   bounds,
 		parent:   parent,
@@ -107,7 +107,7 @@ func (q *BasicTree) newChildNode(bounds image.Rectangle, parent *basicNode, loca
 	return n
 }
 
-func (q *BasicTree) subdivide(n *basicNode) {
+func (q *BasicTree) subdivide(n *BasicNode) {
 	//     x0   x1     x2
 	//  y0 .----.-------.
 	//     |    |       |
@@ -135,48 +135,4 @@ func (q *BasicTree) subdivide(n *basicNode) {
 // Root returns the quadtree root node.
 func (q *BasicTree) Root() Node {
 	return q.root
-}
-
-// basicNode represents a standard quadtree node.
-//
-// It is a basic implementation of the Node interface, the one used in the
-// BasicTree implementation of the Quadtree interface.
-type basicNode struct {
-	parent   Node            // pointer to the parent node
-	c        [4]Node         // children nodes
-	bounds   image.Rectangle // node bounds
-	color    Color           // node color
-	location Quadrant        // node location inside its parent
-}
-
-// Parent returns the quadtree node that is the parent of current one.
-func (n *basicNode) Parent() Node {
-	if n.parent == nil {
-		return nil
-	}
-	return n.parent
-}
-
-// Child returns current node child at specified quadrant.
-func (n *basicNode) Child(q Quadrant) Node {
-	if n.c[q] == nil {
-		return nil
-	}
-	return n.c[q]
-}
-
-// Bounds returns the bounds of the rectangular area represented by this
-// quadtree node.
-func (n *basicNode) Bounds() image.Rectangle {
-	return n.bounds
-}
-
-// Color returns the node Color.
-func (n *basicNode) Color() Color {
-	return n.color
-}
-
-// Location returns the node inside its parent quadrant
-func (n *basicNode) Location() Quadrant {
-	return n.location
 }
