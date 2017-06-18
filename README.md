@@ -80,19 +80,16 @@ poor predictive behavior, that are otherwise required with the standard method.
 
 ![Point location benchmark](https://raw.githubusercontent.com/aurelien-rainone/go-rquad/readme-docs/PointLocation.png)
 
-## References
+## Research papers
 
- - Bottom-up neighour finding techniques  
-(cf Hanan Samet 1981, *Neighbor Finding Techniques for Images Represented by
-Quadtrees*)
+ - Bottom-up neighour finding technique. cf Hanan Samet 1981,  
+*Neighbor Finding Techniques for Images Represented by Quadtrees*, [paper](https://raw.githubusercontent.com/aurelien-rainone/go-rquad/readme-docs/papers/a090240.pdf)
 
- - Cardinal Neighbor Quadtree  
-(cf Safwan Qasem 2015, *Cardinal Neighbor Quadtree: a New Quadtree-based
-Structure for Constant-Time Neighbor Finding*)
+ - Cardinal Neighbor Quadtree. cf Safwan Qasem 2015,  
+*Cardinal Neighbor Quadtree: a New Quadtree-based Structure for Constant-Time Neighbor Finding*, [paper](https://raw.githubusercontent.com/aurelien-rainone/go-rquad/readme-docs/papers/qasem-2015-ijca-907501.pdf)
 
- - Fast point location using binary branching method  
-(cf Frisken, Perry 2002, *Simple and Efficient Traversal Methods for Quadtrees
-and Octrees*)
+ - Fast point location using binary branching method. cf Frisken, Perry 2002  
+ *Simple and Efficient Traversal Methods for Quadtrees and Octrees*, [paper](https://raw.githubusercontent.com/aurelien-rainone/go-rquad/readme-docs/papers/Simple.and.Efficient.Traversal.Methods.for.Quadtrees.TR2002-41.pdf)
 
 
 ## License
