@@ -19,9 +19,8 @@ func NewBasicTree(nodeModel NodeModel) *BasicTree {
 	// create quadtree
 	q := &BasicTree{
 		nodeModel: nodeModel,
+		root:      nodeModel.NewRoot(),
 	}
-	// create root node
-	q.root = q.nodeModel.NewRoot()
 
 	q.subdivide(q.root)
 	return q
