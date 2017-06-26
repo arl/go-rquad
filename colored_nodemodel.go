@@ -2,20 +2,63 @@ package rquad
 
 import (
 	"errors"
+	"fmt"
 	"image"
 
 	"github.com/aurelien-rainone/imgtools/binimg"
 	"github.com/aurelien-rainone/imgtools/imgscan"
 )
 
-type BinaryNodeModel struct {
+// Color is the set of colors that can take a Node.
+type Color byte
+
+const (
+	// Black is the color of leaf nodes
+	// that are considered as obstructed.
+	Black Color = 0 + iota
+
+	// White is the color of leaf nodes
+	// that are considered as free.
+	White
+
+	// Gray is the color of non-leaf nodes
+	// that contain both black and white children.
+	Gray
+)
+
+const colorName = "BlackWhiteGray"
+
+var colorIndex = [...]uint8{0, 5, 10, 14}
+
+func (i Color) String() string {
+	if i >= Color(len(colorIndex)-1) {
+		return fmt.Sprintf("Color(%d)", i)
+	}
+	return colorName[colorIndex[i]:colorIndex[i+1]]
+}
+
+type ColoredNode struct {
+	BasicNode
+	color Color // node color
+}
+
+// Bounds returns the bounds of the rectangular area represented by this
+// quadtree node.
+func (n *ColoredNode) Bounds() image.Rectangle {
+	return n.bounds
+}
+
+// IsLeaf returns wether the node is a leaf node
+func (n *ColoredNode) IsLeaf() bool {
+	return n.leaf
+}
+
+type ColoredNodeModel struct {
 	scanner    imgscan.Scanner
 	resolution int
 }
 
-// Create a NewBinImageSetter, that knows how to create quadtree nodes from a
-// binary image
-func NewBinaryNodeModel(scanner imgscan.Scanner, resolution int) (*BinaryNodeModel, error) {
+func NewColoredNodeModel(scanner imgscan.Scanner, resolution int) (*ColoredNodeModel, error) {
 	if resolution < 1 {
 		return nil, errors.New("resolution must be greater than 0")
 	}
@@ -31,13 +74,13 @@ func NewBinaryNodeModel(scanner imgscan.Scanner, resolution int) (*BinaryNodeMod
 	if minDim < resolution*2 {
 		return nil, errors.New("the image smaller dimension must be greater or equal to twice the resolution")
 	}
-	return &BinaryNodeModel{
+	return &ColoredNodeModel{
 		scanner:    scanner,
 		resolution: resolution,
 	}, nil
 }
 
-func (s *BinaryNodeModel) NewRoot() Node {
+func (s *ColoredNodeModel) NewRoot() Node {
 	return &ColoredNode{
 		BasicNode: BasicNode{
 			leaf:   false,
@@ -46,7 +89,7 @@ func (s *BinaryNodeModel) NewRoot() Node {
 	}
 }
 
-func (s *BinaryNodeModel) NewNode(parent Node, location Quadrant, bounds image.Rectangle) Node {
+func (s *ColoredNodeModel) NewNode(parent Node, location Quadrant, bounds image.Rectangle) Node {
 	return &ColoredNode{
 		BasicNode: BasicNode{
 			bounds:   bounds,
@@ -56,7 +99,7 @@ func (s *BinaryNodeModel) NewNode(parent Node, location Quadrant, bounds image.R
 	}
 }
 
-func (s *BinaryNodeModel) ScanAndSet(n *Node) {
+func (s *ColoredNodeModel) ScanAndSet(n *Node) {
 	colNode := (*n).(*ColoredNode)
 	uniform, col := s.scanner.IsUniform((*colNode).bounds)
 	switch uniform {
