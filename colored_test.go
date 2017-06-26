@@ -44,9 +44,9 @@ func TestBasicTreeWithColoredNodes(t *testing.T) {
 		check(t, err)
 
 		for _, res := range tt.resolutions {
-			nodeSetter, err := NewBinaryNodeModel(scanner, res)
+			model, err := NewBinImgTreeModel(scanner, res)
 			check(t, err)
-			q := NewBasicTree(nodeSetter)
+			q := NewBasicTree(model)
 
 			var white, black int
 			q.ForEachLeaf(Gray, func(n Node) {

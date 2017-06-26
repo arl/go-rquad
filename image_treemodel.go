@@ -53,12 +53,13 @@ func (n *ColoredNode) IsLeaf() bool {
 	return n.leaf
 }
 
-type ColoredNodeModel struct {
+// TODO: this could also have sense to have this called ImageTreeModel
+type ImageTreeModel struct {
 	scanner    imgscan.Scanner
 	resolution int
 }
 
-func NewColoredNodeModel(scanner imgscan.Scanner, resolution int) (*ColoredNodeModel, error) {
+func NewImageTreeModel(scanner imgscan.Scanner, resolution int) (*ImageTreeModel, error) {
 	if resolution < 1 {
 		return nil, errors.New("resolution must be greater than 0")
 	}
@@ -74,13 +75,13 @@ func NewColoredNodeModel(scanner imgscan.Scanner, resolution int) (*ColoredNodeM
 	if minDim < resolution*2 {
 		return nil, errors.New("the image smaller dimension must be greater or equal to twice the resolution")
 	}
-	return &ColoredNodeModel{
+	return &ImageTreeModel{
 		scanner:    scanner,
 		resolution: resolution,
 	}, nil
 }
 
-func (s *ColoredNodeModel) NewRoot() Node {
+func (s *ImageTreeModel) NewRoot() Node {
 	return &ColoredNode{
 		BasicNode: BasicNode{
 			leaf:   false,
@@ -89,7 +90,7 @@ func (s *ColoredNodeModel) NewRoot() Node {
 	}
 }
 
-func (s *ColoredNodeModel) NewNode(parent Node, location Quadrant, bounds image.Rectangle) Node {
+func (s *ImageTreeModel) NewNode(parent Node, location Quadrant, bounds image.Rectangle) Node {
 	return &ColoredNode{
 		BasicNode: BasicNode{
 			bounds:   bounds,
@@ -99,7 +100,7 @@ func (s *ColoredNodeModel) NewNode(parent Node, location Quadrant, bounds image.
 	}
 }
 
-func (s *ColoredNodeModel) ScanAndSet(n *Node) {
+func (s *ImageTreeModel) ScanAndSet(n *Node) {
 	colNode := (*n).(*ColoredNode)
 	uniform, col := s.scanner.IsUniform((*colNode).bounds)
 	switch uniform {

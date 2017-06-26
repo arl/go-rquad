@@ -8,14 +8,12 @@ import (
 	"github.com/aurelien-rainone/imgtools/imgscan"
 )
 
-type BinaryNodeModel struct {
+type BinImgTreeModel struct {
 	scanner    imgscan.Scanner
 	resolution int
 }
 
-// Create a NewBinImageSetter, that knows how to create quadtree nodes from a
-// binary image
-func NewBinaryNodeModel(scanner imgscan.Scanner, resolution int) (*BinaryNodeModel, error) {
+func NewBinImgTreeModel(scanner imgscan.Scanner, resolution int) (*BinImgTreeModel, error) {
 	if resolution < 1 {
 		return nil, errors.New("resolution must be greater than 0")
 	}
@@ -31,22 +29,22 @@ func NewBinaryNodeModel(scanner imgscan.Scanner, resolution int) (*BinaryNodeMod
 	if minDim < resolution*2 {
 		return nil, errors.New("the image smaller dimension must be greater or equal to twice the resolution")
 	}
-	return &BinaryNodeModel{
+	return &BinImgTreeModel{
 		scanner:    scanner,
 		resolution: resolution,
 	}, nil
 }
 
-func (s *BinaryNodeModel) NewRoot() Node {
+func (m *BinImgTreeModel) NewRoot() Node {
 	return &ColoredNode{
 		BasicNode: BasicNode{
 			leaf:   false,
-			bounds: s.scanner.Bounds(),
+			bounds: m.scanner.Bounds(),
 		},
 	}
 }
 
-func (s *BinaryNodeModel) NewNode(parent Node, location Quadrant, bounds image.Rectangle) Node {
+func (m *BinImgTreeModel) NewNode(parent Node, location Quadrant, bounds image.Rectangle) Node {
 	return &ColoredNode{
 		BasicNode: BasicNode{
 			bounds:   bounds,
@@ -56,9 +54,9 @@ func (s *BinaryNodeModel) NewNode(parent Node, location Quadrant, bounds image.R
 	}
 }
 
-func (s *BinaryNodeModel) ScanAndSet(n *Node) {
+func (m *BinImgTreeModel) ScanAndSet(n *Node) {
 	colNode := (*n).(*ColoredNode)
-	uniform, col := s.scanner.IsUniform((*colNode).bounds)
+	uniform, col := m.scanner.IsUniform((*colNode).bounds)
 	switch uniform {
 	case true:
 		// quadrant is uniform, won't need to subdivide any further
@@ -70,7 +68,7 @@ func (s *BinaryNodeModel) ScanAndSet(n *Node) {
 		colNode.leaf = true
 	case false:
 		// if we reached maximal resolution..
-		if colNode.bounds.Dx()/2 < s.resolution || colNode.bounds.Dy()/2 < s.resolution {
+		if colNode.bounds.Dx()/2 < m.resolution || colNode.bounds.Dy()/2 < m.resolution {
 			// ...make this node a black leaf, instead of gray
 			colNode.color = Black
 			colNode.leaf = true
