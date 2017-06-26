@@ -9,13 +9,13 @@ import (
 // It performs a standard quadtree subdivision of the rectangular area
 // represented by an binimg.Scanner.
 type BasicTree struct {
-	resolution int        // leaf node resolution
-	nodeSetter NodeSetter // node setter
-	root       Node       // root node
-	leaves     NodeList   // leaf nodes (filled during creation)
+	resolution int       // leaf node resolution
+	nodeSetter NodeModel // node setter
+	root       Node      // root node
+	leaves     NodeList  // leaf nodes (filled during creation)
 }
 
-func NewBasicTree(nodeSetter NodeSetter) *BasicTree {
+func NewBasicTree(nodeSetter NodeModel) *BasicTree {
 	// create quadtree
 	q := &BasicTree{
 		nodeSetter: nodeSetter,
