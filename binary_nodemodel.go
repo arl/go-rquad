@@ -70,12 +70,12 @@ func (s *BinaryNodeModel) ScanAndSet(n *Node) {
 		colNode.leaf = true
 	case false:
 		// if we reached maximal resolution..
-		if (*colNode).bounds.Dx()/2 < s.resolution || (*colNode).bounds.Dy()/2 < s.resolution {
+		if colNode.bounds.Dx()/2 < s.resolution || colNode.bounds.Dy()/2 < s.resolution {
 			// ...make this node a black leaf, instead of gray
-			(*colNode).color = Black
-			(*colNode).leaf = true
+			colNode.color = Black
+			colNode.leaf = true
 		} else {
-			(*colNode).leaf = false
+			colNode.leaf = false
 		}
 	}
 }
