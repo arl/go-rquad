@@ -1,6 +1,8 @@
 package rquad
 
 import (
+	"image/color"
+
 	"github.com/aurelien-rainone/imgtools/binimg"
 	"github.com/aurelien-rainone/imgtools/imgscan"
 )
@@ -21,16 +23,16 @@ func (m *BinImgTreeModel) ScanAndSet(n *Node) {
 	case true:
 		// quadrant is uniform, won't need to subdivide any further
 		if col == binimg.White {
-			colNode.color = White
+			colNode.color = color.White
 		} else {
-			colNode.color = Black
+			colNode.color = color.Black
 		}
 		colNode.leaf = true
 	case false:
 		// if we reached maximal resolution..
 		if colNode.bounds.Dx()/2 < m.resolution || colNode.bounds.Dy()/2 < m.resolution {
 			// ...make this node a black leaf, instead of gray
-			colNode.color = Black
+			colNode.color = color.Black
 			colNode.leaf = true
 		} else {
 			colNode.leaf = false

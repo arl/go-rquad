@@ -2,43 +2,15 @@ package rquad
 
 import (
 	"errors"
-	"fmt"
 	"image"
+	"image/color"
 
 	"github.com/aurelien-rainone/imgtools/imgscan"
 )
 
-// Color is the set of colors that can take a Node.
-type Color byte
-
-const (
-	// Black is the color of leaf nodes
-	// that are considered as obstructed.
-	Black Color = 0 + iota
-
-	// White is the color of leaf nodes
-	// that are considered as free.
-	White
-
-	// Gray is the color of non-leaf nodes
-	// that contain both black and white children.
-	Gray
-)
-
-const colorName = "BlackWhiteGray"
-
-var colorIndex = [...]uint8{0, 5, 10, 14}
-
-func (i Color) String() string {
-	if i >= Color(len(colorIndex)-1) {
-		return fmt.Sprintf("Color(%d)", i)
-	}
-	return colorName[colorIndex[i]:colorIndex[i+1]]
-}
-
 type ColoredNode struct {
 	BasicNode
-	color Color // node color
+	color color.Color // node color
 }
 
 // Bounds returns the bounds of the rectangular area represented by this

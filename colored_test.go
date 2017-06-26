@@ -2,6 +2,7 @@ package rquad
 
 import (
 	"image"
+	"image/color"
 	"testing"
 
 	"github.com/aurelien-rainone/go-rquad/internal"
@@ -14,7 +15,7 @@ func check(t *testing.T, err error) {
 	}
 }
 
-func TestBasicTreeWithColoredNodes(t *testing.T) {
+func TestBasicBinImageTree(t *testing.T) {
 	var testTbl = []struct {
 		fn          string // filename
 		resolutions []int  // various resolutions
@@ -49,14 +50,14 @@ func TestBasicTreeWithColoredNodes(t *testing.T) {
 			q := NewBasicTree(model)
 
 			var white, black int
-			q.ForEachLeaf(Gray, func(n Node) {
+			q.ForEachLeaf(func(n Node) {
 				switch n.(*ColoredNode).color {
-				case White:
+				case color.White:
 					white++
-				case Black:
+				case color.Black:
 					black++
-				case Gray:
-					t.Fatalf("got gray leaf node")
+				default:
+					t.Fatalf("node color is neither white nor black, color: %v\n", n.(*ColoredNode).color)
 				}
 			})
 			if white != tt.white {
