@@ -1,57 +1,17 @@
 package rquad
 
 import (
-	"errors"
-	"image"
-
 	"github.com/aurelien-rainone/imgtools/binimg"
 	"github.com/aurelien-rainone/imgtools/imgscan"
 )
 
 type BinImgTreeModel struct {
-	scanner    imgscan.Scanner
-	resolution int
+	*ImageTreeModel
 }
 
 func NewBinImgTreeModel(scanner imgscan.Scanner, resolution int) (*BinImgTreeModel, error) {
-	if resolution < 1 {
-		return nil, errors.New("resolution must be greater than 0")
-	}
-
-	// To ensure a consistent behavior and eliminate corner cases,
-	// the Quadtree's root node needs to have children. Thus, the
-	// first instantiated Node needs to always be subdivided.
-	// This condition asserts the resolution is respected.
-	minDim := scanner.Bounds().Dx()
-	if scanner.Bounds().Dy() < minDim {
-		minDim = scanner.Bounds().Dy()
-	}
-	if minDim < resolution*2 {
-		return nil, errors.New("the image smaller dimension must be greater or equal to twice the resolution")
-	}
-	return &BinImgTreeModel{
-		scanner:    scanner,
-		resolution: resolution,
-	}, nil
-}
-
-func (m *BinImgTreeModel) NewRoot() Node {
-	return &ColoredNode{
-		BasicNode: BasicNode{
-			leaf:   false,
-			bounds: m.scanner.Bounds(),
-		},
-	}
-}
-
-func (m *BinImgTreeModel) NewNode(parent Node, location Quadrant, bounds image.Rectangle) Node {
-	return &ColoredNode{
-		BasicNode: BasicNode{
-			bounds:   bounds,
-			location: location,
-			parent:   parent,
-		},
-	}
+	model, err := NewImageTreeModel(scanner, resolution)
+	return &BinImgTreeModel{model}, err
 }
 
 func (m *BinImgTreeModel) ScanAndSet(n *Node) {

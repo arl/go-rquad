@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"image"
 
-	"github.com/aurelien-rainone/imgtools/binimg"
 	"github.com/aurelien-rainone/imgtools/imgscan"
 )
 
@@ -97,29 +96,5 @@ func (s *ImageTreeModel) NewNode(parent Node, location Quadrant, bounds image.Re
 			location: location,
 			parent:   parent,
 		},
-	}
-}
-
-func (s *ImageTreeModel) ScanAndSet(n *Node) {
-	colNode := (*n).(*ColoredNode)
-	uniform, col := s.scanner.IsUniform((*colNode).bounds)
-	switch uniform {
-	case true:
-		// quadrant is uniform, won't need to subdivide any further
-		if col == binimg.White {
-			colNode.color = White
-		} else {
-			colNode.color = Black
-		}
-		colNode.leaf = true
-	case false:
-		// if we reached maximal resolution..
-		if (*colNode).bounds.Dx()/2 < s.resolution || (*colNode).bounds.Dy()/2 < s.resolution {
-			// ...make this node a black leaf, instead of gray
-			(*colNode).color = Black
-			(*colNode).leaf = true
-		} else {
-			(*colNode).leaf = false
-		}
 	}
 }
