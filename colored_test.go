@@ -21,19 +21,15 @@ func TestBasicTreeWithColoredNodes(t *testing.T) {
 		white       int    // number of expected white nodes
 		black       int    // number of expected black nodes
 	}{
-		{"./testdata/labyrinth3.32x32.png", []int{8}, 5, 5},
-
-		/*
-			{"./testdata/labyrinth1.32x32.png", []int{1, 2, 3, 4, 5, 6, 7, 8}, 7, 3},
-			{"./testdata/labyrinth1.32x32.png", []int{9, 15}, 1, 3},
-			{"./testdata/labyrinth1.32x32.png", []int{16}, 1, 3},
-			{"./testdata/labyrinth2.32x32.png", []int{1, 2, 3, 4}, 33, 19},
-			{"./testdata/labyrinth2.32x32.png", []int{5, 6, 7, 8}, 0, 16},
-			{"./testdata/labyrinth2.32x32.png", []int{9, 15}, 0, 4},
-			{"./testdata/labyrinth3.32x32.png", []int{1, 2, 3, 4}, 7, 6},
-			{"./testdata/labyrinth3.32x32.png", []int{5, 6, 7, 8}, 5, 5},
-			{"./testdata/labyrinth3.32x32.png", []int{9, 15}, 1, 3},
-		*/
+		{"./testdata/labyrinth1.32x32.png", []int{1, 2, 3, 4, 5, 6, 7, 8}, 7, 3},
+		{"./testdata/labyrinth1.32x32.png", []int{9, 15}, 1, 3},
+		{"./testdata/labyrinth1.32x32.png", []int{16}, 1, 3},
+		{"./testdata/labyrinth2.32x32.png", []int{1, 2, 3, 4}, 33, 19},
+		{"./testdata/labyrinth2.32x32.png", []int{5, 6, 7, 8}, 0, 16},
+		{"./testdata/labyrinth2.32x32.png", []int{9, 15}, 0, 4},
+		{"./testdata/labyrinth3.32x32.png", []int{1, 2, 3, 4}, 7, 6},
+		{"./testdata/labyrinth3.32x32.png", []int{5, 6, 7, 8}, 5, 5},
+		{"./testdata/labyrinth3.32x32.png", []int{9, 15}, 1, 3},
 	}
 	var (
 		err     error
