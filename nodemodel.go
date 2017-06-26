@@ -11,5 +11,5 @@ type ScanAndSetter interface {
 type NodeModel interface {
 	ScanAndSetter
 	NewRoot() Node
-	NewNode(Node, Quadrant, image.Rectangle) Node
+	NewNode(parent Node, location Quadrant, bounds image.Rectangle) Node
 }
