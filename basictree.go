@@ -33,7 +33,7 @@ func NewBasicTree(treeModel TreeModel) *BasicTree {
 // color, Black or White.
 // NOTE: As by definition, Gray leaves do not exist, passing Gray to
 // ForEachLeaf should return all leaves, independently of their color.
-func (q *BasicTree) ForEachLeaf(color Color, fn func(Node)) {
+func (q *BasicTree) ForEachLeaf(fn func(Node)) {
 	for _, n := range q.leaves {
 		if n.IsLeaf() {
 			fn(n)

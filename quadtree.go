@@ -28,7 +28,7 @@ type Quadtree interface {
 	// color, Black or White.
 	// NOTE: As by definition, Gray leaves do not exist, passing Gray to
 	// ForEachLeaf should return all leaves, independently of their color.
-	ForEachLeaf(Color, func(Node))
+	ForEachLeaf(func(Node))
 
 	// Root returns the quadtree root node.
 	Root() Node
