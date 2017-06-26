@@ -139,7 +139,6 @@ func (s *BinImageNodeSetter) NewRoot() Node {
 			leaf:   false,
 			bounds: s.scanner.Bounds(),
 		},
-		color: Gray,
 	}
 }
 
@@ -150,7 +149,6 @@ func (s *BinImageNodeSetter) NewNode(parent Node, location Quadrant, bounds imag
 			location: location,
 			parent:   parent,
 		},
-		color: Gray,
 	}
 }
 
