@@ -10,18 +10,18 @@ import (
 // represented by an binimg.Scanner.
 type BasicTree struct {
 	resolution int       // leaf node resolution
-	nodeSetter NodeModel // node setter
+	nodeModel  NodeModel // node setter
 	root       Node      // root node
 	leaves     NodeList  // leaf nodes (filled during creation)
 }
 
-func NewBasicTree(nodeSetter NodeModel) *BasicTree {
+func NewBasicTree(nodeModel NodeModel) *BasicTree {
 	// create quadtree
 	q := &BasicTree{
-		nodeSetter: nodeSetter,
+		nodeModel: nodeModel,
 	}
 	// create root node
-	q.root = q.nodeSetter.NewRoot()
+	q.root = q.nodeModel.NewRoot()
 
 	q.subdivide(q.root)
 	return q
@@ -43,8 +43,8 @@ func (q *BasicTree) ForEachLeaf(color Color, fn func(Node)) {
 }
 
 func (q *BasicTree) newChildNode(bounds image.Rectangle, parent Node, location Quadrant) Node {
-	n := q.nodeSetter.NewNode(parent, location, bounds)
-	q.nodeSetter.ScanAndSet(&n)
+	n := q.nodeModel.NewNode(parent, location, bounds)
+	q.nodeModel.ScanAndSet(&n)
 	if n.IsLeaf() {
 		// fills leaves slices
 		q.leaves = append(q.leaves, n)
