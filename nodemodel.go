@@ -1,6 +1,8 @@
 package rquad
 
-import "image"
+import (
+	"image"
+)
 
 type ScanAndSetter interface {
 	ScanAndSet(*Node)
