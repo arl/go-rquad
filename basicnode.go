@@ -7,11 +7,12 @@ import "image"
 // It is a basic implementation of the Node interface, the one used in the
 // BasicTree implementation of the Quadtree interface.
 type BasicNode struct {
-	parent   Node            // pointer to the parent node
-	c        [4]Node         // children nodes
-	bounds   image.Rectangle // node bounds
-	color    Color           // node color
-	location Quadrant        // node location inside its parent
+	parent Node            // pointer to the parent node
+	c      [4]Node         // children nodes
+	bounds image.Rectangle // node bounds
+	//color    Color           // node color
+	location Quadrant // node location inside its parent
+	leaf     bool     // node is a leaf?
 }
 
 // Parent returns the quadtree node that is the parent of current one.
@@ -20,6 +21,11 @@ func (n *BasicNode) Parent() Node {
 		return nil
 	}
 	return n.parent
+}
+
+// SetChild set the child node at specified quadrant.
+func (n *BasicNode) SetChild(q Quadrant, c Node) {
+	n.c[q] = c
 }
 
 // Child returns current node child at specified quadrant.
@@ -37,9 +43,9 @@ func (n *BasicNode) Bounds() image.Rectangle {
 }
 
 // Color returns the node Color.
-func (n *BasicNode) Color() Color {
-	return n.color
-}
+//func (n *BasicNode) Color() Color {
+//return n.color
+//}
 
 // Location returns the node inside its parent quadrant
 func (n *BasicNode) Location() Quadrant {
