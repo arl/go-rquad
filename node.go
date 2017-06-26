@@ -53,9 +53,6 @@ type Node interface {
 // NodeList is a slice of Node instances.
 type NodeList []Node
 
-type RectScanner interface {
-}
-
 type ColoredNode struct {
 	BasicNode
 	color Color // node color
