@@ -40,21 +40,12 @@ func (i Color) String() string {
 // Node defines the interface for a quadtree node.
 type Node interface {
 
-	// Parent returns the quadtree node that is the parent of current one.
-	Parent() Node
-
-	// Child returns current node child at specified quadrant.
-	Child(Quadrant) Node
-
 	// SetChild set the child node at specified quadrant.
 	SetChild(q Quadrant, n Node)
 
 	// Bounds returns the bounds of the rectangular area represented by this
 	// quadtree node.
 	Bounds() image.Rectangle
-
-	// Location returns the node inside its parent quadrant
-	Location() Quadrant
 
 	IsLeaf() bool
 }
