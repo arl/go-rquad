@@ -3,7 +3,7 @@ package rquad
 import (
 	"testing"
 
-	"github.com/aurelien-rainone/imgtools/imgscan"
+	"github.com/arl/imgtools/imgscan"
 )
 
 func check(t *testing.T, err error) {

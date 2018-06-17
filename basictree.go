@@ -4,8 +4,8 @@ import (
 	"errors"
 	"image"
 
-	"github.com/aurelien-rainone/imgtools/binimg"
-	"github.com/aurelien-rainone/imgtools/imgscan"
+	"github.com/arl/imgtools/binimg"
+	"github.com/arl/imgtools/imgscan"
 )
 
 // BasicTree is a standard implementation of a region quadtree.

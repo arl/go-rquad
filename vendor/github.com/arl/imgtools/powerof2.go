@@ -6,7 +6,7 @@ import (
 	"image/color"
 	"image/draw"
 
-	"github.com/aurelien-rainone/imgtools/binimg"
+	"github.com/arl/imgtools/binimg"
 )
 
 // Pow2Roundup rounds up to next higher power

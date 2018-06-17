@@ -5,9 +5,9 @@ import (
 	"image"
 	"math"
 
-	"github.com/aurelien-rainone/imgtools"
-	"github.com/aurelien-rainone/imgtools/binimg"
-	"github.com/aurelien-rainone/imgtools/imgscan"
+	"github.com/arl/imgtools"
+	"github.com/arl/imgtools/binimg"
+	"github.com/arl/imgtools/imgscan"
 )
 
 // CNTree implements a Cardinal Neighbour Quadtree, a quadtree structure that

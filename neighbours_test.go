@@ -5,9 +5,9 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/aurelien-rainone/go-rquad/internal"
-	"github.com/aurelien-rainone/imgtools/binimg"
-	"github.com/aurelien-rainone/imgtools/imgscan"
+	"github.com/arl/go-rquad/internal"
+	"github.com/arl/imgtools/binimg"
+	"github.com/arl/imgtools/imgscan"
 )
 
 func testQuadtreeNeighbours(t *testing.T, fn newQuadtreeFunc) {

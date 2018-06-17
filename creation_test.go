@@ -4,8 +4,8 @@ import (
 	"image"
 	"testing"
 
-	"github.com/aurelien-rainone/go-rquad/internal"
-	"github.com/aurelien-rainone/imgtools/imgscan"
+	"github.com/arl/go-rquad/internal"
+	"github.com/arl/imgtools/imgscan"
 )
 
 func benchmarkQuadtreeCreation(b *testing.B, fn newQuadtreeFunc, resolution int) {

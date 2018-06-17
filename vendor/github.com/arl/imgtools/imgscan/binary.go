@@ -5,7 +5,7 @@ import (
 	"image"
 	"image/color"
 
-	"github.com/aurelien-rainone/imgtools/binimg"
+	"github.com/arl/imgtools/binimg"
 )
 
 type binaryScanner struct {

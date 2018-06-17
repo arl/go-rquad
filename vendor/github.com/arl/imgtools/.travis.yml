@@ -1,0 +1,20 @@
+language: go
+
+go: 
+ - tip
+
+sudo: false
+
+before_script:
+  - go vet ./...
+
+before_install:
+- go get -u -v github.com/kardianos/govendor
+- go get -u -v github.com/mattn/goveralls
+- go get -u -v github.com/wadey/gocovmerge
+- if ! go get -u -v github.com/golang/tools/cmd/cover; then go get -u -v golang.org/x/tools/cmd/cover; fi
+- go get -u -v github.com/golang/lint/golint
+
+script:
+- golint ./...
+- ./cover.sh -x 'test_helper\.go'
