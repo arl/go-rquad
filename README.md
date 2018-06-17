@@ -1,7 +1,7 @@
 # Region quadtrees in Go
-[![Build Status](https://travis-ci.org/aurelien-rainone/go-rquad.svg?branch=master)](https://travis-ci.org/aurelien-rainone/go-rquad) [![Coverage Status](https://coveralls.io/repos/github/aurelien-rainone/go-rquad/badge.svg?branch=master)](https://coveralls.io/github/aurelien-rainone/go-rquad?branch=master)
-[![Go Report Card](https://goreportcard.com/badge/github.com/aurelien-rainone/go-rquad)](https://goreportcard.com/report/github.com/aurelien-rainone/go-rquad)
-[![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](http://godoc.org/github.com/aurelien-rainone/go-rquad) 
+[![Build Status](https://travis-ci.org/arl/go-rquad.svg?branch=master)](https://travis-ci.org/arl/go-rquad) [![Coverage Status](https://coveralls.io/repos/github/arl/go-rquad/badge.svg?branch=master)](https://coveralls.io/github/arl/go-rquad?branch=master)
+[![Go Report Card](https://goreportcard.com/badge/github.com/arl/go-rquad)](https://goreportcard.com/report/github.com/arl/go-rquad)
+[![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](http://godoc.org/github.com/arl/go-rquad) 
 
 **Region quadtrees and efficient neighbour finding techniques in Go**
 
@@ -21,7 +21,7 @@ resolution. For example, the temperatures in an area may be stored as a
 quadtree where each leaf node stores the average temperature over the
 subregion it represents.
 
-In this package, quadtrees implement the [`imgscan.Scanner`](https://github.com/aurelien-rainone/imgtools/tree/master/imgscan) interface,
+In this package, quadtrees implement the [`imgscan.Scanner`](https://github.com/arl/imgtools/tree/master/imgscan) interface,
 this provides a way to scan (i.e extract) the pixels in order to perform the subdivisions.
 
 ## API Overview
@@ -74,22 +74,22 @@ poor predictive behavior, that are otherwise required with the standard method.
 
 ## Benchmarks
 
-![Quadtree creation benchmark](https://raw.githubusercontent.com/aurelien-rainone/go-rquad/readme-docs/Creation.png)
+![Quadtree creation benchmark](https://raw.githubusercontent.com/arl/go-rquad/readme-docs/Creation.png)
 
-![Neighbour finding benchmark](https://raw.githubusercontent.com/aurelien-rainone/go-rquad/readme-docs/Neighbours.png)
+![Neighbour finding benchmark](https://raw.githubusercontent.com/arl/go-rquad/readme-docs/Neighbours.png)
 
-![Point location benchmark](https://raw.githubusercontent.com/aurelien-rainone/go-rquad/readme-docs/PointLocation.png)
+![Point location benchmark](https://raw.githubusercontent.com/arl/go-rquad/readme-docs/PointLocation.png)
 
 ## Research papers
 
  - Bottom-up neighour finding technique. cf Hanan Samet 1981,  
-*Neighbor Finding Techniques for Images Represented by Quadtrees*, [paper](https://raw.githubusercontent.com/aurelien-rainone/go-rquad/readme-docs/papers/a090240.pdf)
+*Neighbor Finding Techniques for Images Represented by Quadtrees*, [paper](https://raw.githubusercontent.com/arl/go-rquad/readme-docs/papers/a090240.pdf)
 
  - Cardinal Neighbor Quadtree. cf Safwan Qasem 2015,  
-*Cardinal Neighbor Quadtree: a New Quadtree-based Structure for Constant-Time Neighbor Finding*, [paper](https://raw.githubusercontent.com/aurelien-rainone/go-rquad/readme-docs/papers/qasem-2015-ijca-907501.pdf)
+*Cardinal Neighbor Quadtree: a New Quadtree-based Structure for Constant-Time Neighbor Finding*, [paper](https://raw.githubusercontent.com/arl/go-rquad/readme-docs/papers/qasem-2015-ijca-907501.pdf)
 
  - Fast point location using binary branching method. cf Frisken, Perry 2002  
- *Simple and Efficient Traversal Methods for Quadtrees and Octrees*, [paper](https://raw.githubusercontent.com/aurelien-rainone/go-rquad/readme-docs/papers/Simple.and.Efficient.Traversal.Methods.for.Quadtrees.TR2002-41.pdf)
+ *Simple and Efficient Traversal Methods for Quadtrees and Octrees*, [paper](https://raw.githubusercontent.com/arl/go-rquad/readme-docs/papers/Simple.and.Efficient.Traversal.Methods.for.Quadtrees.TR2002-41.pdf)
 
 
 ## License

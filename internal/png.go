@@ -5,7 +5,7 @@ import (
 	"image/png"
 	"os"
 
-	"github.com/aurelien-rainone/imgtools/binimg"
+	"github.com/arl/imgtools/binimg"
 )
 
 // LoadPNG is an helper function that uses binimg.NewFromImage internally.

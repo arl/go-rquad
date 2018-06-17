@@ -1,4 +1,4 @@
-[![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](http://godoc.org/github.com/aurelien-rainone/imgtools/binimg)
+[![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](http://godoc.org/github.com/arl/imgtools/binimg)
 
 # binimg - Binary images in Go
 
@@ -30,15 +30,15 @@ TODO: REMOVE (there is no more palette, but show an exemple of conversion from a
 
 **`BlackAndWhite` predefined `Palette`**
 
-<img src="https://github.com/aurelien-rainone/imgtools/blob/readme-images/colorgopher.png" width="128">  <img src="https://github.com/aurelien-rainone/imgtools/blob/readme-images/bwgopher.png" width="128">
+<img src="https://github.com/arl/imgtools/blob/readme-images/colorgopher.png" width="128">  <img src="https://github.com/arl/imgtools/blob/readme-images/bwgopher.png" width="128">
 
 **`BlackAndWhiteHighThreshold` predefined `Palette`**
 
-<img src="https://github.com/aurelien-rainone/imgtools/blob/readme-images/colorgopher.png" width="128">  <img src="https://github.com/aurelien-rainone/imgtools/blob/readme-images/bwgopher.high.threshold.png" width="128">
+<img src="https://github.com/arl/imgtools/blob/readme-images/colorgopher.png" width="128">  <img src="https://github.com/arl/imgtools/blob/readme-images/bwgopher.high.threshold.png" width="128">
 
 **Custom `Palette`**
 
-<img src="https://github.com/aurelien-rainone/imgtools/blob/readme-images/colorgopher.png" width="128">  <img src="https://github.com/aurelien-rainone/imgtools/blob/readme-images/redblue.gopher.png" width="128">
+<img src="https://github.com/arl/imgtools/blob/readme-images/colorgopher.png" width="128">  <img src="https://github.com/arl/imgtools/blob/readme-images/redblue.gopher.png" width="128">
 
 -----------------------
 
@@ -53,7 +53,7 @@ import (
 	"image"
 	"image/color"
 
-	"github.com/aurelien-rainone/imgtools/binimg"
+	"github.com/arl/imgtools/binimg"
 )
 
 func main() {
@@ -76,7 +76,7 @@ func main() {
 ```go
 package main
 
-import "github.com/aurelien-rainone/binimg"
+import "github.com/arl/binimg"
 
 func main() {
 	// load image ("color-gopher.png")
@@ -95,7 +95,7 @@ import (
 	"image"
 	"image/color"
 
-	"github.com/aurelien-rainone/imgtools/binimg"
+	"github.com/arl/imgtools/binimg"
 )
 
 func main() {
