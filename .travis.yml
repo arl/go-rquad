@@ -4,7 +4,7 @@ sudo: false
 install: false
 
 go: 
- - 1.10
+ - "1.10"
  - master
 
 matrix:
