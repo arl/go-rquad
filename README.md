@@ -1,5 +1,5 @@
 # Region quadtrees in Go
-[![Build Status](https://travis-ci.org/arl/go-rquad.svg?branch=master)](https://travis-ci.org/arl/go-rquad) [![Coverage](https://codecov.io/gh/arl/go-rquad/branch/master/graph/badge.svg)](https://codecov.io/gh/arl/go-rquad)
+[![Build Status](https://travis-ci.org/arl/go-rquad.svg?branch=master)](https://travis-ci.org/arl/go-rquad) [![Coverage Status](https://coveralls.io/repos/github/arl/go-rquad/badge.svg?branch=master)](https://coveralls.io/github/arl/go-rquad?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/arl/go-rquad)](https://goreportcard.com/report/github.com/arl/go-rquad)
 [![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](http://godoc.org/github.com/arl/go-rquad) 
 
