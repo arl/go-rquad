@@ -170,7 +170,7 @@ func benchmarkNeighboursFinding(b *testing.B, fn newQuadtreeFunc, numNodes int, 
 	noop := func(Node) {}
 
 	// fill a slice with random nodes
-	nodes := make(NodeList, numNodes, numNodes)
+	nodes := make([]Node, numNodes, numNodes)
 	for i := 0; i < numNodes; i++ {
 		pt := randomPt(q.Root().Bounds())
 		nodes[i] = Locate(q, pt)

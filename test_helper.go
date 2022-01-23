@@ -28,12 +28,6 @@ func newCNTree(scanner imgscan.Scanner, resolution int) (Quadtree, error) {
 	return NewCNTree(scanner, resolution)
 }
 
-func appendNode(nl *NodeList) func(Node) {
-	return func(n Node) {
-		*nl = append(*nl, n)
-	}
-}
-
 func neighbourColors(n Node) (white, black int) {
 	ForEachNeighbour(n, func(nb Node) {
 		switch nb.Color() {

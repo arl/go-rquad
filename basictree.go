@@ -16,7 +16,7 @@ type BasicTree struct {
 	resolution int             // leaf node resolution
 	scanner    imgscan.Scanner // reference image
 	root       Node            // root node
-	leaves     NodeList        // leaf nodes (filled during creation)
+	leaves     []Node          // leaf nodes (filled during creation)
 }
 
 // NewBasicTree creates a basic region quadtree from a scannable rectangular

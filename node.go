@@ -52,6 +52,3 @@ type Node interface {
 	// Location returns the node inside its parent quadrant
 	Location() Quadrant
 }
-
-// NodeList is a slice of Node instances.
-type NodeList []Node
