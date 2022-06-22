@@ -89,15 +89,12 @@ func children(n Node, dir Side, fn func(Node)) {
 	case North:
 		s1 = n.Child(Northeast)
 		s2 = n.Child(Northwest)
-		break
 	case East:
 		s1 = n.Child(Northeast)
 		s2 = n.Child(Southeast)
-		break
 	case South:
 		s1 = n.Child(Southeast)
 		s2 = n.Child(Southwest)
-		break
 	case West:
 		s1 = n.Child(Northwest)
 		s2 = n.Child(Southwest)

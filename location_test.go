@@ -34,7 +34,7 @@ func benchmarkPointLocation(b *testing.B, fn newQuadtreeFunc, numPoints int, res
 	}
 
 	// fill a slice with random points
-	points := make([]image.Point, numPoints, numPoints)
+	points := make([]image.Point, numPoints)
 	for i := 0; i < numPoints; i++ {
 		points[i] = randomPt(q.Root().Bounds())
 	}
